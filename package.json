@@ -1,7 +1,9 @@
 {
-  "name": "wikipedia-game",
-  "version": "0.1.0",
+  "name": "wikirush",
+  "version": "1.0.0",
   "private": true,
+  "author": "Jessy DAVID - https://jessy-david.dev",
+  "description": "WikiRush - Navigue entre les articles Wikipedia pour atteindre la cible en premier !",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
