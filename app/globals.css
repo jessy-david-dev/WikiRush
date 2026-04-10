@@ -186,15 +186,12 @@ body {
   text-align: center;
 }
 
-.home-logo {
-  font-size: clamp(42px, 10vw, 72px);
-  font-weight: 900;
-  letter-spacing: -2px;
-  line-height: 1;
+.home-logo-img {
+  width: clamp(180px, 50vw, 280px);
+  height: auto;
+  display: block;
+  margin: 0 auto;
 }
-
-.logo-wiki { color: var(--text); }
-.logo-race { color: var(--accent); }
 
 .home-subtitle {
   margin-top: 12px;

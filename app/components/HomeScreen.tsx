@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import type { Session } from "next-auth";
 
 type HomeScreenProps = {
@@ -39,10 +40,7 @@ export function HomeScreen({
       </div>
 
       <div className="home-hero">
-        <div className="home-logo">
-          <span className="logo-wiki">Wiki</span>
-          <span className="logo-race">Rush</span>
-        </div>
+        <Image src="/wikirush.png" alt="WikiRush" width={320} height={320} className="home-logo-img" priority />
         <p className="home-subtitle">
           Navigue entre les articles Wikipedia pour atteindre la cible en premier !
         </p>
