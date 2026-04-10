@@ -110,6 +110,24 @@ export default function WikiRush() {
     });
   }, [solo.phase]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Sauvegarder partie multi quand les résultats arrivent
+  useEffect(() => {
+    const room = multi.room;
+    const pid = multi.playerId;
+    if (!room || !pid || room.phase !== "results") return;
+    const me = room.players.find((p) => p.id === pid);
+    if (!me) return;
+    saveGame({
+      mode: "multi",
+      startArticle: room.startArticle,
+      targetArticle: room.targetArticle,
+      path: multi.history,
+      clicks: multi.clicks,
+      timeSeconds: multi.elapsed,
+      won: room.roundWinner === pid,
+    });
+  }, [multi.room?.phase]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // ---- Actions home ----
 
   async function handleCreateRoom() {
