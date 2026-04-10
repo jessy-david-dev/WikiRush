@@ -170,6 +170,26 @@ export function ProfileScreen({ userName, onBack }: { userName: string; onBack: 
         ))}
       </div>
 
+      {/* Mes données */}
+      <div className="mt-8 border border-[#2e2e2e] rounded-xl p-4 flex items-center justify-between gap-3 flex-wrap">
+        <div className="flex flex-col gap-0.5">
+          <p className="text-xs font-bold text-[#f0f0f0] uppercase tracking-wider">Mes données</p>
+          <p className="text-xs text-[#888]">Télécharge toutes tes données personnelles (RGPD).</p>
+        </div>
+        <a
+          href="/api/account"
+          download
+          className="min-h-9 px-3 rounded-lg text-xs sm:text-sm font-semibold bg-[#242424] border border-[#2e2e2e] text-[#f0f0f0] hover:bg-[#1a1a1a] transition-colors shrink-0 inline-flex items-center gap-1.5"
+        >
+          <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-none stroke-current stroke-2" aria-hidden>
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          Télécharger (.json)
+        </a>
+      </div>
+
       {/* Danger zone */}
       <div className="mt-8 border border-red-900/50 rounded-xl p-4 flex flex-col gap-3">
         <h3 className="text-xs font-bold text-red-400 uppercase tracking-wider">Zone dangereuse</h3>
