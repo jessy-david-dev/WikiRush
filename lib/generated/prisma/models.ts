@@ -10,4 +10,6 @@
  */
 export type * from './models/User'
 export type * from './models/Game'
+export type * from './models/DailyPuzzle'
+export type * from './models/DailyResult'
 export type * from './commonInputTypes'

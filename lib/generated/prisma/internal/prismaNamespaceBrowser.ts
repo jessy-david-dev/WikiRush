@@ -52,7 +52,9 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
-  Game: 'Game'
+  Game: 'Game',
+  DailyPuzzle: 'DailyPuzzle',
+  DailyResult: 'DailyResult'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -93,6 +95,30 @@ export const GameScalarFieldEnum = {
 } as const
 
 export type GameScalarFieldEnum = (typeof GameScalarFieldEnum)[keyof typeof GameScalarFieldEnum]
+
+
+export const DailyPuzzleScalarFieldEnum = {
+  id: 'id',
+  date: 'date',
+  startArticle: 'startArticle',
+  targetArticle: 'targetArticle'
+} as const
+
+export type DailyPuzzleScalarFieldEnum = (typeof DailyPuzzleScalarFieldEnum)[keyof typeof DailyPuzzleScalarFieldEnum]
+
+
+export const DailyResultScalarFieldEnum = {
+  id: 'id',
+  puzzleId: 'puzzleId',
+  userId: 'userId',
+  path: 'path',
+  clicks: 'clicks',
+  timeSeconds: 'timeSeconds',
+  won: 'won',
+  playedAt: 'playedAt'
+} as const
+
+export type DailyResultScalarFieldEnum = (typeof DailyResultScalarFieldEnum)[keyof typeof DailyResultScalarFieldEnum]
 
 
 export const SortOrder = {

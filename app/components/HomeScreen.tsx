@@ -18,12 +18,14 @@ type HomeScreenProps = {
   onShowAuth: () => void;
   onShowProfile: () => void;
   onShowLeaderboard: () => void;
+  onDaily: () => void;
+  onBlitz: () => void;
 };
 
 export function HomeScreen({
   playerName, setPlayerName, joinCode, setJoinCode,
   error, setError, loading, onCreateRoom, onJoinRoom, onSolo,
-  session, onShowAuth, onShowProfile, onShowLeaderboard,
+  session, onShowAuth, onShowProfile, onShowLeaderboard, onDaily, onBlitz,
 }: HomeScreenProps) {
   const btnGhost = "min-h-9 px-3 rounded-lg text-xs sm:text-sm font-semibold bg-[#242424] border border-[#2e2e2e] text-[#f0f0f0] hover:bg-[#1a1a1a] cursor-pointer whitespace-nowrap";
 
@@ -114,7 +116,19 @@ export function HomeScreen({
             className="w-full min-h-11 rounded-xl text-sm font-semibold bg-[#242424] border border-[#2e2e2e] text-[#f0f0f0] hover:bg-[#1a1a1a] cursor-pointer transition-colors"
             onClick={onSolo}
           >
-            Jouer en solo
+            🎯 Jouer en solo
+          </button>
+          <button
+            className="w-full min-h-11 rounded-xl text-sm font-semibold bg-[#242424] border border-[#2e2e2e] text-[#f0f0f0] hover:bg-[#1a1a1a] cursor-pointer transition-colors"
+            onClick={onDaily}
+          >
+            🗓 Défi du jour
+          </button>
+          <button
+            className="w-full min-h-11 rounded-xl text-sm font-semibold bg-[#242424] border border-[#2e2e2e] text-[#f0f0f0] hover:bg-[#1a1a1a] cursor-pointer transition-colors"
+            onClick={onBlitz}
+          >
+            ⚡ Mode Blitz — 2 min
           </button>
         </div>
       </div>

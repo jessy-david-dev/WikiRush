@@ -183,6 +183,7 @@ export type UserWhereInput = {
   password?: Prisma.StringFilter<"User"> | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   games?: Prisma.GameListRelationFilter
+  dailyResults?: Prisma.DailyResultListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -192,6 +193,7 @@ export type UserOrderByWithRelationInput = {
   password?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   games?: Prisma.GameOrderByRelationAggregateInput
+  dailyResults?: Prisma.DailyResultOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -204,6 +206,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   password?: Prisma.StringFilter<"User"> | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   games?: Prisma.GameListRelationFilter
+  dailyResults?: Prisma.DailyResultListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -235,6 +238,7 @@ export type UserCreateInput = {
   password: string
   createdAt?: Date | string
   games?: Prisma.GameCreateNestedManyWithoutUserInput
+  dailyResults?: Prisma.DailyResultCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -244,6 +248,7 @@ export type UserUncheckedCreateInput = {
   password: string
   createdAt?: Date | string
   games?: Prisma.GameUncheckedCreateNestedManyWithoutUserInput
+  dailyResults?: Prisma.DailyResultUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -253,6 +258,7 @@ export type UserUpdateInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   games?: Prisma.GameUpdateManyWithoutUserNestedInput
+  dailyResults?: Prisma.DailyResultUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -262,6 +268,7 @@ export type UserUncheckedUpdateInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   games?: Prisma.GameUncheckedUpdateManyWithoutUserNestedInput
+  dailyResults?: Prisma.DailyResultUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -339,12 +346,27 @@ export type UserUpdateOneRequiredWithoutGamesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutGamesInput, Prisma.UserUpdateWithoutGamesInput>, Prisma.UserUncheckedUpdateWithoutGamesInput>
 }
 
+export type UserCreateNestedOneWithoutDailyResultsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDailyResultsInput, Prisma.UserUncheckedCreateWithoutDailyResultsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDailyResultsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutDailyResultsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDailyResultsInput, Prisma.UserUncheckedCreateWithoutDailyResultsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDailyResultsInput
+  upsert?: Prisma.UserUpsertWithoutDailyResultsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDailyResultsInput, Prisma.UserUpdateWithoutDailyResultsInput>, Prisma.UserUncheckedUpdateWithoutDailyResultsInput>
+}
+
 export type UserCreateWithoutGamesInput = {
   id?: string
   name: string
   email: string
   password: string
   createdAt?: Date | string
+  dailyResults?: Prisma.DailyResultCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutGamesInput = {
@@ -353,6 +375,7 @@ export type UserUncheckedCreateWithoutGamesInput = {
   email: string
   password: string
   createdAt?: Date | string
+  dailyResults?: Prisma.DailyResultUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutGamesInput = {
@@ -377,6 +400,7 @@ export type UserUpdateWithoutGamesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyResults?: Prisma.DailyResultUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGamesInput = {
@@ -385,6 +409,59 @@ export type UserUncheckedUpdateWithoutGamesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyResults?: Prisma.DailyResultUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutDailyResultsInput = {
+  id?: string
+  name: string
+  email: string
+  password: string
+  createdAt?: Date | string
+  games?: Prisma.GameCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutDailyResultsInput = {
+  id?: string
+  name: string
+  email: string
+  password: string
+  createdAt?: Date | string
+  games?: Prisma.GameUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutDailyResultsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutDailyResultsInput, Prisma.UserUncheckedCreateWithoutDailyResultsInput>
+}
+
+export type UserUpsertWithoutDailyResultsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutDailyResultsInput, Prisma.UserUncheckedUpdateWithoutDailyResultsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutDailyResultsInput, Prisma.UserUncheckedCreateWithoutDailyResultsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutDailyResultsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutDailyResultsInput, Prisma.UserUncheckedUpdateWithoutDailyResultsInput>
+}
+
+export type UserUpdateWithoutDailyResultsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  games?: Prisma.GameUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutDailyResultsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  games?: Prisma.GameUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -394,10 +471,12 @@ export type UserUncheckedUpdateWithoutGamesInput = {
 
 export type UserCountOutputType = {
   games: number
+  dailyResults: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   games?: boolean | UserCountOutputTypeCountGamesArgs
+  dailyResults?: boolean | UserCountOutputTypeCountDailyResultsArgs
 }
 
 /**
@@ -417,6 +496,13 @@ export type UserCountOutputTypeCountGamesArgs<ExtArgs extends runtime.Types.Exte
   where?: Prisma.GameWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountDailyResultsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DailyResultWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -425,6 +511,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   password?: boolean
   createdAt?: boolean
   games?: boolean | Prisma.User$gamesArgs<ExtArgs>
+  dailyResults?: boolean | Prisma.User$dailyResultsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -455,6 +542,7 @@ export type UserSelectScalar = {
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "password" | "createdAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   games?: boolean | Prisma.User$gamesArgs<ExtArgs>
+  dailyResults?: boolean | Prisma.User$dailyResultsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -464,6 +552,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   name: "User"
   objects: {
     games: Prisma.$GamePayload<ExtArgs>[]
+    dailyResults: Prisma.$DailyResultPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -866,6 +955,7 @@ readonly fields: UserFieldRefs;
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   games<T extends Prisma.User$gamesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$gamesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GamePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  dailyResults<T extends Prisma.User$dailyResultsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$dailyResultsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DailyResultPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1312,6 +1402,30 @@ export type User$gamesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
   take?: number
   skip?: number
   distinct?: Prisma.GameScalarFieldEnum | Prisma.GameScalarFieldEnum[]
+}
+
+/**
+ * User.dailyResults
+ */
+export type User$dailyResultsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DailyResult
+   */
+  select?: Prisma.DailyResultSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DailyResult
+   */
+  omit?: Prisma.DailyResultOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DailyResultInclude<ExtArgs> | null
+  where?: Prisma.DailyResultWhereInput
+  orderBy?: Prisma.DailyResultOrderByWithRelationInput | Prisma.DailyResultOrderByWithRelationInput[]
+  cursor?: Prisma.DailyResultWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DailyResultScalarFieldEnum | Prisma.DailyResultScalarFieldEnum[]
 }
 
 /**

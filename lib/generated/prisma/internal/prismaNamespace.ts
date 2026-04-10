@@ -385,7 +385,9 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   User: 'User',
-  Game: 'Game'
+  Game: 'Game',
+  DailyPuzzle: 'DailyPuzzle',
+  DailyResult: 'DailyResult'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -401,7 +403,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "game"
+    modelProps: "user" | "game" | "dailyPuzzle" | "dailyResult"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -553,6 +555,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    DailyPuzzle: {
+      payload: Prisma.$DailyPuzzlePayload<ExtArgs>
+      fields: Prisma.DailyPuzzleFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DailyPuzzleFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyPuzzlePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DailyPuzzleFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyPuzzlePayload>
+        }
+        findFirst: {
+          args: Prisma.DailyPuzzleFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyPuzzlePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DailyPuzzleFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyPuzzlePayload>
+        }
+        findMany: {
+          args: Prisma.DailyPuzzleFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyPuzzlePayload>[]
+        }
+        create: {
+          args: Prisma.DailyPuzzleCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyPuzzlePayload>
+        }
+        createMany: {
+          args: Prisma.DailyPuzzleCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DailyPuzzleCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyPuzzlePayload>[]
+        }
+        delete: {
+          args: Prisma.DailyPuzzleDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyPuzzlePayload>
+        }
+        update: {
+          args: Prisma.DailyPuzzleUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyPuzzlePayload>
+        }
+        deleteMany: {
+          args: Prisma.DailyPuzzleDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DailyPuzzleUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DailyPuzzleUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyPuzzlePayload>[]
+        }
+        upsert: {
+          args: Prisma.DailyPuzzleUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyPuzzlePayload>
+        }
+        aggregate: {
+          args: Prisma.DailyPuzzleAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDailyPuzzle>
+        }
+        groupBy: {
+          args: Prisma.DailyPuzzleGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DailyPuzzleGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DailyPuzzleCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DailyPuzzleCountAggregateOutputType> | number
+        }
+      }
+    }
+    DailyResult: {
+      payload: Prisma.$DailyResultPayload<ExtArgs>
+      fields: Prisma.DailyResultFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DailyResultFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyResultPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DailyResultFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyResultPayload>
+        }
+        findFirst: {
+          args: Prisma.DailyResultFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyResultPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DailyResultFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyResultPayload>
+        }
+        findMany: {
+          args: Prisma.DailyResultFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyResultPayload>[]
+        }
+        create: {
+          args: Prisma.DailyResultCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyResultPayload>
+        }
+        createMany: {
+          args: Prisma.DailyResultCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DailyResultCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyResultPayload>[]
+        }
+        delete: {
+          args: Prisma.DailyResultDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyResultPayload>
+        }
+        update: {
+          args: Prisma.DailyResultUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyResultPayload>
+        }
+        deleteMany: {
+          args: Prisma.DailyResultDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DailyResultUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DailyResultUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyResultPayload>[]
+        }
+        upsert: {
+          args: Prisma.DailyResultUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyResultPayload>
+        }
+        aggregate: {
+          args: Prisma.DailyResultAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDailyResult>
+        }
+        groupBy: {
+          args: Prisma.DailyResultGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DailyResultGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DailyResultCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DailyResultCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -614,6 +764,30 @@ export const GameScalarFieldEnum = {
 } as const
 
 export type GameScalarFieldEnum = (typeof GameScalarFieldEnum)[keyof typeof GameScalarFieldEnum]
+
+
+export const DailyPuzzleScalarFieldEnum = {
+  id: 'id',
+  date: 'date',
+  startArticle: 'startArticle',
+  targetArticle: 'targetArticle'
+} as const
+
+export type DailyPuzzleScalarFieldEnum = (typeof DailyPuzzleScalarFieldEnum)[keyof typeof DailyPuzzleScalarFieldEnum]
+
+
+export const DailyResultScalarFieldEnum = {
+  id: 'id',
+  puzzleId: 'puzzleId',
+  userId: 'userId',
+  path: 'path',
+  clicks: 'clicks',
+  timeSeconds: 'timeSeconds',
+  won: 'won',
+  playedAt: 'playedAt'
+} as const
+
+export type DailyResultScalarFieldEnum = (typeof DailyResultScalarFieldEnum)[keyof typeof DailyResultScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -761,6 +935,8 @@ export type PrismaClientOptions = ({
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   game?: Prisma.GameOmit
+  dailyPuzzle?: Prisma.DailyPuzzleOmit
+  dailyResult?: Prisma.DailyResultOmit
 }
 
 /* Types for Logging */

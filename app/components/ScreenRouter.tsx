@@ -14,6 +14,8 @@ import { GameScreen } from "./GameScreen";
 import { AuthModal } from "./AuthModal";
 import { ProfileScreen } from "./ProfileScreen";
 import { LeaderboardScreen } from "./LeaderboardScreen";
+import { DailyScreen } from "./DailyScreen";
+import { BlitzScreen } from "./BlitzScreen";
 
 type Props = {
   screen: Screen;
@@ -46,6 +48,14 @@ export function ScreenRouter({
     <LeaderboardScreen onBack={() => setScreen("home")} />
   );
 
+  if (screen === "daily") return (
+    <DailyScreen onBack={() => setScreen("home")} currentUserId={session?.user?.id ?? undefined} />
+  );
+
+  if (screen === "blitz") return (
+    <BlitzScreen onBack={() => setScreen("home")} />
+  );
+
   if (screen === "home") return (
     <>
       <HomeScreen
@@ -59,6 +69,8 @@ export function ScreenRouter({
         onShowAuth={() => setShowAuth(true)}
         onShowProfile={() => setScreen("profile")}
         onShowLeaderboard={() => setScreen("leaderboard")}
+        onDaily={() => setScreen("daily")}
+        onBlitz={() => setScreen("blitz")}
       />
       {showAuth && <AuthModal onClose={() => setShowAuth(false)} onSuccess={() => setShowAuth(false)} />}
     </>

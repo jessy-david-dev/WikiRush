@@ -27,3 +27,13 @@ export type User = Prisma.UserModel
  * 
  */
 export type Game = Prisma.GameModel
+/**
+ * Model DailyPuzzle
+ * 
+ */
+export type DailyPuzzle = Prisma.DailyPuzzleModel
+/**
+ * Model DailyResult
+ * 
+ */
+export type DailyResult = Prisma.DailyResultModel
