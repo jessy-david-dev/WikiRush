@@ -28,52 +28,82 @@ export function LobbyScreen({
   }
 
   return (
-    <div className="screen lobby-screen">
-      <button className="btn btn-ghost btn-back" onClick={onLeave}>Quitter</button>
+    <div className="min-h-dvh w-full bg-[#0f0f0f] text-[#f0f0f0] animate-fade-in flex flex-col items-center px-4 py-5 gap-6 max-w-120 mx-auto">
+      <button className="self-start min-h-9.5 px-3.5 rounded-xl text-sm font-semibold bg-[#242424] border border-[#2e2e2e] text-[#f0f0f0] hover:bg-[#1a1a1a] cursor-pointer" onClick={onLeave}>
+        Quitter
+      </button>
 
-      <div className="lobby-code-block">
-        <span className="lobby-code-label">Code de la salle</span>
-        <button className="lobby-code-copy" onClick={copyCode} title="Copier le code">
-          <span className="lobby-code">{room.code}</span>
-          <span className="lobby-copy-icon">{copied ? "✓" : "⧉"}</span>
+      {/* Code block */}
+      <div className="w-full text-center bg-[#1a1a1a] border border-[#2e2e2e] rounded-xl p-6">
+        <span className="block text-xs text-[#888] uppercase tracking-widest mb-2">Code de la salle</span>
+        <button
+          className="flex items-center justify-center gap-2.5 mx-auto px-2 py-1 rounded-lg hover:bg-[#242424] cursor-pointer border-none bg-transparent"
+          onClick={copyCode}
+        >
+          <span className="text-[clamp(42px,12vw,64px)] font-black font-mono tracking-[0.15em] text-[#7c3aed] leading-none">
+            {room.code}
+          </span>
+          <span className={`text-xl leading-none ${copied ? "text-green-400" : "text-[#888]"}`}>
+            {copied ? "✓" : "⧉"}
+          </span>
         </button>
-        <span className="lobby-code-hint">{copied ? "Copié !" : "Clique sur le code pour le copier"}</span>
+        <span className="block text-xs text-[#888] mt-2">
+          {copied ? "Copié !" : "Clique sur le code pour le copier"}
+        </span>
       </div>
 
       {error && (
-        <div className="error-banner">
+        <div className="w-full flex items-center justify-between gap-3 bg-red-950/40 border border-red-600 text-red-300 px-3 py-2.5 rounded-xl text-sm">
           {error}
-          <button onClick={() => setError(null)} className="error-close">x</button>
+          <button onClick={() => setError(null)} className="text-base px-1.5 rounded hover:bg-white/10 cursor-pointer">✕</button>
         </div>
       )}
 
-      <div className="lobby-players">
-        <h3 className="lobby-section-title">Joueurs ({room.players.length}/8)</h3>
-        <ul className="player-list">
+      {/* Players */}
+      <div className="w-full">
+        <h3 className="text-xs font-bold text-[#888] uppercase tracking-wider mb-2">
+          Joueurs ({room.players.length}/8)
+        </h3>
+        <ul className="flex flex-col gap-2">
           {room.players.map((p) => (
-            <li key={p.id} className={`player-item ${p.id === playerId ? "me" : ""}`}>
-              <span className="player-name">{p.name}</span>
-              {p.isHost && <span className="player-badge host">Hote</span>}
-              {p.id === playerId && <span className="player-badge you">Toi</span>}
-              <span className="player-score">{p.score} pts</span>
+            <li
+              key={p.id}
+              className={`flex items-center gap-2 bg-[#1a1a1a] rounded-xl px-3.5 py-2.5 min-h-11 border ${p.id === playerId ? "border-[#7c3aed]" : "border-[#2e2e2e]"}`}
+            >
+              <span className="flex-1 font-semibold text-sm">{p.name}</span>
+              {p.isHost && <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-purple-900/40 text-purple-300 uppercase tracking-wide">Hôte</span>}
+              {p.id === playerId && <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-blue-900/40 text-blue-300 uppercase tracking-wide">Toi</span>}
+              <span className="text-sm font-bold text-[#7c3aed] min-w-12.5 text-right">{p.score} pts</span>
             </li>
           ))}
         </ul>
       </div>
 
-      {room.round > 0 && <div className="lobby-round-info">Manche {room.round} terminee</div>}
+      {room.round > 0 && (
+        <p className="text-xs text-[#888] text-center">Manche {room.round} terminée</p>
+      )}
 
       {isHost ? (
-        <div className="lobby-host-actions">
-          <button className="btn btn-primary" onClick={onStart} disabled={loading}>
-            {loading ? "Preparation..." : room.round === 0 ? "Demarrer la partie" : "Manche suivante"}
+        <div className="w-full flex flex-col gap-2.5">
+          <button
+            className="w-full min-h-11 px-5 rounded-xl text-sm font-semibold bg-[#7c3aed] text-white hover:bg-[#6d28d9] disabled:opacity-50 cursor-pointer"
+            onClick={onStart} disabled={loading}
+          >
+            {loading ? "Préparation..." : room.round === 0 ? "Démarrer la partie" : "Manche suivante"}
           </button>
           {room.round > 0 && (
-            <button className="btn btn-ghost" onClick={onReset}>Nouvelle partie (reset scores)</button>
+            <button
+              className="w-full min-h-11 px-5 rounded-xl text-sm font-semibold bg-[#242424] border border-[#2e2e2e] text-[#f0f0f0] hover:bg-[#1a1a1a] cursor-pointer"
+              onClick={onReset}
+            >
+              Nouvelle partie (reset scores)
+            </button>
           )}
         </div>
       ) : (
-        <p className="lobby-waiting">En attente que l&apos;hote demarre...</p>
+        <p className="text-sm text-[#888] text-center animate-pulse-slow">
+          En attente que l&apos;hôte démarre...
+        </p>
       )}
     </div>
   );

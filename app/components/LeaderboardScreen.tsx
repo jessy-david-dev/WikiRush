@@ -36,28 +36,34 @@ export function LeaderboardScreen({ onBack }: { onBack: () => void }) {
       .then((data) => { setRows(data); setLoading(false); });
   }, []);
 
-  const sorted = [...rows].sort((a, b) => {
-    if (mode === "solo") return b.soloWins - a.soloWins || b.soloGames - a.soloGames;
-    if (mode === "multi") return b.multiWins - a.multiWins || b.multiGames - a.multiGames;
-    return b.wins - a.wins || b.totalGames - a.totalGames;
-  }).filter((r) => {
-    if (mode === "solo") return r.soloGames > 0;
-    if (mode === "multi") return r.multiGames > 0;
-    return true;
-  });
+  const sorted = [...rows]
+    .filter((r) => {
+      if (mode === "solo") return r.soloGames > 0;
+      if (mode === "multi") return r.multiGames > 0;
+      return true;
+    })
+    .sort((a, b) => {
+      if (mode === "solo") return b.soloWins - a.soloWins || b.soloGames - a.soloGames;
+      if (mode === "multi") return b.multiWins - a.multiWins || b.multiGames - a.multiGames;
+      return b.wins - a.wins || b.totalGames - a.totalGames;
+    });
 
   return (
-    <div className="screen leaderboard-screen">
-      <div className="leaderboard-header">
-        <button className="btn btn-ghost btn-back" onClick={onBack}>Retour</button>
-        <h2 className="leaderboard-title">Classement</h2>
+    <div className="min-h-dvh w-full bg-[#0f0f0f] text-[#f0f0f0] animate-fade-in max-w-160 mx-auto px-4 py-6 pb-12">
+      {/* Header */}
+      <div className="flex items-center gap-4 mb-6">
+        <button className="min-h-9.5 px-3.5 rounded-xl text-sm font-semibold bg-[#242424] border border-[#2e2e2e] text-[#f0f0f0] hover:bg-[#1a1a1a] cursor-pointer" onClick={onBack}>
+          Retour
+        </button>
+        <h2 className="text-2xl font-black">Classement</h2>
       </div>
 
-      <div className="leaderboard-tabs">
+      {/* Tabs */}
+      <div className="flex gap-2 mb-5">
         {(["all", "solo", "multi"] as Mode[]).map((m) => (
           <button
             key={m}
-            className={`leaderboard-tab ${mode === m ? "active" : ""}`}
+            className={`flex-1 py-2 rounded-xl text-xs font-semibold border cursor-pointer transition-colors ${mode === m ? "bg-[#7c3aed] border-[#7c3aed] text-white" : "bg-[#1a1a1a] border-[#2e2e2e] text-[#888] hover:text-[#f0f0f0]"}`}
             onClick={() => setMode(m)}
           >
             {m === "all" ? "Global" : m === "solo" ? "Solo" : "Multijoueur"}
@@ -66,27 +72,43 @@ export function LeaderboardScreen({ onBack }: { onBack: () => void }) {
       </div>
 
       {loading ? (
-        <div className="leaderboard-loading"><div className="loading-spinner" /></div>
+        <div className="flex justify-center py-12"><div className="spinner" /></div>
       ) : sorted.length === 0 ? (
-        <p className="leaderboard-empty">Aucune partie jouée pour le moment.</p>
+        <p className="text-[#888] text-center py-12">Aucune partie jouée pour le moment.</p>
       ) : (
-        <div className="leaderboard-list">
+        <div className="flex flex-col gap-2.5">
           {sorted.map((row, i) => {
             const games = mode === "solo" ? row.soloGames : mode === "multi" ? row.multiGames : row.totalGames;
             const wins = mode === "solo" ? row.soloWins : mode === "multi" ? row.multiWins : row.wins;
+            const isTop = i < 3;
 
             return (
-              <div key={row.id} className={`leaderboard-row ${i < 3 ? "top" : ""}`}>
-                <span className="lb-rank">{MEDALS[i] ?? `#${i + 1}`}</span>
-                <span className="lb-name">{row.name}</span>
-                <div className="lb-stats">
-                  <span className="lb-stat"><span className="lb-stat-val">{wins}</span><span className="lb-stat-label">victoires</span></span>
-                  <span className="lb-stat"><span className="lb-stat-val">{games}</span><span className="lb-stat-label">parties</span></span>
+              <div
+                key={row.id}
+                className={`flex items-center gap-3 px-4 py-3.5 rounded-xl border ${isTop ? "border-[#7c3aed] bg-[#7c3aed]/8" : "border-[#2e2e2e] bg-[#1a1a1a]"}`}
+              >
+                <span className="text-xl w-8 text-center shrink-0">{MEDALS[i] ?? `#${i + 1}`}</span>
+                <span className="flex-1 font-bold text-sm truncate">{row.name}</span>
+                <div className="flex gap-4 shrink-0">
+                  <div className="flex flex-col items-center gap-0.5">
+                    <span className="text-sm font-black tabular-nums">{wins}</span>
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-[#888]">victoires</span>
+                  </div>
+                  <div className="flex flex-col items-center gap-0.5">
+                    <span className="text-sm font-black tabular-nums">{games}</span>
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-[#888]">parties</span>
+                  </div>
                   {row.avgClicks != null && (
-                    <span className="lb-stat"><span className="lb-stat-val">{row.avgClicks}</span><span className="lb-stat-label">moy. clics</span></span>
+                    <div className="flex flex-col items-center gap-0.5">
+                      <span className="text-sm font-black tabular-nums">{row.avgClicks}</span>
+                      <span className="text-[9px] font-bold uppercase tracking-wider text-[#888]">moy. clics</span>
+                    </div>
                   )}
                   {row.bestTime != null && (
-                    <span className="lb-stat"><span className="lb-stat-val">{fmt(row.bestTime)}</span><span className="lb-stat-label">meilleur temps</span></span>
+                    <div className="flex flex-col items-center gap-0.5">
+                      <span className="text-sm font-black tabular-nums">{fmt(row.bestTime)}</span>
+                      <span className="text-[9px] font-bold uppercase tracking-wider text-[#888]">meilleur</span>
+                    </div>
                   )}
                 </div>
               </div>
