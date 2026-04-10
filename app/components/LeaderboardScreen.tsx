@@ -81,30 +81,20 @@ export function LeaderboardScreen({ onBack }: { onBack: () => void }) {
             const wins = mode === "solo" ? row.soloWins : mode === "multi" ? row.multiWins : row.wins;
 
             return (
-              <div key={row.id} className={`flex items-center gap-2.5 sm:gap-3 px-3.5 sm:px-4 py-3 sm:py-3.5 rounded-xl border ${i < 3 ? "border-[#7c3aed] bg-[#7c3aed]/8" : "border-[#2e2e2e] bg-[#1a1a1a]"}`}>
-                <span className="text-lg sm:text-xl w-7 sm:w-8 text-center shrink-0">{MEDALS[i] ?? `#${i + 1}`}</span>
-                <span className="flex-1 font-bold text-xs sm:text-sm truncate">{row.name}</span>
-                <div className="flex gap-2.5 sm:gap-4 shrink-0">
-                  <div className="flex flex-col items-center gap-0.5">
-                    <span className="text-xs sm:text-sm font-black tabular-nums">{wins}</span>
-                    <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-wider text-[#888]">victoires</span>
+              <div key={row.id} className={`flex items-center gap-2.5 px-3.5 py-3 rounded-xl border ${i < 3 ? "border-[#7c3aed] bg-[#7c3aed]/8" : "border-[#2e2e2e] bg-[#1a1a1a]"}`}>
+                <span className="text-xl w-8 text-center shrink-0">{MEDALS[i] ?? `#${i + 1}`}</span>
+                <div className="flex-1 min-w-0 flex flex-col gap-1">
+                  <span className="font-bold text-sm truncate">{row.name}</span>
+                  <div className="flex flex-wrap gap-x-3 gap-y-0.5">
+                    <span className="text-xs text-[#888]"><span className="font-bold text-[#f0f0f0]">{wins}</span> victoires</span>
+                    <span className="text-xs text-[#888]"><span className="font-bold text-[#f0f0f0]">{games}</span> parties</span>
+                    {row.avgClicks != null && (
+                      <span className="text-xs text-[#888]"><span className="font-bold text-[#f0f0f0]">{row.avgClicks}</span> clics moy.</span>
+                    )}
+                    {row.bestTime != null && (
+                      <span className="text-xs text-[#888]"><span className="font-bold text-[#f0f0f0]">{fmt(row.bestTime)}</span> meilleur</span>
+                    )}
                   </div>
-                  <div className="flex flex-col items-center gap-0.5">
-                    <span className="text-xs sm:text-sm font-black tabular-nums">{games}</span>
-                    <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-wider text-[#888]">parties</span>
-                  </div>
-                  {row.avgClicks != null && (
-                    <div className="hidden sm:flex flex-col items-center gap-0.5">
-                      <span className="text-sm font-black tabular-nums">{row.avgClicks}</span>
-                      <span className="text-[9px] font-bold uppercase tracking-wider text-[#888]">moy. clics</span>
-                    </div>
-                  )}
-                  {row.bestTime != null && (
-                    <div className="hidden sm:flex flex-col items-center gap-0.5">
-                      <span className="text-sm font-black tabular-nums">{fmt(row.bestTime)}</span>
-                      <span className="text-[9px] font-bold uppercase tracking-wider text-[#888]">meilleur</span>
-                    </div>
-                  )}
                 </div>
               </div>
             );
