@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import type { Room } from "../api/rooms/route";
 
 type LobbyScreenProps = {
@@ -17,6 +18,14 @@ export function LobbyScreen({
   room, playerId, error, setError, loading, onLeave, onStart, onReset,
 }: LobbyScreenProps) {
   const isHost = room.players.find((p) => p.id === playerId)?.isHost ?? false;
+  const [copied, setCopied] = useState(false);
+
+  function copyCode() {
+    navigator.clipboard.writeText(room.code).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }
 
   return (
     <div className="screen lobby-screen">
@@ -24,8 +33,11 @@ export function LobbyScreen({
 
       <div className="lobby-code-block">
         <span className="lobby-code-label">Code de la salle</span>
-        <span className="lobby-code">{room.code}</span>
-        <span className="lobby-code-hint">Partage ce code avec tes amis !</span>
+        <button className="lobby-code-copy" onClick={copyCode} title="Copier le code">
+          <span className="lobby-code">{room.code}</span>
+          <span className="lobby-copy-icon">{copied ? "✓" : "⧉"}</span>
+        </button>
+        <span className="lobby-code-hint">{copied ? "Copié !" : "Clique sur le code pour le copier"}</span>
       </div>
 
       {error && (

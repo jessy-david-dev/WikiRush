@@ -298,6 +298,28 @@ body {
   margin-bottom: 8px;
 }
 
+.lobby-code-copy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+  margin: 0 auto;
+  transition: background var(--transition);
+}
+.lobby-code-copy:hover { background: var(--bg-3); }
+
+.lobby-copy-icon {
+  font-size: 22px;
+  color: var(--text-muted);
+  line-height: 1;
+}
+.lobby-code-copy:hover .lobby-copy-icon { color: var(--accent); }
+
 .lobby-code {
   display: block;
   font-size: clamp(42px, 12vw, 64px);
