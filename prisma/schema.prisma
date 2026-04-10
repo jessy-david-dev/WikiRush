@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  games     Game[]
+}
+
+model Game {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mode        String   // "solo" | "multi"
+  startArticle String
+  targetArticle String
+  path        String   // JSON array de titres
+  clicks      Int
+  timeSeconds Float
+  won         Boolean  @default(true)
+  playedAt    DateTime @default(now())
+
+  @@index([userId])
+}
