@@ -74,7 +74,11 @@ export default function PrivacyPage() {
             <p>Vous pouvez à tout moment :</p>
             <ul className="list-disc pl-5 flex flex-col gap-1.5">
               <li><span className="text-[#f0f0f0] font-semibold">Consulter</span> vos données via votre page de profil.</li>
-              <li><span className="text-[#f0f0f0] font-semibold">Demander la suppression</span> de votre compte et de toutes vos données en nous contactant.</li>
+              <li>
+                <span className="text-[#f0f0f0] font-semibold">Supprimer</span> votre compte directement depuis votre profil,
+                rubrique <span className="italic">Zone dangereuse</span>. Cette action supprime immédiatement et définitivement
+                votre compte ainsi que l&apos;intégralité de vos parties enregistrées.
+              </li>
             </ul>
           </section>
 

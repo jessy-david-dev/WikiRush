@@ -46,6 +46,15 @@ export function ProfileScreen({ userName, onBack }: { userName: string; onBack: 
   const [games, setGames] = useState<Game[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "solo" | "multi">("all");
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  async function handleDeleteAccount() {
+    setDeleting(true);
+    await fetch("/api/account", { method: "DELETE" });
+    await signOut({ redirect: false });
+    onBack();
+  }
 
   useEffect(() => {
     fetch("/api/games")
@@ -159,6 +168,44 @@ export function ProfileScreen({ userName, onBack }: { userName: string; onBack: 
             )}
           </div>
         ))}
+      </div>
+
+      {/* Danger zone */}
+      <div className="mt-8 border border-red-900/50 rounded-xl p-4 flex flex-col gap-3">
+        <h3 className="text-xs font-bold text-red-400 uppercase tracking-wider">Zone dangereuse</h3>
+        {!confirmDelete ? (
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <p className="text-xs sm:text-sm text-[#888]">Supprime définitivement ton compte et toutes tes parties.</p>
+            <button
+              className="min-h-9 px-3 rounded-lg text-xs sm:text-sm font-semibold bg-transparent border border-red-800 text-red-400 hover:bg-red-950/40 cursor-pointer transition-colors shrink-0"
+              onClick={() => setConfirmDelete(true)}
+            >
+              Supprimer mon compte
+            </button>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3">
+            <p className="text-xs sm:text-sm text-red-300 font-semibold">
+              ⚠ Cette action est irréversible. Toutes tes données seront supprimées.
+            </p>
+            <div className="flex gap-2">
+              <button
+                className="flex-1 min-h-9 px-3 rounded-lg text-xs sm:text-sm font-semibold bg-red-700 hover:bg-red-600 text-white cursor-pointer disabled:opacity-50 transition-colors"
+                onClick={handleDeleteAccount}
+                disabled={deleting}
+              >
+                {deleting ? "Suppression..." : "Oui, supprimer"}
+              </button>
+              <button
+                className="flex-1 min-h-9 px-3 rounded-lg text-xs sm:text-sm font-semibold bg-[#242424] border border-[#2e2e2e] text-[#f0f0f0] hover:bg-[#1a1a1a] cursor-pointer transition-colors"
+                onClick={() => setConfirmDelete(false)}
+                disabled={deleting}
+              >
+                Annuler
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
