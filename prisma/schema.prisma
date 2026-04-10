@@ -7,36 +7,34 @@ datasource db {
   provider = "sqlite"
 }
 
-
-
 model User {
-  id        String   @id @default(cuid())
-  name      String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
+  id           String        @id @default(uuid(7))
+  name         String
+  email        String        @unique
+  password     String
+  createdAt    DateTime      @default(now())
   games        Game[]
   dailyResults DailyResult[]
 }
 
 model Game {
-  id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  mode        String   // "solo" | "multi" | "daily" | "blitz"
-  startArticle String
+  id            String   @id @default(uuid(7))
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mode          String // "solo" | "multi" | "daily" | "blitz"
+  startArticle  String
   targetArticle String
-  path        String   // JSON array de titres
-  clicks      Int
-  timeSeconds Float
-  won         Boolean  @default(true)
-  playedAt    DateTime @default(now())
+  path          String // JSON array de titres
+  clicks        Int
+  timeSeconds   Float
+  won           Boolean  @default(true)
+  playedAt      DateTime @default(now())
 
   @@index([userId])
 }
 
 model DailyPuzzle {
-  id            String        @id @default(cuid())
+  id            String        @id @default(uuid(7))
   date          String        @unique // "YYYY-MM-DD"
   startArticle  String
   targetArticle String
@@ -44,16 +42,16 @@ model DailyPuzzle {
 }
 
 model DailyResult {
-  id            String      @id @default(cuid())
-  puzzleId      String
-  puzzle        DailyPuzzle @relation(fields: [puzzleId], references: [id], onDelete: Cascade)
-  userId        String
-  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  path          String      // JSON
-  clicks        Int
-  timeSeconds   Float
-  won           Boolean
-  playedAt      DateTime    @default(now())
+  id          String      @id @default(uuid(7))
+  puzzleId    String
+  puzzle      DailyPuzzle @relation(fields: [puzzleId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  path        String // JSON
+  clicks      Int
+  timeSeconds Float
+  won         Boolean
+  playedAt    DateTime    @default(now())
 
   @@unique([puzzleId, userId])
   @@index([puzzleId])

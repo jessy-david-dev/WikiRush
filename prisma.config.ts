@@ -4,7 +4,7 @@ const config = {
     path: "prisma/migrations",
   },
   datasource: {
-    url: "file:./wikirace.db",
+    url: "file:./wikirush.db",
   },
 };
 

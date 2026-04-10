@@ -5,7 +5,7 @@ import { PrismaClient } from "./generated/prisma/client";
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
 function createPrisma() {
-  const adapter = new PrismaBetterSqlite3({ url: "./wikirace.db" });
+  const adapter = new PrismaBetterSqlite3({ url: "./wikirush.db" });
   return new PrismaClient({ adapter });
 }
 
