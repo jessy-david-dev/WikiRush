@@ -5,6 +5,7 @@ import { useDailyGame } from "../../lib/useDailyGame";
 import { fmt } from "../../lib/utils";
 import { ArticleView } from "./ArticleView";
 import { Breadcrumbs } from "./Breadcrumbs";
+import { ShareBar } from "./ShareBar";
 
 const MEDALS = ["🥇", "🥈", "🥉"];
 
@@ -118,6 +119,9 @@ export function DailyScreen({ onBack, currentUserId }: { onBack: () => void; cur
           )}
         </div>
 
+        {game.phase === "won" && result && (
+          <ShareBar text={`🗓 Défi du jour WikiRush : j'ai atteint "${game.puzzle?.targetArticle}" en ${result.clicks} clics et ${fmt(result.timeSeconds)} !`} />
+        )}
         <button className={btnGhost} onClick={onBack}>Retour à l&apos;accueil</button>
       </div>
     );

@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { ArticleView } from "./ArticleView";
 import { Breadcrumbs } from "./Breadcrumbs";
+import { ShareBar } from "./ShareBar";
 import type { Puzzle } from "../../lib/types";
 
 type SoloPhase = "setup" | "playing" | "won";
@@ -77,6 +78,7 @@ export function SoloScreen({
             </span>
           ))}
         </div>
+        <ShareBar text={`🎉 J'ai atteint "${puzzle?.target}" en ${clicks} clics et ${elapsedDisplay} sur WikiRush !`} />
         <div className="flex flex-col gap-2.5">
           <button className={btnPrimary} onClick={onNewGame}>Nouvelle partie</button>
           <button className={btnGhost} onClick={onQuit}>Accueil</button>

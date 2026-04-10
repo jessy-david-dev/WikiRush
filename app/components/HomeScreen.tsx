@@ -67,9 +67,9 @@ export function HomeScreen({
   const today = useDailyStats();
 
   return (
-    <div className="min-h-dvh w-full bg-[#0f0f0f] text-[#f0f0f0] animate-fade-in flex flex-col items-center justify-center px-4 py-16 gap-6 sm:gap-8">
+    <div className="min-h-dvh w-full bg-[#0f0f0f] text-[#f0f0f0] animate-fade-in flex flex-col items-center px-4 pt-4 pb-16 gap-6 sm:gap-8">
       {/* Topbar */}
-      <div className="fixed top-3 right-3 flex items-center gap-1.5 sm:gap-2 z-50">
+      <div className="w-full max-w-sm sm:max-w-md flex items-center justify-end gap-1.5 sm:gap-2">
         <button className={btnGhost} onClick={onShowLeaderboard}>
           🏆 Classement
         </button>
@@ -93,6 +93,7 @@ export function HomeScreen({
       </div>
 
       {/* Hero */}
+      <div className="flex-1 flex flex-col items-center justify-center gap-6 sm:gap-8 w-full max-w-sm sm:max-w-md">
       <div className="text-center">
         <Image
           src="/wikirush.png"
@@ -118,7 +119,7 @@ export function HomeScreen({
       </div>
 
       {/* Form */}
-      <div className="w-full max-w-sm sm:max-w-md flex flex-col gap-3 sm:gap-4">
+      <div className="w-full flex flex-col gap-3 sm:gap-4">
         {error && (
           <div className="flex items-center justify-between gap-3 bg-red-950/40 border border-red-600 text-red-300 px-3 py-2.5 rounded-xl text-xs sm:text-sm">
             {error}
@@ -206,6 +207,7 @@ export function HomeScreen({
             ⚡ Mode Blitz - 2 min
           </button>
         </div>
+      </div>
       </div>
     </div>
   );

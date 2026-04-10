@@ -2,6 +2,7 @@
 
 import { useBlitzGame } from "../../lib/useBlitzGame";
 import { ArticleView } from "./ArticleView";
+import { ShareBar } from "./ShareBar";
 
 function fmtLeft(s: number): string {
   const m = Math.floor(s / 60);
@@ -67,6 +68,7 @@ export function BlitzScreen({ onBack }: { onBack: () => void }) {
             </span>
           ))}
         </div>
+        <ShareBar text={`⚡ Mode Blitz WikiRush : j'ai atteint "${game.puzzle?.target}" en ${game.clicks} clics avec ${fmtLeft(game.timeLeft)} restant !`} />
         <div className="flex flex-col gap-2.5">
           <button className={btnPrimary} onClick={game.start} disabled={game.loading}>
             Rejouer
