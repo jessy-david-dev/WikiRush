@@ -115,7 +115,6 @@ export function HomeScreen({
             partie{today > 1 ? "s" : ""} jouée{today > 1 ? "s" : ""} au total
           </p>
         )}
-
       </div>
 
       {/* Form */}
