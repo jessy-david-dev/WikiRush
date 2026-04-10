@@ -57,54 +57,50 @@ export function ProfileScreen({ userName, onBack }: { userName: string; onBack: 
   const filtered = filter === "all" ? games : games.filter((g) => g.mode === filter);
   const stats = computeStats(filtered);
 
-  const statCardCls = "bg-[#1a1a1a] border border-[#2e2e2e] rounded-xl p-3.5 text-center flex flex-col gap-1";
+  const statCard = "bg-[#1a1a1a] border border-[#2e2e2e] rounded-xl p-3 sm:p-3.5 text-center flex flex-col gap-1";
+  const btnGhost = "min-h-9 px-3 rounded-lg text-xs sm:text-sm font-semibold bg-[#242424] border border-[#2e2e2e] text-[#f0f0f0] hover:bg-[#1a1a1a] cursor-pointer transition-colors";
 
   return (
-    <div className="min-h-dvh w-full bg-[#0f0f0f] text-[#f0f0f0] animate-fade-in flex flex-col max-w-175 mx-auto px-4 pb-10">
+    <div className="min-h-dvh w-full bg-[#0f0f0f] text-[#f0f0f0] animate-fade-in flex flex-col max-w-2xl mx-auto px-4 pb-10">
       {/* Header */}
-      <div className="flex items-center justify-between py-4 gap-3">
-        <button className="min-h-9.5 px-3.5 rounded-xl text-sm font-semibold bg-[#242424] border border-[#2e2e2e] text-[#f0f0f0] hover:bg-[#1a1a1a] cursor-pointer" onClick={onBack}>
-          ← Retour
-        </button>
-        <div className="flex items-center gap-2.5">
-          <span className="w-10 h-10 rounded-full bg-[#7c3aed] text-white flex items-center justify-center text-lg font-bold shrink-0">
+      <div className="flex items-center justify-between py-4 gap-2">
+        <button className={btnGhost} onClick={onBack}>← Retour</button>
+        <div className="flex items-center gap-2">
+          <span className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#7c3aed] text-white flex items-center justify-center text-base sm:text-lg font-bold shrink-0">
             {userName[0].toUpperCase()}
           </span>
-          <h2 className="text-xl font-bold">{userName}</h2>
+          <h2 className="text-base sm:text-xl font-bold truncate max-w-32 sm:max-w-none">{userName}</h2>
         </div>
-        <button
-          className="min-h-9.5 px-3.5 rounded-xl text-sm font-semibold bg-[#242424] border border-[#2e2e2e] text-[#f0f0f0] hover:bg-[#1a1a1a] cursor-pointer"
-          onClick={() => signOut({ redirect: false }).then(onBack)}
-        >
-          Déconnexion
+        <button className={btnGhost} onClick={() => signOut({ redirect: false }).then(onBack)}>
+          Déco
         </button>
       </div>
 
       {/* Stats grid */}
-      <div className="grid grid-cols-3 gap-2.5 my-4">
-        <div className={statCardCls}>
-          <span className="text-[22px] font-black">{stats.total}</span>
-          <span className="text-[11px] uppercase tracking-wider text-[#888]">Parties</span>
+      <div className="grid grid-cols-3 gap-2 sm:gap-2.5 my-3 sm:my-4">
+        <div className={statCard}>
+          <span className="text-lg sm:text-[22px] font-black">{stats.total}</span>
+          <span className="text-[9px] sm:text-[11px] uppercase tracking-wider text-[#888]">Parties</span>
         </div>
-        <div className={statCardCls}>
-          <span className="text-[22px] font-black">{stats.won}</span>
-          <span className="text-[11px] uppercase tracking-wider text-[#888]">Victoires</span>
+        <div className={statCard}>
+          <span className="text-lg sm:text-[22px] font-black">{stats.won}</span>
+          <span className="text-[9px] sm:text-[11px] uppercase tracking-wider text-[#888]">Victoires</span>
         </div>
-        <div className={statCardCls}>
-          <span className="text-[22px] font-black">{stats.avgClicks > 0 ? stats.avgClicks : "—"}</span>
-          <span className="text-[11px] uppercase tracking-wider text-[#888]">Clics moy.</span>
+        <div className={statCard}>
+          <span className="text-lg sm:text-[22px] font-black">{stats.avgClicks > 0 ? stats.avgClicks : "—"}</span>
+          <span className="text-[9px] sm:text-[11px] uppercase tracking-wider text-[#888]">Clics moy.</span>
         </div>
-        <div className={statCardCls}>
-          <span className="text-[22px] font-black">{stats.avgTime > 0 ? fmt(stats.avgTime) : "—"}</span>
-          <span className="text-[11px] uppercase tracking-wider text-[#888]">Temps moy.</span>
+        <div className={statCard}>
+          <span className="text-lg sm:text-[22px] font-black">{stats.avgTime > 0 ? fmt(stats.avgTime) : "—"}</span>
+          <span className="text-[9px] sm:text-[11px] uppercase tracking-wider text-[#888]">Temps moy.</span>
         </div>
-        <div className={`${statCardCls} border-[#7c3aed]`}>
-          <span className="text-[22px] font-black text-[#7c3aed]">{stats.bestClicks > 0 ? stats.bestClicks : "—"}</span>
-          <span className="text-[11px] uppercase tracking-wider text-[#888]">Meilleur clics</span>
+        <div className={`${statCard} border-[#7c3aed]`}>
+          <span className="text-lg sm:text-[22px] font-black text-[#7c3aed]">{stats.bestClicks > 0 ? stats.bestClicks : "—"}</span>
+          <span className="text-[9px] sm:text-[11px] uppercase tracking-wider text-[#888]">Meilleur clics</span>
         </div>
-        <div className={`${statCardCls} border-[#7c3aed]`}>
-          <span className="text-[22px] font-black text-[#7c3aed]">{stats.bestTime > 0 ? fmt(stats.bestTime) : "—"}</span>
-          <span className="text-[11px] uppercase tracking-wider text-[#888]">Meilleur temps</span>
+        <div className={`${statCard} border-[#7c3aed]`}>
+          <span className="text-lg sm:text-[22px] font-black text-[#7c3aed]">{stats.bestTime > 0 ? fmt(stats.bestTime) : "—"}</span>
+          <span className="text-[9px] sm:text-[11px] uppercase tracking-wider text-[#888]">Meilleur temps</span>
         </div>
       </div>
 
@@ -113,7 +109,7 @@ export function ProfileScreen({ userName, onBack }: { userName: string; onBack: 
         {(["all", "solo", "multi"] as const).map((f) => (
           <button
             key={f}
-            className={`px-4 py-1.5 rounded-full text-xs font-semibold border cursor-pointer transition-colors ${filter === f ? "bg-[#7c3aed] border-[#7c3aed] text-white" : "bg-[#242424] border-[#2e2e2e] text-[#888] hover:text-[#f0f0f0]"}`}
+            className={`px-3 sm:px-4 py-1.5 rounded-full text-xs font-semibold border cursor-pointer transition-colors ${filter === f ? "bg-[#7c3aed] border-[#7c3aed] text-white" : "bg-[#242424] border-[#2e2e2e] text-[#888] hover:text-[#f0f0f0]"}`}
             onClick={() => setFilter(f)}
           >
             {f === "all" ? "Tout" : f === "solo" ? "Solo" : "Multi"}
@@ -122,36 +118,36 @@ export function ProfileScreen({ userName, onBack }: { userName: string; onBack: 
       </div>
 
       {/* Game list */}
-      <div className="flex flex-col gap-2.5">
+      <div className="flex flex-col gap-2 sm:gap-2.5">
         {loading && (
           <div className="flex items-center gap-3 py-10 text-[#888]"><div className="spinner" /> Chargement...</div>
         )}
         {!loading && filtered.length === 0 && (
-          <p className="text-[#888] text-center py-10">Aucune partie enregistrée.</p>
+          <p className="text-[#888] text-sm text-center py-10">Aucune partie enregistrée.</p>
         )}
         {filtered.map((g) => (
-          <div key={g.id} className={`bg-[#1a1a1a] rounded-xl px-4 py-3.5 flex flex-col gap-2 border-l-4 ${g.won ? "border-l-[#16a34a] border-y border-r border-[#2e2e2e]" : "border-l-[#2e2e2e] border-y border-r border-[#2e2e2e] opacity-70"}`}>
-            <div className="flex items-center gap-2.5 text-xs">
-              <span className="bg-[#242424] rounded px-2 py-0.5 font-semibold text-[#888]">{g.mode === "solo" ? "Solo" : "Multi"}</span>
-              <span className="text-[#888] ml-auto">{new Date(g.playedAt).toLocaleDateString("fr-FR")}</span>
-              <span className={`font-bold ${g.won ? "text-[#16a34a]" : "text-[#888]"}`}>{g.won ? "Victoire" : "Abandon"}</span>
+          <div key={g.id} className={`bg-[#1a1a1a] rounded-xl px-3.5 sm:px-4 py-3 sm:py-3.5 flex flex-col gap-2 border-l-4 border-y border-r ${g.won ? "border-l-[#16a34a] border-[#2e2e2e]" : "border-l-[#2e2e2e] border-[#2e2e2e] opacity-70"}`}>
+            <div className="flex items-center gap-2 text-xs">
+              <span className="bg-[#242424] rounded px-1.5 sm:px-2 py-0.5 font-semibold text-[#888] shrink-0">{g.mode === "solo" ? "Solo" : "Multi"}</span>
+              <span className="text-[#888] ml-auto shrink-0">{new Date(g.playedAt).toLocaleDateString("fr-FR")}</span>
+              <span className={`font-bold shrink-0 ${g.won ? "text-[#16a34a]" : "text-[#888]"}`}>{g.won ? "Victoire" : "Abandon"}</span>
             </div>
-            <div className="flex items-center gap-2 text-sm font-semibold flex-wrap">
-              <span>{g.startArticle}</span>
-              <span className="text-[#888]">→</span>
-              <span className="text-[#7c3aed]">{g.targetArticle}</span>
+            <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold flex-wrap">
+              <span className="truncate max-w-[40%]">{g.startArticle}</span>
+              <span className="text-[#888] shrink-0">→</span>
+              <span className="text-[#7c3aed] truncate max-w-[40%]">{g.targetArticle}</span>
             </div>
             {g.won && (
-              <div className="flex gap-4 text-xs text-[#888]">
+              <div className="flex flex-wrap gap-2 sm:gap-4 text-xs text-[#888]">
                 <span>{g.clicks} clics</span>
                 <span>{fmt(g.timeSeconds)}</span>
-                <span>{g.path.length - 1} articles parcourus</span>
+                <span>{g.path.length - 1} articles</span>
               </div>
             )}
             {g.path.length > 0 && (
-              <div className="flex flex-wrap gap-1 text-xs text-[#888] pt-1 border-t border-[#2e2e2e]">
+              <div className="flex flex-wrap gap-1 text-xs text-[#888] pt-1.5 border-t border-[#2e2e2e]">
                 {g.path.map((t, i) => (
-                  <span key={i} className="flex items-center gap-1">
+                  <span key={i} className="flex items-center gap-0.5">
                     {i > 0 && <span className="text-[#555]">›</span>}
                     <span className={i === g.path.length - 1 && g.won ? "text-[#16a34a] font-semibold" : ""}>{t}</span>
                   </span>
