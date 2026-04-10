@@ -99,19 +99,19 @@ export function ProfileScreen({ userName, onBack }: { userName: string; onBack: 
           <span className="text-[9px] sm:text-[11px] uppercase tracking-wider text-[#888]">Victoires</span>
         </div>
         <div className={statCard}>
-          <span className="text-lg sm:text-[22px] font-black">{stats.avgClicks > 0 ? stats.avgClicks : "—"}</span>
+          <span className="text-lg sm:text-[22px] font-black">{stats.avgClicks > 0 ? stats.avgClicks : "-"}</span>
           <span className="text-[9px] sm:text-[11px] uppercase tracking-wider text-[#888]">Clics moy.</span>
         </div>
         <div className={statCard}>
-          <span className="text-lg sm:text-[22px] font-black">{stats.avgTime > 0 ? fmt(stats.avgTime) : "—"}</span>
+          <span className="text-lg sm:text-[22px] font-black">{stats.avgTime > 0 ? fmt(stats.avgTime) : "-"}</span>
           <span className="text-[9px] sm:text-[11px] uppercase tracking-wider text-[#888]">Temps moy.</span>
         </div>
         <div className={`${statCard} border-[#7c3aed]`}>
-          <span className="text-lg sm:text-[22px] font-black text-[#7c3aed]">{stats.bestClicks > 0 ? stats.bestClicks : "—"}</span>
+          <span className="text-lg sm:text-[22px] font-black text-[#7c3aed]">{stats.bestClicks > 0 ? stats.bestClicks : "-"}</span>
           <span className="text-[9px] sm:text-[11px] uppercase tracking-wider text-[#888]">Meilleur clics</span>
         </div>
         <div className={`${statCard} border-[#7c3aed]`}>
-          <span className="text-lg sm:text-[22px] font-black text-[#7c3aed]">{stats.bestTime > 0 ? fmt(stats.bestTime) : "—"}</span>
+          <span className="text-lg sm:text-[22px] font-black text-[#7c3aed]">{stats.bestTime > 0 ? fmt(stats.bestTime) : "-"}</span>
           <span className="text-[9px] sm:text-[11px] uppercase tracking-wider text-[#888]">Meilleur temps</span>
         </div>
       </div>

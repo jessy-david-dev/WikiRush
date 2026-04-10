@@ -62,7 +62,7 @@ export function DailyScreen({ onBack, currentUserId }: { onBack: () => void; cur
         </button>
 
         <div className="text-center">
-          <div className="text-xs font-bold text-[#888] uppercase tracking-widest mb-1">Défi du jour — {game.puzzle?.date}</div>
+          <div className="text-xs font-bold text-[#888] uppercase tracking-widest mb-1">Défi du jour - {game.puzzle?.date}</div>
           <div className="text-2xl sm:text-3xl font-black mb-1">
             {game.phase === "won" ? "🎉 Réussi !" : game.phase === "gave_up" ? "😔 Abandonné" : "✅ Déjà joué"}
           </div>

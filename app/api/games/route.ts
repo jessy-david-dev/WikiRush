@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "../../../auth";
 import { prisma } from "../../../lib/prisma";
 
-// POST /api/games — sauvegarder une partie
+// POST /api/games - sauvegarder une partie
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) {
@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ id: game.id });
 }
 
-// GET /api/games — historique de l'utilisateur connecté
+// GET /api/games - historique de l'utilisateur connecté
 export async function GET() {
   const session = await auth();
   if (!session?.user?.id) {

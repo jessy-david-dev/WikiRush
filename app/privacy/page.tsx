@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Politique de confidentialité — WikiRush",
+  title: "Politique de confidentialité - WikiRush",
 };
 
 export default function PrivacyPage() {
@@ -27,9 +27,9 @@ export default function PrivacyPage() {
             <h2 className="text-lg sm:text-xl font-bold text-[#f0f0f0]">2. Données collectées</h2>
             <p>Lors de la création d&apos;un compte, nous collectons :</p>
             <ul className="list-disc pl-5 flex flex-col gap-1.5 text-[#ccc]">
-              <li><span className="text-[#f0f0f0] font-semibold">Pseudo</span> — affiché dans les parties et le classement.</li>
-              <li><span className="text-[#f0f0f0] font-semibold">Adresse e-mail</span> — utilisée uniquement pour l&apos;authentification. Elle n&apos;est jamais affichée publiquement.</li>
-              <li><span className="text-[#f0f0f0] font-semibold">Mot de passe</span> — stocké sous forme hachée (bcrypt). Nous n&apos;avons jamais accès à votre mot de passe en clair.</li>
+              <li><span className="text-[#f0f0f0] font-semibold">Pseudo</span> - affiché dans les parties et le classement.</li>
+              <li><span className="text-[#f0f0f0] font-semibold">Adresse e-mail</span> - utilisée uniquement pour l&apos;authentification. Elle n&apos;est jamais affichée publiquement.</li>
+              <li><span className="text-[#f0f0f0] font-semibold">Mot de passe</span> - stocké sous forme hachée (bcrypt). Nous n&apos;avons jamais accès à votre mot de passe en clair.</li>
             </ul>
             <p>Pour chaque partie jouée, nous enregistrons :</p>
             <ul className="list-disc pl-5 flex flex-col gap-1.5 text-[#ccc]">

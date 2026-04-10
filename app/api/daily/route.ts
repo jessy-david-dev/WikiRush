@@ -16,7 +16,7 @@ async function getOrCreatePuzzle() {
   return prisma.dailyPuzzle.create({ data: { date, startArticle: start, targetArticle: target } });
 }
 
-// GET — retourne le puzzle du jour + si l'utilisateur a déjà joué
+// GET - retourne le puzzle du jour + si l'utilisateur a déjà joué
 export async function GET() {
   const session = await auth();
   const puzzle = await getOrCreatePuzzle();
@@ -35,7 +35,7 @@ export async function GET() {
   });
 }
 
-// POST — soumettre un résultat
+// POST - soumettre un résultat
 export async function POST(req: Request) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: "Non connecté" }, { status: 401 });
@@ -50,7 +50,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Puzzle invalide" }, { status: 400 });
   }
 
-  // Upsert — on n'enregistre qu'une fois
+  // Upsert - on n'enregistre qu'une fois
   const result = await prisma.dailyResult.upsert({
     where: { puzzleId_userId: { puzzleId, userId: session.user.id } },
     create: { puzzleId, userId: session.user.id, path: JSON.stringify(path), clicks, timeSeconds, won },

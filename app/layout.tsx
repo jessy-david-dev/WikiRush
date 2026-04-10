@@ -16,6 +16,15 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "WikiRush - Jeu de navigation Wikipedia",
   description: "Navigue entre les articles Wikipedia pour atteindre la cible en premier !",
+  metadataBase: new URL("https://wikirush.xyz"),
+  openGraph: {
+    title: "WikiRush",
+    description: "Navigue entre les articles Wikipedia pour atteindre la cible en premier !",
+    url: "https://wikirush.xyz",
+    siteName: "WikiRush",
+    locale: "fr_FR",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -35,6 +44,8 @@ export default function RootLayout({
             <span>© {new Date().getFullYear()} WikiRush</span>
             <span>·</span>
             <a href="/privacy" className="hover:text-[#888] transition-colors">Politique de confidentialité</a>
+            <span>·</span>
+            <a href="/about" className="hover:text-[#888] transition-colors">À propos</a>
           </footer>
         </Providers>
       </body>

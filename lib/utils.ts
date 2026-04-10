@@ -19,5 +19,5 @@ export async function saveGame(data: {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
-  } catch { /* silencieux — pas de compte ou hors ligne */ }
+  } catch { /* silencieux - pas de compte ou hors ligne */ }
 }

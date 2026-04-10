@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
-import { fetchArticle, pickTwoArticles } from "./wiki";
+import { fetchArticle, pickTwoArticles, normalizeTitle } from "./wiki";
 
-const BLITZ_DURATION = 120; // 2 minutes en secondes
+const BLITZ_DURATION = 120; // 2 minutes
 
-export type BlitzPhase = "setup" | "playing" | "ended";
+export type BlitzPhase = "setup" | "playing" | "won" | "lost";
 
 export function useBlitzGame() {
   const [phase, setPhase] = useState<BlitzPhase>("setup");
@@ -13,18 +13,21 @@ export function useBlitzGame() {
   const [title, setTitle] = useState("");
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
-
   const [timeLeft, setTimeLeft] = useState(BLITZ_DURATION);
   const [clicks, setClicks] = useState(0);
-  const [visited, setVisited] = useState<string[]>([]); // articles uniques
+  const [history, setHistory] = useState<string[]>([]);
+  const [puzzle, setPuzzle] = useState<{ start: string; target: string } | null>(null);
 
   const clicksRef = useRef(0);
-  const visitedRef = useRef<Set<string>>(new Set());
-  const visitedListRef = useRef<string[]>([]);
+  const pathRef = useRef<string[]>([]);
   const loadingRef = useRef(false);
   const endedRef = useRef(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const startTimeRef = useRef<number>(0);
+  const startTimeRef = useRef(0);
+
+  function stopTimer() {
+    if (intervalRef.current) { clearInterval(intervalRef.current); intervalRef.current = null; }
+  }
 
   function startTimer() {
     startTimeRef.current = Date.now();
@@ -32,32 +35,33 @@ export function useBlitzGame() {
       const elapsed = (Date.now() - startTimeRef.current) / 1000;
       const left = Math.max(0, BLITZ_DURATION - elapsed);
       setTimeLeft(left);
-      if (left <= 0) endGame();
-    }, 200);
+      if (left <= 0 && !endedRef.current) {
+        endedRef.current = true;
+        stopTimer();
+        setPhase("lost");
+        saveGame(false, pathRef.current, clicksRef.current, BLITZ_DURATION);
+      }
+    }, 100);
   }
 
-  function endGame() {
-    if (endedRef.current) return;
-    endedRef.current = true;
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    setPhase("ended");
-    // Sauvegarder
+  useEffect(() => () => stopTimer(), []);
+
+  async function saveGame(won: boolean, path: string[], clicks: number, timeSeconds: number) {
+    if (!puzzle) return;
     fetch("/api/games", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         mode: "blitz",
-        startArticle: visitedListRef.current[0] ?? "",
-        targetArticle: "",
-        path: visitedListRef.current,
-        clicks: clicksRef.current,
-        timeSeconds: BLITZ_DURATION,
-        won: true,
+        startArticle: puzzle.start,
+        targetArticle: puzzle.target,
+        path,
+        clicks,
+        timeSeconds: BLITZ_DURATION - timeLeft,
+        won,
       }),
     }).catch(() => {});
   }
-
-  useEffect(() => () => { if (intervalRef.current) clearInterval(intervalRef.current); }, []);
 
   async function loadArticle(t: string) {
     setLoadError(null);
@@ -74,21 +78,20 @@ export function useBlitzGame() {
 
   async function start() {
     setLoading(true);
+    stopTimer();
     clicksRef.current = 0; setClicks(0);
-    visitedRef.current = new Set();
-    visitedListRef.current = [];
+    pathRef.current = []; setHistory([]);
     endedRef.current = false;
     setTimeLeft(BLITZ_DURATION);
-    setVisited([]);
     setLoadError(null);
 
-    const { start: startArticle } = await pickTwoArticles();
-    const canonical = await loadArticle(startArticle);
+    const p = await pickTwoArticles();
+    setPuzzle(p);
+    const canonical = await loadArticle(p.start);
     if (!canonical) return;
 
-    visitedRef.current.add(canonical);
-    visitedListRef.current = [canonical];
-    setVisited([canonical]);
+    pathRef.current = [canonical];
+    setHistory([canonical]);
     setPhase("playing");
     startTimer();
   }
@@ -101,31 +104,36 @@ export function useBlitzGame() {
     const canonical = await loadArticle(t);
     if (!canonical) return;
 
-    if (!visitedRef.current.has(canonical)) {
-      visitedRef.current.add(canonical);
-      visitedListRef.current = [...visitedListRef.current, canonical];
-      setVisited([...visitedListRef.current]);
-    }
+    const newPath = [...pathRef.current, canonical];
+    pathRef.current = newPath;
+    setHistory(newPath);
     window.scrollTo({ top: 0, behavior: "smooth" });
+
+    if (puzzle && normalizeTitle(canonical) === normalizeTitle(puzzle.target)) {
+      endedRef.current = true;
+      stopTimer();
+      setPhase("won");
+      saveGame(true, newPath, clicksRef.current, timeLeft);
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [puzzle, timeLeft]);
 
   function reset() {
-    if (intervalRef.current) clearInterval(intervalRef.current);
+    stopTimer();
     endedRef.current = false;
     clicksRef.current = 0; setClicks(0);
-    visitedRef.current = new Set();
-    visitedListRef.current = [];
-    setVisited([]);
+    pathRef.current = []; setHistory([]);
     setHtml(""); setTitle("");
     setTimeLeft(BLITZ_DURATION);
+    setPuzzle(null);
     setPhase("setup");
     setLoadError(null);
   }
 
   return {
-    phase, html, title, loading, loadError,
-    timeLeft, clicks, visited,
+    phase, puzzle, html, title, loading, loadError,
+    timeLeft, clicks, history,
+    canGoBack: false, // pas de retour en blitz
     start, navigate, reset,
     retryLoad: () => title && loadArticle(title),
   };

@@ -148,7 +148,7 @@ export function GameScreen({
           )}
         </div>
 
-        {/* Sidebar — desktop seulement */}
+        {/* Sidebar - desktop seulement */}
         <aside className="hidden md:flex w-36 lg:w-44 shrink-0 bg-[#1a1a1a] border-l border-[#2e2e2e] flex-col px-3 py-4 overflow-y-auto gap-3">
           <h4 className="text-[10px] font-bold uppercase tracking-wider text-[#888]">Joueurs</h4>
           <ul className="flex flex-col gap-2.5">
