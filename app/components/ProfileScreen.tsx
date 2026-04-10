@@ -71,8 +71,11 @@ export function ProfileScreen({ userName, onBack }: { userName: string; onBack: 
           </span>
           <h2 className="text-base sm:text-xl font-bold truncate max-w-32 sm:max-w-none">{userName}</h2>
         </div>
-        <button className={btnGhost} onClick={() => signOut({ redirect: false }).then(onBack)}>
-          Déco
+        <button
+          className="min-h-9 px-3 rounded-lg text-xs sm:text-sm font-semibold bg-red-950/40 border border-red-800 text-red-400 hover:bg-red-900/40 hover:text-red-300 cursor-pointer transition-colors"
+          onClick={() => signOut({ redirect: false }).then(onBack)}
+        >
+          Déconnexion
         </button>
       </div>
 
