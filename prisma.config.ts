@@ -1,4 +1,4 @@
-export default {
+const config = {
   schema: "prisma/schema.prisma",
   migrations: {
     path: "prisma/migrations",
@@ -7,3 +7,5 @@ export default {
     url: "file:./wikirace.db",
   },
 };
+
+export default config;
