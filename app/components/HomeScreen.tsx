@@ -54,7 +54,7 @@ export function HomeScreen({
           className="w-40 sm:w-56 md:w-72 h-auto mx-auto mix-blend-screen"
           priority
         />
-        <p className="mt-2 text-[#888] text-xs sm:text-sm max-w-xs sm:max-w-sm mx-auto leading-relaxed">
+        <p className="mt-3 text-sm sm:text-base font-semibold text-[#f0f0f0] max-w-xs sm:max-w-sm mx-auto leading-relaxed tracking-wide">
           Navigue entre les articles Wikipedia pour atteindre la cible en premier !
         </p>
       </div>
