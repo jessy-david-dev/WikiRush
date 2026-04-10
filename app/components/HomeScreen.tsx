@@ -67,9 +67,9 @@ export function HomeScreen({
   const today = useDailyStats();
 
   return (
-    <div className="min-h-dvh w-full bg-[#0f0f0f] text-[#f0f0f0] animate-fade-in flex flex-col items-center px-4 pt-4 pb-16 gap-6 sm:gap-8">
+    <div className="min-h-dvh w-full bg-[#0f0f0f] text-[#f0f0f0] animate-fade-in flex flex-col items-center justify-center px-4 py-16 gap-6 sm:gap-8">
       {/* Topbar */}
-      <div className="w-full max-w-sm sm:max-w-md flex items-center justify-end gap-1.5 sm:gap-2">
+      <div className="fixed top-3 right-3 flex items-center gap-1.5 sm:gap-2 z-50">
         <button className={btnGhost} onClick={onShowLeaderboard}>
           🏆 Classement
         </button>
