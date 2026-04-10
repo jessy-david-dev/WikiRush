@@ -6,36 +6,14 @@ import type { Screen } from "../lib/types";
 import { useSoloGame, useSoloKeyboard } from "../lib/useSoloGame";
 import { useMultiGame } from "../lib/useMultiGame";
 import { loadSession, clearSession } from "../lib/session";
+import { fmt, saveGame } from "../lib/utils";
+import { useGameHandlers } from "../lib/useGameHandlers";
 import { HomeScreen } from "./components/HomeScreen";
 import { LobbyScreen } from "./components/LobbyScreen";
 import { SoloScreen } from "./components/SoloScreen";
 import { GameScreen } from "./components/GameScreen";
 import { AuthModal } from "./components/AuthModal";
 import { ProfileScreen } from "./components/ProfileScreen";
-
-function fmt(s: number): string {
-  const m = Math.floor(s / 60);
-  const sec = Math.floor(s % 60);
-  return `${m}:${String(sec).padStart(2, "0")}`;
-}
-
-async function saveGame(data: {
-  mode: string;
-  startArticle: string;
-  targetArticle: string;
-  path: string[];
-  clicks: number;
-  timeSeconds: number;
-  won: boolean;
-}) {
-  try {
-    await fetch("/api/games", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-  } catch { /* silencieux — pas de compte ou hors ligne */ }
-}
 
 export default function WikiRush() {
   const { data: session } = useSession();
@@ -49,12 +27,16 @@ export default function WikiRush() {
   const solo = useSoloGame();
   const multi = useMultiGame();
 
+  const handlers = useGameHandlers({
+    solo, multi, playerName, joinCode, setScreen, setError, setLoading,
+  });
+
   // Pré-remplir le pseudo avec le nom du compte connecté
   useEffect(() => {
     if (session?.user?.name && !playerName) setPlayerName(session.user.name);
-  }, [session]);  // eslint-disable-line react-hooks/exhaustive-deps
+  }, [session]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Restaurer la session apres F5
+  // Restaurer la session après F5
   useEffect(() => {
     const saved = loadSession();
     if (!saved) return;
@@ -84,10 +66,10 @@ export default function WikiRush() {
     return () => window.removeEventListener("popstate", onPop);
   }, []);
 
-  // Backspace = retour arriere en solo
+  // Backspace = retour arrière en solo
   useSoloKeyboard(screen === "solo" && solo.phase === "playing", solo.goBack);
 
-  // Sync ecran quand la room change de phase
+  // Sync écran quand la room change de phase
   useEffect(() => {
     if (!multi.room) return;
     const { phase } = multi.room;
@@ -128,49 +110,6 @@ export default function WikiRush() {
     });
   }, [multi.room?.phase]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ---- Actions home ----
-
-  async function handleCreateRoom() {
-    if (!playerName.trim()) { setError("Entre ton pseudo !"); return; }
-    setLoading(true); setError(null);
-    const { error: err } = await multi.createRoom(playerName.trim());
-    setLoading(false);
-    if (err) { setError(err); return; }
-    setScreen("lobby");
-  }
-
-  async function handleJoinRoom() {
-    if (!playerName.trim()) { setError("Entre ton pseudo !"); return; }
-    if (joinCode.trim().length !== 4) { setError("Le code doit faire 4 lettres"); return; }
-    setLoading(true); setError(null);
-    const { error: err } = await multi.joinRoom(playerName.trim(), joinCode.trim().toUpperCase());
-    setLoading(false);
-    if (err) { setError(err); return; }
-    setScreen("lobby");
-  }
-
-  async function handleStartGame() {
-    setLoading(true); setError(null);
-    const { error: err } = await multi.startGame();
-    setLoading(false);
-    if (err) setError(err);
-  }
-
-  async function handleNextRound() {
-    await multi.nextRound();
-    setScreen("lobby");
-  }
-
-  async function handleResetGame() {
-    await multi.resetGame();
-    setScreen("lobby");
-  }
-
-  function handleLeave() {
-    multi.leave();
-    setScreen("home");
-  }
-
   // ---- Rendu ----
 
   if (screen === "profile") {
@@ -189,9 +128,9 @@ export default function WikiRush() {
           playerName={playerName} setPlayerName={setPlayerName}
           joinCode={joinCode} setJoinCode={setJoinCode}
           error={error} setError={setError} loading={loading}
-          onCreateRoom={handleCreateRoom}
-          onJoinRoom={handleJoinRoom}
-          onSolo={() => { solo.reset(); setScreen("solo"); }}
+          onCreateRoom={handlers.handleCreateRoom}
+          onJoinRoom={handlers.handleJoinRoom}
+          onSolo={handlers.handleSolo}
           session={session}
           onShowAuth={() => setShowAuth(true)}
           onShowProfile={() => setScreen("profile")}
@@ -230,9 +169,9 @@ export default function WikiRush() {
       <LobbyScreen
         room={multi.room} playerId={multi.playerId}
         error={error} setError={setError} loading={loading}
-        onLeave={handleLeave}
-        onStart={handleStartGame}
-        onReset={handleResetGame}
+        onLeave={handlers.handleLeave}
+        onStart={handlers.handleStartGame}
+        onReset={handlers.handleResetGame}
       />
     );
   }
@@ -248,8 +187,8 @@ export default function WikiRush() {
         countdown={multi.countdown}
         onNavigate={multi.navigate}
         onRetry={multi.retryLoad}
-        onNextRound={handleNextRound}
-        onResetGame={handleResetGame}
+        onNextRound={handlers.handleNextRound}
+        onResetGame={handlers.handleResetGame}
       />
     );
   }
