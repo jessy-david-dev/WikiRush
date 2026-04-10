@@ -17,16 +17,20 @@ type HomeScreenProps = {
   session: Session | null;
   onShowAuth: () => void;
   onShowProfile: () => void;
+  onShowLeaderboard: () => void;
 };
 
 export function HomeScreen({
   playerName, setPlayerName, joinCode, setJoinCode,
   error, setError, loading, onCreateRoom, onJoinRoom, onSolo,
-  session, onShowAuth, onShowProfile,
+  session, onShowAuth, onShowProfile, onShowLeaderboard,
 }: HomeScreenProps) {
   return (
     <div className="screen home-screen">
       <div className="home-topbar">
+        <button className="btn btn-ghost btn-sm" onClick={onShowLeaderboard}>
+          🏆 Classement
+        </button>
         {session?.user ? (
           <button className="btn-account" onClick={onShowProfile}>
             <span className="account-avatar">{session.user.name?.[0]?.toUpperCase() ?? "?"}</span>

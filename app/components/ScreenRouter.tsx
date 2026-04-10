@@ -13,6 +13,7 @@ import { SoloScreen } from "./SoloScreen";
 import { GameScreen } from "./GameScreen";
 import { AuthModal } from "./AuthModal";
 import { ProfileScreen } from "./ProfileScreen";
+import { LeaderboardScreen } from "./LeaderboardScreen";
 
 type Props = {
   screen: Screen;
@@ -41,6 +42,10 @@ export function ScreenRouter({
     <ProfileScreen userName={session?.user?.name ?? "Joueur"} onBack={() => setScreen("home")} />
   );
 
+  if (screen === "leaderboard") return (
+    <LeaderboardScreen onBack={() => setScreen("home")} />
+  );
+
   if (screen === "home") return (
     <>
       <HomeScreen
@@ -53,6 +58,7 @@ export function ScreenRouter({
         session={session}
         onShowAuth={() => setShowAuth(true)}
         onShowProfile={() => setScreen("profile")}
+        onShowLeaderboard={() => setScreen("leaderboard")}
       />
       {showAuth && <AuthModal onClose={() => setShowAuth(false)} onSuccess={() => setShowAuth(false)} />}
     </>
