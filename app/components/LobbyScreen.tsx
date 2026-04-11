@@ -152,8 +152,10 @@ export function LobbyScreen({
               onChange={(e) => setGameMode(e.target.value as Room["gameMode"])}
               className="w-full min-h-11 px-2 bg-[#0f0f0f] border border-[#2e2e2e] rounded-xl text-sm text-[#f0f0f0] outline-none focus:border-[#7c3aed] cursor-pointer transition-colors"
             >
-              <option value="race">🏁 Course — le premier arrivé gagne</option>
-              <option value="all_finish">⏱ Normal — tout le monde joue jusqu&apos;au bout</option>
+              <option value="race">Course - le premier arrivé gagne</option>
+              <option value="all_finish">
+                Normal - tout le monde joue jusqu&apos;au bout
+              </option>
             </select>
           </div>
           <div className="flex gap-3">
@@ -191,7 +193,9 @@ export function LobbyScreen({
             className={`w-full min-h-11 rounded-xl text-sm font-semibold border transition-colors cursor-pointer flex items-center justify-between px-4 ${room.searchAllowed ? "bg-[#7c3aed]/10 border-[#7c3aed] text-[#a78bfa]" : "bg-[#1a1a1a] border-[#2e2e2e] text-[#888]"}`}
           >
             <span>🔍 Recherche Ctrl+F</span>
-            <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${room.searchAllowed ? "bg-[#7c3aed]/30 text-[#a78bfa]" : "bg-[#242424] text-[#555]"}`}>
+            <span
+              className={`text-xs font-bold px-2 py-0.5 rounded-full ${room.searchAllowed ? "bg-[#7c3aed]/30 text-[#a78bfa]" : "bg-[#242424] text-[#555]"}`}
+            >
               {room.searchAllowed ? "Autorisée" : "Bloquée"}
             </span>
           </button>
@@ -199,9 +203,13 @@ export function LobbyScreen({
       )}
 
       {!isHost && (
-        <div className={`w-full min-h-11 rounded-xl text-sm font-semibold border flex items-center justify-between px-4 ${room.searchAllowed ? "bg-[#7c3aed]/10 border-[#7c3aed] text-[#a78bfa]" : "bg-[#1a1a1a] border-[#2e2e2e] text-[#888]"}`}>
+        <div
+          className={`w-full min-h-11 rounded-xl text-sm font-semibold border flex items-center justify-between px-4 ${room.searchAllowed ? "bg-[#7c3aed]/10 border-[#7c3aed] text-[#a78bfa]" : "bg-[#1a1a1a] border-[#2e2e2e] text-[#888]"}`}
+        >
           <span>🔍 Recherche Ctrl+F</span>
-          <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${room.searchAllowed ? "bg-[#7c3aed]/30 text-[#a78bfa]" : "bg-[#242424] text-[#555]"}`}>
+          <span
+            className={`text-xs font-bold px-2 py-0.5 rounded-full ${room.searchAllowed ? "bg-[#7c3aed]/30 text-[#a78bfa]" : "bg-[#242424] text-[#555]"}`}
+          >
             {room.searchAllowed ? "Autorisée" : "Bloquée"}
           </span>
         </div>

@@ -290,7 +290,7 @@ export async function PATCH(
       player.lastSeen = Date.now();
 
       if (room.gameMode === "race") {
-        // En mode course, forfait ne termine pas la manche — on attend qu'un vrai gagnant arrive
+        // En mode course, forfait ne termine pas la manche - on attend qu'un vrai gagnant arrive
         // Sauf si tous ont abandonné
         const anyoneStillPlaying = room.players.some(
           (p) => !p.hasWon && !p.hasSurrendered,
