@@ -14,6 +14,7 @@ function dbToRoom(row: {
   maxPlayers: number;
   gameMode: string;
   searchAllowed: boolean;
+  timeLimit: number;
   startArticle: string;
   targetArticle: string;
   roundWinner: string | null;
@@ -30,6 +31,7 @@ function dbToRoom(row: {
     maxPlayers: row.maxPlayers,
     gameMode: (row.gameMode ?? "race") as Room["gameMode"],
     searchAllowed: row.searchAllowed ?? false,
+    timeLimit: row.timeLimit ?? 0,
     startArticle: row.startArticle,
     targetArticle: row.targetArticle,
     roundWinner: row.roundWinner,
@@ -332,6 +334,41 @@ export async function PATCH(
       return Response.json({ room });
     }
 
+    // Hôte change la limite de temps
+    case "setTimeLimit": {
+      const host = room.players.find((p) => p.id === playerId);
+      if (!host?.isHost) {
+        return Response.json({ error: "Seul l'hôte peut modifier ce paramètre" }, { status: 403 });
+      }
+      room.timeLimit = typeof value === "number" ? Math.max(0, Math.floor(value)) : 0;
+      await saveRoom(room);
+      return Response.json({ room });
+    }
+
+    // Fin du temps imparti — déclenché par le client qui détecte l'expiration
+    case "timeUp": {
+      if (room.phase !== "playing") {
+        return Response.json({ room });
+      }
+      if (!room.timeLimit || !room.roundStart) {
+        return Response.json({ room });
+      }
+      const elapsed = Date.now() - room.roundStart;
+      if (elapsed < room.timeLimit * 1000 - 1000) {
+        // Pas encore expiré (tolérance 1s pour le lag réseau)
+        return Response.json({ room });
+      }
+      // Marquer les non-finis comme abandonnés
+      for (const p of room.players) {
+        if (!p.hasWon && !p.hasSurrendered) {
+          p.hasSurrendered = true;
+        }
+      }
+      assignAllFinishPoints(room); // attribue les points aux gagnants selon l'ordre
+      await saveRoom(room);
+      return Response.json({ room });
+    }
+
     // Manche suivante / rejouer
     case "nextRound": {
       const host = room.players.find((p) => p.id === playerId);
@@ -394,6 +431,7 @@ async function saveRoom(room: Room) {
       maxPlayers: room.maxPlayers,
       gameMode: room.gameMode,
       searchAllowed: room.searchAllowed,
+      timeLimit: room.timeLimit,
       startArticle: room.startArticle,
       targetArticle: room.targetArticle,
       roundWinner: room.roundWinner,

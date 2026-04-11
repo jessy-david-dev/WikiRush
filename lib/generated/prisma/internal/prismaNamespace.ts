@@ -864,6 +864,7 @@ export const RoomScalarFieldEnum = {
   maxPlayers: 'maxPlayers',
   gameMode: 'gameMode',
   searchAllowed: 'searchAllowed',
+  timeLimit: 'timeLimit',
   startArticle: 'startArticle',
   targetArticle: 'targetArticle',
   roundWinner: 'roundWinner',

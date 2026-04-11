@@ -159,6 +159,7 @@ export function ScreenRouter({
         gameMode={gameMode}
         setGameMode={setGameMode}
         onSetSearchAllowed={(v) => multi.setSearchAllowed(v)}
+        onSetTimeLimit={(v) => multi.setTimeLimit(v)}
       />
     );
 
@@ -175,6 +176,7 @@ export function ScreenRouter({
         clicks={multi.clicks}
         elapsed={fmt(multi.elapsed)}
         countdown={multi.countdown}
+        timeLeft={multi.timeLeft}
         onNavigate={multi.navigate}
         onGoBack={multi.goBack}
         canGoBack={multi.canGoBack}

@@ -19,6 +19,7 @@ type LobbyScreenProps = {
   gameMode: Room["gameMode"];
   setGameMode: (v: Room["gameMode"]) => void;
   onSetSearchAllowed: (v: boolean) => void;
+  onSetTimeLimit: (v: number) => void;
 };
 
 export function LobbyScreen({
@@ -37,6 +38,7 @@ export function LobbyScreen({
   gameMode,
   setGameMode,
   onSetSearchAllowed,
+  onSetTimeLimit,
 }: LobbyScreenProps) {
   const isHost = room.players.find((p) => p.id === playerId)?.isHost ?? false;
   const [copied, setCopied] = useState(false);
@@ -187,6 +189,21 @@ export function LobbyScreen({
                 ))}
               </select>
             </div>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <span className="text-xs text-[#888]">Temps par manche</span>
+            <select
+              value={room.timeLimit}
+              onChange={(e) => onSetTimeLimit(Number(e.target.value))}
+              className="w-full min-h-11 px-2 bg-[#0f0f0f] border border-[#2e2e2e] rounded-xl text-sm text-[#f0f0f0] outline-none focus:border-[#7c3aed] cursor-pointer transition-colors"
+            >
+              <option value={0}>Illimité</option>
+              {[60, 120, 180, 300, 600].map((s) => (
+                <option key={s} value={s}>
+                  {s < 60 ? `${s}s` : `${s / 60} min`}
+                </option>
+              ))}
+            </select>
           </div>
           <button
             onClick={() => onSetSearchAllowed(!room.searchAllowed)}

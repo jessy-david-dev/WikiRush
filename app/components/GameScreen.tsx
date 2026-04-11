@@ -17,6 +17,7 @@ type GameScreenProps = {
   clicks: number;
   elapsed: string;
   countdown: number | null;
+  timeLeft: number | null;
   onNavigate: (title: string) => void;
   onGoBack: () => void;
   canGoBack: boolean;
@@ -37,6 +38,7 @@ export function GameScreen({
   clicks,
   elapsed,
   countdown,
+  timeLeft,
   onNavigate,
   onGoBack,
   canGoBack,
@@ -261,10 +263,15 @@ export function GameScreen({
           <Breadcrumbs history={history} endRef={breadcrumbEndRef} />
         </div>
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-          <div className="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-xs font-bold text-[#888] tabular-nums">
-            <span>{elapsed}</span>
-            <span>{clicks} clics</span>
-            <span className="hidden sm:inline">{myPlayer?.score ?? 0} pts</span>
+          <div className="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-xs font-bold tabular-nums">
+            {timeLeft !== null && (
+              <span className={`font-black ${timeLeft <= 10 ? "text-red-400 animate-pulse" : timeLeft <= 30 ? "text-orange-400" : "text-[#888]"}`}>
+                {timeLeft}s
+              </span>
+            )}
+            <span className="text-[#888]">{elapsed}</span>
+            <span className="text-[#888]">{clicks} clics</span>
+            <span className="hidden sm:inline text-[#888]">{myPlayer?.score ?? 0} pts</span>
           </div>
           {!myFinished && canGoBack && (
             <button

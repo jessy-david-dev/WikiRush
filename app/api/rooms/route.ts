@@ -27,6 +27,7 @@ export type Room = {
   maxPlayers: number;
   gameMode: "race" | "all_finish"; // race = 1er gagne, all_finish = tout le monde joue
   searchAllowed: boolean;
+  timeLimit: number; // secondes par manche, 0 = illimité
   startArticle: string;
   targetArticle: string;
   roundWinner: string | null;
@@ -59,6 +60,7 @@ function dbToRoom(row: {
   maxPlayers: number;
   gameMode: string;
   searchAllowed: boolean;
+  timeLimit: number;
   startArticle: string;
   targetArticle: string;
   roundWinner: string | null;
@@ -75,6 +77,7 @@ function dbToRoom(row: {
     maxPlayers: row.maxPlayers,
     gameMode: (row.gameMode ?? "race") as Room["gameMode"],
     searchAllowed: row.searchAllowed ?? false,
+    timeLimit: row.timeLimit ?? 0,
     startArticle: row.startArticle,
     targetArticle: row.targetArticle,
     roundWinner: row.roundWinner,
@@ -95,11 +98,12 @@ async function pruneOldRooms() {
 // Response: { room: Room, playerId: string }
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const { playerName, maxPlayers, totalRounds, gameMode } = body as {
+  const { playerName, maxPlayers, totalRounds, gameMode, timeLimit } = body as {
     playerName: string;
     maxPlayers?: number;
     totalRounds?: number;
     gameMode?: string;
+    timeLimit?: number;
   };
 
   if (
@@ -135,6 +139,7 @@ export async function POST(request: NextRequest) {
   const now = BigInt(Date.now());
 
   const clampedMode: Room["gameMode"] = gameMode === "all_finish" ? "all_finish" : "race";
+  const clampedTime = typeof timeLimit === "number" ? Math.max(0, Math.floor(timeLimit)) : 0;
 
   const players: Player[] = [
     {
@@ -160,6 +165,7 @@ export async function POST(request: NextRequest) {
       maxPlayers: clampedMax,
       gameMode: clampedMode,
       searchAllowed: false,
+      timeLimit: clampedTime,
       startArticle: "",
       targetArticle: "",
       roundWinner: null,

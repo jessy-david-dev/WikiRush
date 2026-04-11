@@ -30,6 +30,7 @@ export type RoomAvgAggregateOutputType = {
   round: number | null
   totalRounds: number | null
   maxPlayers: number | null
+  timeLimit: number | null
   countdownStart: number | null
   roundStart: number | null
   createdAt: number | null
@@ -39,6 +40,7 @@ export type RoomSumAggregateOutputType = {
   round: number | null
   totalRounds: number | null
   maxPlayers: number | null
+  timeLimit: number | null
   countdownStart: bigint | null
   roundStart: bigint | null
   createdAt: bigint | null
@@ -52,6 +54,7 @@ export type RoomMinAggregateOutputType = {
   maxPlayers: number | null
   gameMode: string | null
   searchAllowed: boolean | null
+  timeLimit: number | null
   startArticle: string | null
   targetArticle: string | null
   roundWinner: string | null
@@ -69,6 +72,7 @@ export type RoomMaxAggregateOutputType = {
   maxPlayers: number | null
   gameMode: string | null
   searchAllowed: boolean | null
+  timeLimit: number | null
   startArticle: string | null
   targetArticle: string | null
   roundWinner: string | null
@@ -87,6 +91,7 @@ export type RoomCountAggregateOutputType = {
   maxPlayers: number
   gameMode: number
   searchAllowed: number
+  timeLimit: number
   startArticle: number
   targetArticle: number
   roundWinner: number
@@ -102,6 +107,7 @@ export type RoomAvgAggregateInputType = {
   round?: true
   totalRounds?: true
   maxPlayers?: true
+  timeLimit?: true
   countdownStart?: true
   roundStart?: true
   createdAt?: true
@@ -111,6 +117,7 @@ export type RoomSumAggregateInputType = {
   round?: true
   totalRounds?: true
   maxPlayers?: true
+  timeLimit?: true
   countdownStart?: true
   roundStart?: true
   createdAt?: true
@@ -124,6 +131,7 @@ export type RoomMinAggregateInputType = {
   maxPlayers?: true
   gameMode?: true
   searchAllowed?: true
+  timeLimit?: true
   startArticle?: true
   targetArticle?: true
   roundWinner?: true
@@ -141,6 +149,7 @@ export type RoomMaxAggregateInputType = {
   maxPlayers?: true
   gameMode?: true
   searchAllowed?: true
+  timeLimit?: true
   startArticle?: true
   targetArticle?: true
   roundWinner?: true
@@ -159,6 +168,7 @@ export type RoomCountAggregateInputType = {
   maxPlayers?: true
   gameMode?: true
   searchAllowed?: true
+  timeLimit?: true
   startArticle?: true
   targetArticle?: true
   roundWinner?: true
@@ -264,6 +274,7 @@ export type RoomGroupByOutputType = {
   maxPlayers: number
   gameMode: string
   searchAllowed: boolean
+  timeLimit: number
   startArticle: string
   targetArticle: string
   roundWinner: string | null
@@ -305,6 +316,7 @@ export type RoomWhereInput = {
   maxPlayers?: Prisma.IntFilter<"Room"> | number
   gameMode?: Prisma.StringFilter<"Room"> | string
   searchAllowed?: Prisma.BoolFilter<"Room"> | boolean
+  timeLimit?: Prisma.IntFilter<"Room"> | number
   startArticle?: Prisma.StringFilter<"Room"> | string
   targetArticle?: Prisma.StringFilter<"Room"> | string
   roundWinner?: Prisma.StringNullableFilter<"Room"> | string | null
@@ -323,6 +335,7 @@ export type RoomOrderByWithRelationInput = {
   maxPlayers?: Prisma.SortOrder
   gameMode?: Prisma.SortOrder
   searchAllowed?: Prisma.SortOrder
+  timeLimit?: Prisma.SortOrder
   startArticle?: Prisma.SortOrder
   targetArticle?: Prisma.SortOrder
   roundWinner?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -344,6 +357,7 @@ export type RoomWhereUniqueInput = Prisma.AtLeast<{
   maxPlayers?: Prisma.IntFilter<"Room"> | number
   gameMode?: Prisma.StringFilter<"Room"> | string
   searchAllowed?: Prisma.BoolFilter<"Room"> | boolean
+  timeLimit?: Prisma.IntFilter<"Room"> | number
   startArticle?: Prisma.StringFilter<"Room"> | string
   targetArticle?: Prisma.StringFilter<"Room"> | string
   roundWinner?: Prisma.StringNullableFilter<"Room"> | string | null
@@ -362,6 +376,7 @@ export type RoomOrderByWithAggregationInput = {
   maxPlayers?: Prisma.SortOrder
   gameMode?: Prisma.SortOrder
   searchAllowed?: Prisma.SortOrder
+  timeLimit?: Prisma.SortOrder
   startArticle?: Prisma.SortOrder
   targetArticle?: Prisma.SortOrder
   roundWinner?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -388,6 +403,7 @@ export type RoomScalarWhereWithAggregatesInput = {
   maxPlayers?: Prisma.IntWithAggregatesFilter<"Room"> | number
   gameMode?: Prisma.StringWithAggregatesFilter<"Room"> | string
   searchAllowed?: Prisma.BoolWithAggregatesFilter<"Room"> | boolean
+  timeLimit?: Prisma.IntWithAggregatesFilter<"Room"> | number
   startArticle?: Prisma.StringWithAggregatesFilter<"Room"> | string
   targetArticle?: Prisma.StringWithAggregatesFilter<"Room"> | string
   roundWinner?: Prisma.StringNullableWithAggregatesFilter<"Room"> | string | null
@@ -406,6 +422,7 @@ export type RoomCreateInput = {
   maxPlayers?: number
   gameMode?: string
   searchAllowed?: boolean
+  timeLimit?: number
   startArticle?: string
   targetArticle?: string
   roundWinner?: string | null
@@ -424,6 +441,7 @@ export type RoomUncheckedCreateInput = {
   maxPlayers?: number
   gameMode?: string
   searchAllowed?: boolean
+  timeLimit?: number
   startArticle?: string
   targetArticle?: string
   roundWinner?: string | null
@@ -442,6 +460,7 @@ export type RoomUpdateInput = {
   maxPlayers?: Prisma.IntFieldUpdateOperationsInput | number
   gameMode?: Prisma.StringFieldUpdateOperationsInput | string
   searchAllowed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  timeLimit?: Prisma.IntFieldUpdateOperationsInput | number
   startArticle?: Prisma.StringFieldUpdateOperationsInput | string
   targetArticle?: Prisma.StringFieldUpdateOperationsInput | string
   roundWinner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -460,6 +479,7 @@ export type RoomUncheckedUpdateInput = {
   maxPlayers?: Prisma.IntFieldUpdateOperationsInput | number
   gameMode?: Prisma.StringFieldUpdateOperationsInput | string
   searchAllowed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  timeLimit?: Prisma.IntFieldUpdateOperationsInput | number
   startArticle?: Prisma.StringFieldUpdateOperationsInput | string
   targetArticle?: Prisma.StringFieldUpdateOperationsInput | string
   roundWinner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -478,6 +498,7 @@ export type RoomCreateManyInput = {
   maxPlayers?: number
   gameMode?: string
   searchAllowed?: boolean
+  timeLimit?: number
   startArticle?: string
   targetArticle?: string
   roundWinner?: string | null
@@ -496,6 +517,7 @@ export type RoomUpdateManyMutationInput = {
   maxPlayers?: Prisma.IntFieldUpdateOperationsInput | number
   gameMode?: Prisma.StringFieldUpdateOperationsInput | string
   searchAllowed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  timeLimit?: Prisma.IntFieldUpdateOperationsInput | number
   startArticle?: Prisma.StringFieldUpdateOperationsInput | string
   targetArticle?: Prisma.StringFieldUpdateOperationsInput | string
   roundWinner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -514,6 +536,7 @@ export type RoomUncheckedUpdateManyInput = {
   maxPlayers?: Prisma.IntFieldUpdateOperationsInput | number
   gameMode?: Prisma.StringFieldUpdateOperationsInput | string
   searchAllowed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  timeLimit?: Prisma.IntFieldUpdateOperationsInput | number
   startArticle?: Prisma.StringFieldUpdateOperationsInput | string
   targetArticle?: Prisma.StringFieldUpdateOperationsInput | string
   roundWinner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -532,6 +555,7 @@ export type RoomCountOrderByAggregateInput = {
   maxPlayers?: Prisma.SortOrder
   gameMode?: Prisma.SortOrder
   searchAllowed?: Prisma.SortOrder
+  timeLimit?: Prisma.SortOrder
   startArticle?: Prisma.SortOrder
   targetArticle?: Prisma.SortOrder
   roundWinner?: Prisma.SortOrder
@@ -545,6 +569,7 @@ export type RoomAvgOrderByAggregateInput = {
   round?: Prisma.SortOrder
   totalRounds?: Prisma.SortOrder
   maxPlayers?: Prisma.SortOrder
+  timeLimit?: Prisma.SortOrder
   countdownStart?: Prisma.SortOrder
   roundStart?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -558,6 +583,7 @@ export type RoomMaxOrderByAggregateInput = {
   maxPlayers?: Prisma.SortOrder
   gameMode?: Prisma.SortOrder
   searchAllowed?: Prisma.SortOrder
+  timeLimit?: Prisma.SortOrder
   startArticle?: Prisma.SortOrder
   targetArticle?: Prisma.SortOrder
   roundWinner?: Prisma.SortOrder
@@ -575,6 +601,7 @@ export type RoomMinOrderByAggregateInput = {
   maxPlayers?: Prisma.SortOrder
   gameMode?: Prisma.SortOrder
   searchAllowed?: Prisma.SortOrder
+  timeLimit?: Prisma.SortOrder
   startArticle?: Prisma.SortOrder
   targetArticle?: Prisma.SortOrder
   roundWinner?: Prisma.SortOrder
@@ -588,6 +615,7 @@ export type RoomSumOrderByAggregateInput = {
   round?: Prisma.SortOrder
   totalRounds?: Prisma.SortOrder
   maxPlayers?: Prisma.SortOrder
+  timeLimit?: Prisma.SortOrder
   countdownStart?: Prisma.SortOrder
   roundStart?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -624,6 +652,7 @@ export type RoomSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   maxPlayers?: boolean
   gameMode?: boolean
   searchAllowed?: boolean
+  timeLimit?: boolean
   startArticle?: boolean
   targetArticle?: boolean
   roundWinner?: boolean
@@ -642,6 +671,7 @@ export type RoomSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   maxPlayers?: boolean
   gameMode?: boolean
   searchAllowed?: boolean
+  timeLimit?: boolean
   startArticle?: boolean
   targetArticle?: boolean
   roundWinner?: boolean
@@ -660,6 +690,7 @@ export type RoomSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   maxPlayers?: boolean
   gameMode?: boolean
   searchAllowed?: boolean
+  timeLimit?: boolean
   startArticle?: boolean
   targetArticle?: boolean
   roundWinner?: boolean
@@ -678,6 +709,7 @@ export type RoomSelectScalar = {
   maxPlayers?: boolean
   gameMode?: boolean
   searchAllowed?: boolean
+  timeLimit?: boolean
   startArticle?: boolean
   targetArticle?: boolean
   roundWinner?: boolean
@@ -687,7 +719,7 @@ export type RoomSelectScalar = {
   updatedAt?: boolean
 }
 
-export type RoomOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"code" | "players" | "phase" | "round" | "totalRounds" | "maxPlayers" | "gameMode" | "searchAllowed" | "startArticle" | "targetArticle" | "roundWinner" | "countdownStart" | "roundStart" | "createdAt" | "updatedAt", ExtArgs["result"]["room"]>
+export type RoomOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"code" | "players" | "phase" | "round" | "totalRounds" | "maxPlayers" | "gameMode" | "searchAllowed" | "timeLimit" | "startArticle" | "targetArticle" | "roundWinner" | "countdownStart" | "roundStart" | "createdAt" | "updatedAt", ExtArgs["result"]["room"]>
 
 export type $RoomPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Room"
@@ -701,6 +733,7 @@ export type $RoomPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     maxPlayers: number
     gameMode: string
     searchAllowed: boolean
+    timeLimit: number
     startArticle: string
     targetArticle: string
     roundWinner: string | null
@@ -1139,6 +1172,7 @@ export interface RoomFieldRefs {
   readonly maxPlayers: Prisma.FieldRef<"Room", 'Int'>
   readonly gameMode: Prisma.FieldRef<"Room", 'String'>
   readonly searchAllowed: Prisma.FieldRef<"Room", 'Boolean'>
+  readonly timeLimit: Prisma.FieldRef<"Room", 'Int'>
   readonly startArticle: Prisma.FieldRef<"Room", 'String'>
   readonly targetArticle: Prisma.FieldRef<"Room", 'String'>
   readonly roundWinner: Prisma.FieldRef<"Room", 'String'>

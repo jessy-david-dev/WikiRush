@@ -30,6 +30,8 @@ export function useMultiGame() {
   const timerStartedRef = useRef(false);
 
   const [countdown, setCountdown] = useState<number | null>(null);
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
+  const timeLimitTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const prevPhaseRef = useRef<string | null>(null);
@@ -145,15 +147,42 @@ export function useMultiGame() {
       historyRef.current = [room.startArticle];
       setHistory([room.startArticle]);
       loadArticle(room.startArticle);
+      // Démarrer le timer de temps limité si configuré
+      if (timeLimitTimerRef.current) clearInterval(timeLimitTimerRef.current);
+      if (room.timeLimit > 0) {
+        const tick = () => {
+          const left = Math.ceil(((room.roundStart ?? Date.now()) + room.timeLimit * 1000 - Date.now()) / 1000);
+          setTimeLeft(left <= 0 ? 0 : left);
+        };
+        tick();
+        timeLimitTimerRef.current = setInterval(tick, 200);
+      } else {
+        setTimeLeft(null);
+      }
     }
     if (room.phase === "results" && prevPhase !== "results") {
       timer.stop();
+      if (timeLimitTimerRef.current) { clearInterval(timeLimitTimerRef.current); timeLimitTimerRef.current = null; }
+      setTimeLeft(null);
     }
     if (room.round !== prevRound && room.phase === "playing") {
       loadArticle(room.startArticle);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [room]);
+
+  // Temps limité : envoie timeUp quand le compteur atteint 0
+  useEffect(() => {
+    if (timeLeft !== 0 || !room || room.phase !== "playing" || !playerId || !room.timeLimit) return;
+    fetch(`/api/rooms/${room.code}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "timeUp", playerId }),
+    }).then((r) => r.json()).then((d) => {
+      if ((d as { room: Room }).room) setRoom((d as { room: Room }).room);
+    }).catch(() => {});
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeLeft]);
 
   // Countdown -> playing transition
   useEffect(() => {
@@ -332,6 +361,16 @@ export function useMultiGame() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [room, playerId]);
 
+  async function setTimeLimit(value: number) {
+    if (!room || !playerId) return;
+    const res = await fetch(`/api/rooms/${room.code}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "setTimeLimit", playerId, value }),
+    });
+    if (res.ok) setRoom((await res.json() as { room: Room }).room);
+  }
+
   async function setSearchAllowed(value: boolean) {
     if (!room || !playerId) return;
     const res = await fetch(`/api/rooms/${room.code}`, {
@@ -428,6 +467,8 @@ export function useMultiGame() {
     goBack,
     canGoBack: historyRef.current.length > 1,
     surrender,
+    timeLeft,
+    setTimeLimit,
     setSearchAllowed,
     restore,
     retryLoad: () => title && loadArticle(title),
