@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { ArticleView } from "./ArticleView";
 import { Breadcrumbs } from "./Breadcrumbs";
 import type { Room } from "../api/rooms/route";
+import { useCtrlFBlock } from "../../lib/useSearchAllowed";
 
 type GameScreenProps = {
   room: Room;
@@ -28,6 +29,7 @@ export function GameScreen({
   countdown, onNavigate, onRetry, onNextRound, onResetGame, onSurrender,
 }: GameScreenProps) {
   const breadcrumbEndRef = useRef<HTMLDivElement>(null);
+  useCtrlFBlock(room.searchAllowed);
   const myPlayer = room.players.find((p) => p.id === playerId);
   const isHost = myPlayer?.isHost ?? false;
   const myFinished = myPlayer?.hasWon || myPlayer?.hasSurrendered;

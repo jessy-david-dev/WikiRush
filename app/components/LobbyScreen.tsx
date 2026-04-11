@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useSearchAllowed } from "../../lib/useSearchAllowed";
 import type { Room } from "../api/rooms/route";
 
 type LobbyScreenProps = {
@@ -19,6 +18,7 @@ type LobbyScreenProps = {
   setTotalRounds: (v: number) => void;
   gameMode: Room["gameMode"];
   setGameMode: (v: Room["gameMode"]) => void;
+  onSetSearchAllowed: (v: boolean) => void;
 };
 
 export function LobbyScreen({
@@ -36,11 +36,11 @@ export function LobbyScreen({
   setTotalRounds,
   gameMode,
   setGameMode,
+  onSetSearchAllowed,
 }: LobbyScreenProps) {
   const isHost = room.players.find((p) => p.id === playerId)?.isHost ?? false;
   const [copied, setCopied] = useState(false);
   const [blurred, setBlurred] = useState(true);
-  const { allowed: searchAllowed, toggle: toggleSearch } = useSearchAllowed();
 
   function copyCode() {
     navigator.clipboard.writeText(room.code).then(() => {
@@ -186,20 +186,26 @@ export function LobbyScreen({
               </select>
             </div>
           </div>
+          <button
+            onClick={() => onSetSearchAllowed(!room.searchAllowed)}
+            className={`w-full min-h-11 rounded-xl text-sm font-semibold border transition-colors cursor-pointer flex items-center justify-between px-4 ${room.searchAllowed ? "bg-[#7c3aed]/10 border-[#7c3aed] text-[#a78bfa]" : "bg-[#1a1a1a] border-[#2e2e2e] text-[#888]"}`}
+          >
+            <span>🔍 Recherche Ctrl+F</span>
+            <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${room.searchAllowed ? "bg-[#7c3aed]/30 text-[#a78bfa]" : "bg-[#242424] text-[#555]"}`}>
+              {room.searchAllowed ? "Autorisée" : "Bloquée"}
+            </span>
+          </button>
         </div>
       )}
 
-      <button
-        onClick={toggleSearch}
-        className={`w-full min-h-11 rounded-xl text-sm font-semibold border transition-colors cursor-pointer flex items-center justify-between px-4 ${searchAllowed ? "bg-[#7c3aed]/10 border-[#7c3aed] text-[#a78bfa]" : "bg-[#1a1a1a] border-[#2e2e2e] text-[#888]"}`}
-      >
-        <span>🔍 Recherche Ctrl+F</span>
-        <span
-          className={`text-xs font-bold px-2 py-0.5 rounded-full ${searchAllowed ? "bg-[#7c3aed]/30 text-[#a78bfa]" : "bg-[#242424] text-[#555]"}`}
-        >
-          {searchAllowed ? "Autorisée" : "Bloquée"}
-        </span>
-      </button>
+      {!isHost && (
+        <div className={`w-full min-h-11 rounded-xl text-sm font-semibold border flex items-center justify-between px-4 ${room.searchAllowed ? "bg-[#7c3aed]/10 border-[#7c3aed] text-[#a78bfa]" : "bg-[#1a1a1a] border-[#2e2e2e] text-[#888]"}`}>
+          <span>🔍 Recherche Ctrl+F</span>
+          <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${room.searchAllowed ? "bg-[#7c3aed]/30 text-[#a78bfa]" : "bg-[#242424] text-[#555]"}`}>
+            {room.searchAllowed ? "Autorisée" : "Bloquée"}
+          </span>
+        </div>
+      )}
 
       {room.round > 0 && (
         <p className="text-xs text-[#888] text-center">

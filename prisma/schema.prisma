@@ -50,6 +50,7 @@ model Room {
   totalRounds   Int      @default(3)
   maxPlayers    Int      @default(16)
   gameMode      String   @default("race")
+  searchAllowed Boolean  @default(false)
   startArticle  String   @default("")
   targetArticle String   @default("")
   roundWinner   String?

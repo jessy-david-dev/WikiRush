@@ -13,6 +13,7 @@ function dbToRoom(row: {
   totalRounds: number;
   maxPlayers: number;
   gameMode: string;
+  searchAllowed: boolean;
   startArticle: string;
   targetArticle: string;
   roundWinner: string | null;
@@ -28,10 +29,12 @@ function dbToRoom(row: {
     totalRounds: row.totalRounds,
     maxPlayers: row.maxPlayers,
     gameMode: (row.gameMode ?? "race") as Room["gameMode"],
+    searchAllowed: row.searchAllowed ?? false,
     startArticle: row.startArticle,
     targetArticle: row.targetArticle,
     roundWinner: row.roundWinner,
-    countdownStart: row.countdownStart !== null ? Number(row.countdownStart) : null,
+    countdownStart:
+      row.countdownStart !== null ? Number(row.countdownStart) : null,
     roundStart: row.roundStart !== null ? Number(row.roundStart) : null,
     createdAt: Number(row.createdAt),
   };
@@ -82,7 +85,9 @@ export async function PATCH(
   { params }: { params: Promise<{ code: string }> },
 ) {
   const { code } = await params;
-  const row = await prisma.room.findUnique({ where: { code: code.toUpperCase() } });
+  const row = await prisma.room.findUnique({
+    where: { code: code.toUpperCase() },
+  });
 
   if (!row) {
     return Response.json({ error: "Room introuvable" }, { status: 404 });
@@ -91,15 +96,23 @@ export async function PATCH(
   const room = dbToRoom(row);
 
   const body = await request.json();
-  const { action, playerId, playerName, article, startArticle, targetArticle } =
-    body as {
-      action: string;
-      playerId?: string;
-      playerName?: string;
-      article?: string;
-      startArticle?: string;
-      targetArticle?: string;
-    };
+  const {
+    action,
+    playerId,
+    playerName,
+    article,
+    startArticle,
+    targetArticle,
+    value,
+  } = body as {
+    action: string;
+    playerId?: string;
+    playerName?: string;
+    article?: string;
+    startArticle?: string;
+    targetArticle?: string;
+    value?: boolean;
+  };
 
   // Nettoyer les joueurs inactifs avant chaque action
   room.players = prunePlayers(room.players);
@@ -279,7 +292,9 @@ export async function PATCH(
       if (room.gameMode === "race") {
         // En mode course, forfait ne termine pas la manche — on attend qu'un vrai gagnant arrive
         // Sauf si tous ont abandonné
-        const anyoneStillPlaying = room.players.some((p) => !p.hasWon && !p.hasSurrendered);
+        const anyoneStillPlaying = room.players.some(
+          (p) => !p.hasWon && !p.hasSurrendered,
+        );
         if (!anyoneStillPlaying) {
           room.phase = "results";
           // Pas de roundWinner si tout le monde a abandonné
@@ -291,6 +306,21 @@ export async function PATCH(
         }
       }
 
+      await saveRoom(room);
+      return Response.json({ room });
+    }
+
+    // Hôte toggle recherche Ctrl+F
+    case "setSearchAllowed": {
+      const host = room.players.find((p) => p.id === playerId);
+      if (!host?.isHost) {
+        return Response.json(
+          { error: "Seul l'hôte peut modifier ce paramètre" },
+          { status: 403 },
+        );
+      }
+      room.searchAllowed =
+        typeof value === "boolean" ? value : !room.searchAllowed;
       await saveRoom(room);
       return Response.json({ room });
     }
@@ -356,10 +386,12 @@ async function saveRoom(room: Room) {
       totalRounds: room.totalRounds,
       maxPlayers: room.maxPlayers,
       gameMode: room.gameMode,
+      searchAllowed: room.searchAllowed,
       startArticle: room.startArticle,
       targetArticle: room.targetArticle,
       roundWinner: room.roundWinner,
-      countdownStart: room.countdownStart !== null ? BigInt(room.countdownStart) : null,
+      countdownStart:
+        room.countdownStart !== null ? BigInt(room.countdownStart) : null,
       roundStart: room.roundStart !== null ? BigInt(room.roundStart) : null,
     },
   });

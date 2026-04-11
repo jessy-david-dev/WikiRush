@@ -112,6 +112,7 @@ export function ScreenRouter({
       maxPlayers={maxPlayers} setMaxPlayers={setMaxPlayers}
       totalRounds={totalRounds} setTotalRounds={setTotalRounds}
       gameMode={gameMode} setGameMode={setGameMode}
+      onSetSearchAllowed={(v) => multi.setSearchAllowed(v)}
     />
   );
 

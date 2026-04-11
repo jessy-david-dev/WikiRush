@@ -25,6 +25,7 @@ export type Room = {
   totalRounds: number;
   maxPlayers: number;
   gameMode: "race" | "all_finish"; // race = 1er gagne, all_finish = tout le monde joue
+  searchAllowed: boolean;
   startArticle: string;
   targetArticle: string;
   roundWinner: string | null;
@@ -56,6 +57,7 @@ function dbToRoom(row: {
   totalRounds: number;
   maxPlayers: number;
   gameMode: string;
+  searchAllowed: boolean;
   startArticle: string;
   targetArticle: string;
   roundWinner: string | null;
@@ -71,6 +73,7 @@ function dbToRoom(row: {
     totalRounds: row.totalRounds,
     maxPlayers: row.maxPlayers,
     gameMode: (row.gameMode ?? "race") as Room["gameMode"],
+    searchAllowed: row.searchAllowed ?? false,
     startArticle: row.startArticle,
     targetArticle: row.targetArticle,
     roundWinner: row.roundWinner,
@@ -154,6 +157,7 @@ export async function POST(request: NextRequest) {
       totalRounds: clampedRounds,
       maxPlayers: clampedMax,
       gameMode: clampedMode,
+      searchAllowed: false,
       startArticle: "",
       targetArticle: "",
       roundWinner: null,

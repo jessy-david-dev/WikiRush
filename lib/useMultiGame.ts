@@ -195,6 +195,16 @@ export function useMultiGame() {
     return {};
   }
 
+  async function setSearchAllowed(value: boolean) {
+    if (!room || !playerId) return;
+    const res = await fetch(`/api/rooms/${room.code}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "setSearchAllowed", playerId, value }),
+    });
+    if (res.ok) setRoom((await res.json() as { room: Room }).room);
+  }
+
   async function surrender() {
     if (!room || !playerId) return;
     const res = await fetch(`/api/rooms/${room.code}`, {
@@ -257,7 +267,7 @@ export function useMultiGame() {
   return {
     room, playerId, html, title, loading, loadError,
     history, clicks: clicksDisplay, elapsed: timer.elapsed, countdown,
-    createRoom, joinRoom, startGame, nextRound, resetGame, leave, navigate, surrender, restore,
+    createRoom, joinRoom, startGame, nextRound, resetGame, leave, navigate, surrender, setSearchAllowed, restore,
     retryLoad: () => title && loadArticle(title),
   };
 }
