@@ -94,10 +94,18 @@ export function GameScreen({
             ))}
           </ul>
         </div>
+        <div className="text-center text-xs text-[#555]">
+          Manche {room.round}/{room.totalRounds}
+        </div>
         {isHost ? (
           <div className="flex flex-col gap-2.5">
-            <button className={btnPrimary} onClick={onNextRound}>Manche suivante</button>
-            <button className={btnGhost} onClick={onResetGame}>Nouvelle partie</button>
+            {room.round < room.totalRounds
+              ? <button className={btnPrimary} onClick={onNextRound}>Manche suivante</button>
+              : <button className={btnPrimary} onClick={onResetGame}>Partie terminée — Recommencer</button>
+            }
+            {room.round < room.totalRounds && (
+              <button className={btnGhost} onClick={onResetGame}>Arrêter la partie</button>
+            )}
           </div>
         ) : (
           <p className="text-xs sm:text-sm text-[#888] text-center animate-pulse-slow">En attente de l&apos;hôte...</p>
