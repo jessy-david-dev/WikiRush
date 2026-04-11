@@ -19,7 +19,7 @@ function getRooms(): Map<string, Room> {
 }
 
 function generatePlayerId(): string {
-  return Math.random().toString(36).slice(2, 10);
+  return crypto.randomUUID();
 }
 
 // Timeout joueur inactif : 15s
@@ -156,7 +156,10 @@ export async function PATCH(
         return Response.json({ error: "Joueur inconnu" }, { status: 404 });
       }
 
-      player.currentArticle = article ?? "";
+      if (!article || typeof article !== "string" || article.length > 300) {
+        return Response.json({ error: "Article invalide" }, { status: 400 });
+      }
+      player.currentArticle = article;
       player.lastSeen = Date.now();
 
       // Verifier si le joueur a atteint la cible
@@ -223,3 +226,4 @@ export async function PATCH(
       return Response.json({ error: "Action inconnue" }, { status: 400 });
   }
 }
+
