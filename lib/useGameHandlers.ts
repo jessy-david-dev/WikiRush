@@ -50,12 +50,12 @@ export function useGameHandlers({
 
   async function handleNextRound() {
     await multi.nextRound();
-    setScreen("lobby");
+    // On reste sur "game" — le GameScreen affiche le lobby quand phase === "waiting"
   }
 
   async function handleResetGame() {
     await multi.resetGame();
-    setScreen("lobby");
+    // On reste sur "game" — le GameScreen affiche le lobby quand phase === "waiting"
   }
 
   function handleLeave() {

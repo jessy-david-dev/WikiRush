@@ -114,6 +114,24 @@ export function GameScreen({
     </div>
   );
 
+  // Entre les manches : attente que l'hôte démarre la suivante
+  if (room.phase === "waiting") return (
+    <div className="min-h-dvh w-full bg-[#0f0f0f] text-[#f0f0f0] flex items-center justify-center px-4">
+      <div className="text-center flex flex-col items-center gap-4">
+        <div className="text-2xl font-black">Manche {room.round}/{room.totalRounds} terminée</div>
+        <p className="text-sm text-[#888] animate-pulse-slow">
+          {isHost ? "Lance la manche suivante quand tu veux." : "En attente que l'hôte démarre la prochaine manche..."}
+        </p>
+        {isHost && (
+          <div className="flex flex-col gap-2.5 w-full max-w-xs mt-2">
+            <button className={btnPrimary} onClick={onNextRound}>Manche suivante</button>
+            <button className={btnGhost} onClick={onResetGame}>Arrêter la partie</button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
   // Countdown
   if (room.phase === "countdown") return (
     <div className="min-h-dvh w-full bg-[#0f0f0f] text-[#f0f0f0] flex items-center justify-center px-4">
