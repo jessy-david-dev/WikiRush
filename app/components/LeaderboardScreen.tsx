@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { PublicProfileScreen } from "./PublicProfileScreen";
 
 type LeaderboardRow = {
   id: string;
@@ -29,12 +30,17 @@ export function LeaderboardScreen({ onBack }: { onBack: () => void }) {
   const [rows, setRows] = useState<LeaderboardRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [mode, setMode] = useState<Mode>("all");
+  const [viewingUserId, setViewingUserId] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/leaderboard")
       .then((r) => r.json())
       .then((data) => { setRows(data); setLoading(false); });
   }, []);
+
+  if (viewingUserId) {
+    return <PublicProfileScreen userId={viewingUserId} onBack={() => setViewingUserId(null)} />;
+  }
 
   const sorted = [...rows]
     .filter((r) => mode === "solo" ? r.soloGames > 0 : mode === "multi" ? r.multiGames > 0 : true)
@@ -81,7 +87,7 @@ export function LeaderboardScreen({ onBack }: { onBack: () => void }) {
             const wins = mode === "solo" ? row.soloWins : mode === "multi" ? row.multiWins : row.wins;
 
             return (
-              <div key={row.id} className={`flex items-center gap-2.5 px-3.5 py-3 rounded-xl border ${i < 3 ? "border-[#7c3aed] bg-[#7c3aed]/8" : "border-[#2e2e2e] bg-[#1a1a1a]"}`}>
+              <div key={row.id} onClick={() => setViewingUserId(row.id)} className={`flex items-center gap-2.5 px-3.5 py-3 rounded-xl border cursor-pointer hover:brightness-110 transition-all ${i < 3 ? "border-[#7c3aed] bg-[#7c3aed]/8" : "border-[#2e2e2e] bg-[#1a1a1a]"}`}>
                 <span className="text-xl w-8 text-center shrink-0">{MEDALS[i] ?? `#${i + 1}`}</span>
                 <div className="flex-1 min-w-0 flex flex-col gap-1">
                   <span className="font-bold text-sm truncate">{row.name}</span>
