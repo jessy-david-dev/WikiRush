@@ -297,6 +297,41 @@ export function useMultiGame() {
     return {};
   }
 
+  const goBack = useCallback(async () => {
+    if (!room || !playerId || loadingRef.current || room.phase !== "playing") return;
+    if (historyRef.current.length <= 1) return;
+
+    clicksRef.current += 1;
+    setClicksDisplay(clicksRef.current);
+    if (!timerStartedRef.current) { timer.start(); timerStartedRef.current = true; }
+
+    const newHistory = historyRef.current.slice(0, -1);
+    const target = newHistory[newHistory.length - 1];
+
+    fetch(`/api/rooms/${room.code}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "heartbeat", playerId }),
+    }).catch(() => {});
+
+    const canonical = await loadArticle(target);
+    if (!canonical) return;
+
+    historyRef.current = newHistory;
+    setHistory(newHistory);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    try {
+      const res = await fetch(`/api/rooms/${room.code}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "navigate", playerId, article: canonical }),
+      });
+      if (res.ok) setRoom((await res.json() as { room: Room }).room);
+    } catch { /* on continue localement */ }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [room, playerId]);
+
   async function setSearchAllowed(value: boolean) {
     if (!room || !playerId) return;
     const res = await fetch(`/api/rooms/${room.code}`, {
@@ -390,6 +425,8 @@ export function useMultiGame() {
     resetGame,
     leave,
     navigate,
+    goBack,
+    canGoBack: historyRef.current.length > 1,
     surrender,
     setSearchAllowed,
     restore,

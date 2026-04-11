@@ -18,6 +18,8 @@ type GameScreenProps = {
   elapsed: string;
   countdown: number | null;
   onNavigate: (title: string) => void;
+  onGoBack: () => void;
+  canGoBack: boolean;
   onRetry: () => void;
   onNextRound: () => void;
   onResetGame: () => void;
@@ -36,6 +38,8 @@ export function GameScreen({
   elapsed,
   countdown,
   onNavigate,
+  onGoBack,
+  canGoBack,
   onRetry,
   onNextRound,
   onResetGame,
@@ -262,6 +266,15 @@ export function GameScreen({
             <span>{clicks} clics</span>
             <span className="hidden sm:inline">{myPlayer?.score ?? 0} pts</span>
           </div>
+          {!myFinished && canGoBack && (
+            <button
+              onClick={onGoBack}
+              disabled={loading}
+              className="min-h-8 px-2 rounded-lg text-xs font-semibold bg-[#242424] border border-[#2e2e2e] text-[#f0f0f0] hover:bg-[#1a1a1a] disabled:opacity-50 cursor-pointer shrink-0"
+            >
+              ← +1
+            </button>
+          )}
           {!myFinished && (
             <button
               onClick={onSurrender}

@@ -176,6 +176,8 @@ export function ScreenRouter({
         elapsed={fmt(multi.elapsed)}
         countdown={multi.countdown}
         onNavigate={multi.navigate}
+        onGoBack={multi.goBack}
+        canGoBack={multi.canGoBack}
         onRetry={multi.retryLoad}
         onNextRound={handlers.handleNextRound}
         onResetGame={handlers.handleResetGame}
