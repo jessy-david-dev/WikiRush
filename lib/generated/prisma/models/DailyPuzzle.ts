@@ -1094,6 +1094,7 @@ export type DailyPuzzleCreateManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * The data used to create many DailyPuzzles.
    */
   data: Prisma.DailyPuzzleCreateManyInput | Prisma.DailyPuzzleCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1112,6 +1113,7 @@ export type DailyPuzzleCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Ext
    * The data used to create many DailyPuzzles.
    */
   data: Prisma.DailyPuzzleCreateManyInput | Prisma.DailyPuzzleCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**

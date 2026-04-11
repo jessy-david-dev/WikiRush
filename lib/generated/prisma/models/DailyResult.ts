@@ -552,6 +552,7 @@ export type DailyResultCreateOrConnectWithoutUserInput = {
 
 export type DailyResultCreateManyUserInputEnvelope = {
   data: Prisma.DailyResultCreateManyUserInput | Prisma.DailyResultCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
 export type DailyResultUpsertWithWhereUniqueWithoutUserInput = {
@@ -611,6 +612,7 @@ export type DailyResultCreateOrConnectWithoutPuzzleInput = {
 
 export type DailyResultCreateManyPuzzleInputEnvelope = {
   data: Prisma.DailyResultCreateManyPuzzleInput | Prisma.DailyResultCreateManyPuzzleInput[]
+  skipDuplicates?: boolean
 }
 
 export type DailyResultUpsertWithWhereUniqueWithoutPuzzleInput = {
@@ -1457,6 +1459,7 @@ export type DailyResultCreateManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * The data used to create many DailyResults.
    */
   data: Prisma.DailyResultCreateManyInput | Prisma.DailyResultCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1475,6 +1478,7 @@ export type DailyResultCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Ext
    * The data used to create many DailyResults.
    */
   data: Prisma.DailyResultCreateManyInput | Prisma.DailyResultCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

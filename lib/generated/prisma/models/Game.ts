@@ -566,6 +566,7 @@ export type GameCreateOrConnectWithoutUserInput = {
 
 export type GameCreateManyUserInputEnvelope = {
   data: Prisma.GameCreateManyUserInput | Prisma.GameCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
 export type GameUpsertWithWhereUniqueWithoutUserInput = {
@@ -1400,6 +1401,7 @@ export type GameCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * The data used to create many Games.
    */
   data: Prisma.GameCreateManyInput | Prisma.GameCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1418,6 +1420,7 @@ export type GameCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions
    * The data used to create many Games.
    */
   data: Prisma.GameCreateManyInput | Prisma.GameCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

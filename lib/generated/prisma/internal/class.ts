@@ -19,8 +19,8 @@ const config: runtime.GetPrismaClientConfig = {
   "previewFeatures": [],
   "clientVersion": "7.7.0",
   "engineVersion": "75cbdc1eb7150937890ad5465d861175c6624711",
-  "activeProvider": "sqlite",
-  "inlineSchema": "generator client {\n  provider = \"prisma-client\"\n  output   = \"../lib/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"sqlite\"\n}\n\nmodel User {\n  id           String        @id @default(uuid(7))\n  name         String\n  email        String        @unique\n  password     String\n  banned       Boolean       @default(false)\n  createdAt    DateTime      @default(now())\n  games        Game[]\n  dailyResults DailyResult[]\n}\n\nmodel Game {\n  id            String   @id @default(uuid(7))\n  userId        String\n  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n  mode          String // \"solo\" | \"multi\" | \"daily\" | \"blitz\"\n  startArticle  String\n  targetArticle String\n  path          String // JSON array de titres\n  clicks        Int\n  timeSeconds   Float\n  won           Boolean  @default(true)\n  playedAt      DateTime @default(now())\n\n  @@index([userId])\n}\n\nmodel DailyPuzzle {\n  id            String        @id @default(uuid(7))\n  date          String        @unique // \"YYYY-MM-DD\"\n  startArticle  String\n  targetArticle String\n  results       DailyResult[]\n}\n\nmodel DailyResult {\n  id          String      @id @default(uuid(7))\n  puzzleId    String\n  puzzle      DailyPuzzle @relation(fields: [puzzleId], references: [id], onDelete: Cascade)\n  userId      String\n  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)\n  path        String // JSON\n  clicks      Int\n  timeSeconds Float\n  won         Boolean\n  playedAt    DateTime    @default(now())\n\n  @@unique([puzzleId, userId])\n  @@index([puzzleId])\n}\n",
+  "activeProvider": "postgresql",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client\"\n  output   = \"../lib/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel User {\n  id           String        @id @default(uuid(7))\n  name         String\n  email        String        @unique\n  password     String\n  banned       Boolean       @default(false)\n  createdAt    DateTime      @default(now())\n  games        Game[]\n  dailyResults DailyResult[]\n}\n\nmodel Game {\n  id            String   @id @default(uuid(7))\n  userId        String\n  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n  mode          String // \"solo\" | \"multi\" | \"daily\" | \"blitz\"\n  startArticle  String\n  targetArticle String\n  path          String // JSON array de titres\n  clicks        Int\n  timeSeconds   Float\n  won           Boolean  @default(true)\n  playedAt      DateTime @default(now())\n\n  @@index([userId])\n}\n\nmodel DailyPuzzle {\n  id            String        @id @default(uuid(7))\n  date          String        @unique // \"YYYY-MM-DD\"\n  startArticle  String\n  targetArticle String\n  results       DailyResult[]\n}\n\nmodel DailyResult {\n  id          String      @id @default(uuid(7))\n  puzzleId    String\n  puzzle      DailyPuzzle @relation(fields: [puzzleId], references: [id], onDelete: Cascade)\n  userId      String\n  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)\n  path        String // JSON\n  clicks      Int\n  timeSeconds Float\n  won         Boolean\n  playedAt    DateTime    @default(now())\n\n  @@unique([puzzleId, userId])\n  @@index([puzzleId])\n}\n",
   "runtimeDataModel": {
     "models": {},
     "enums": {},
@@ -45,10 +45,10 @@ async function decodeBase64AsWasm(wasmBase64: string): Promise<WebAssembly.Modul
 }
 
 config.compilerWasm = {
-  getRuntime: async () => await import("@prisma/client/runtime/query_compiler_fast_bg.sqlite.mjs"),
+  getRuntime: async () => await import("@prisma/client/runtime/query_compiler_fast_bg.postgresql.mjs"),
 
   getQueryCompilerWasmModule: async () => {
-    const { wasm } = await import("@prisma/client/runtime/query_compiler_fast_bg.sqlite.wasm-base64.mjs")
+    const { wasm } = await import("@prisma/client/runtime/query_compiler_fast_bg.postgresql.wasm-base64.mjs")
     return await decodeBase64AsWasm(wasm)
   },
 
