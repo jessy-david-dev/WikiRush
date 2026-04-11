@@ -66,12 +66,30 @@ export function GameScreen({
           <h3 className="text-[10px] sm:text-xs font-bold text-[#888] uppercase tracking-wider mb-3">Classement</h3>
           <ul className="flex flex-col gap-2">
             {sortedPlayers.map((p, i) => (
-              <li key={p.id} className={`flex items-center gap-2 bg-[#1a1a1a] rounded-xl px-3.5 py-2.5 min-h-11 border ${p.id === playerId ? "border-[#7c3aed]" : "border-[#2e2e2e]"}`}>
-                <span className="text-xs sm:text-sm font-bold text-[#888] min-w-6 sm:min-w-7">#{i + 1}</span>
-                <span className="flex-1 font-semibold text-sm truncate">{p.name}</span>
-                {p.hasWon && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-900/40 text-green-300 uppercase tracking-wide shrink-0">✓ Trouvé</span>}
-                {p.hasSurrendered && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#242424] text-[#888] uppercase tracking-wide shrink-0">Forfait</span>}
-                <span className="font-bold text-[#7c3aed] text-sm shrink-0">{p.score} pts</span>
+              <li key={p.id} className={`flex flex-col gap-2 bg-[#1a1a1a] rounded-xl px-3.5 py-2.5 border ${p.id === playerId ? "border-[#7c3aed]" : "border-[#2e2e2e]"}`}>
+                <div className="flex items-center gap-2 min-h-7">
+                  <span className="text-xs sm:text-sm font-bold text-[#888] min-w-6 sm:min-w-7">#{i + 1}</span>
+                  <span className="flex-1 font-semibold text-sm truncate">{p.name}</span>
+                  {p.hasWon && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-900/40 text-green-300 uppercase tracking-wide shrink-0">✓ Trouvé</span>}
+                  {p.hasSurrendered && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#242424] text-[#888] uppercase tracking-wide shrink-0">Forfait</span>}
+                  <span className="font-bold text-[#7c3aed] text-sm shrink-0">{p.score} pts</span>
+                </div>
+                {p.path && p.path.length > 0 && (
+                  <div className="flex flex-wrap items-center gap-x-1 gap-y-0.5 text-[11px] text-[#666] pl-6 sm:pl-7">
+                    {p.path.map((t, j) => (
+                      <span key={j} className="flex items-center gap-0.5">
+                        {j > 0 && <span className="text-[#444]">›</span>}
+                        <span className={
+                          j === 0 ? "text-[#555]" :
+                          j === p.path.length - 1 && p.hasWon ? "text-green-400 font-semibold" :
+                          j === p.path.length - 1 && p.hasSurrendered ? "text-[#888]" :
+                          "text-[#888]"
+                        }>{t}</span>
+                      </span>
+                    ))}
+                    <span className="text-[#555] ml-1">({p.path.length - 1} clic{p.path.length - 1 > 1 ? "s" : ""})</span>
+                  </div>
+                )}
               </li>
             ))}
           </ul>

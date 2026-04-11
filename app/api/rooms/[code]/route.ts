@@ -146,6 +146,7 @@ export async function PATCH(
         name: playerName.trim().slice(0, 20),
         score: 0,
         currentArticle: "",
+        path: [],
         hasWon: false,
         hasSurrendered: false,
         isHost: false,
@@ -203,6 +204,7 @@ export async function PATCH(
       // Reset etat joueurs pour cette manche
       for (const p of room.players) {
         p.currentArticle = startArticle;
+        p.path = [startArticle];
         p.hasWon = false;
         p.hasSurrendered = false;
       }
@@ -239,6 +241,8 @@ export async function PATCH(
         return Response.json({ error: "Article invalide" }, { status: 400 });
       }
       player.currentArticle = article;
+      if (!player.path) player.path = [];
+      player.path.push(article);
       player.lastSeen = Date.now();
 
       const normalize = (s: string) =>

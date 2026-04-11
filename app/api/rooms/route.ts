@@ -11,6 +11,7 @@ export type Player = {
   name: string;
   score: number;
   currentArticle: string;
+  path: string[]; // articles visités cette manche
   hasWon: boolean;
   hasSurrendered: boolean;
   isHost: boolean;
@@ -141,6 +142,7 @@ export async function POST(request: NextRequest) {
       name: playerName.trim().slice(0, 20),
       score: 0,
       currentArticle: "",
+      path: [],
       hasWon: false,
       hasSurrendered: false,
       isHost: true,
