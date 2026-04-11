@@ -7,7 +7,6 @@ import type { Room, Player } from "../route";
 // Acces au singleton
 
 declare global {
-  // eslint-disable-next-line no-var
   var __wikirooms: Map<string, Room> | undefined;
 }
 

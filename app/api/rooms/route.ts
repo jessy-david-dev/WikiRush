@@ -33,7 +33,6 @@ export type Room = {
 // Stockage en memoire (singleton Node.js)
 
 declare global {
-  // eslint-disable-next-line no-var
   var __wikirooms: Map<string, Room> | undefined;
 }
 
