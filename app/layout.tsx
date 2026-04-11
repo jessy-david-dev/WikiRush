@@ -52,7 +52,10 @@ export default function RootLayout({
               Politique de confidentialité
             </a>
             <span>·</span>
-            <a href="/mentions-legales" className="hover:text-[#888] transition-colors">
+            <a
+              href="/mentions-legales"
+              className="hover:text-[#888] transition-colors"
+            >
               Mentions légales
             </a>
             <span>·</span>

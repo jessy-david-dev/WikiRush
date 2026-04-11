@@ -11,10 +11,10 @@ Navigue entre les articles Wikipedia pour atteindre la cible en premier !
 
 ## Modes de jeu
 
-- **Solo** — joue à ton rythme
-- **Daily** — défi quotidien partagé
-- **Blitz** — speedrun 2 minutes
-- **Multijoueur** — affronte d'autres joueurs en temps réel
+- **Solo** - joue à ton rythme
+- **Daily** - défi quotidien partagé
+- **Blitz** - speedrun 2 minutes
+- **Multijoueur** - affronte d'autres joueurs en temps réel
 
 ## Démarrage
 
