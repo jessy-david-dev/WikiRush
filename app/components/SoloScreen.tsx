@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { ArticleView } from "./ArticleView";
 import { Breadcrumbs } from "./Breadcrumbs";
 import { ShareBar } from "./ShareBar";
+import { useSearchAllowed } from "../../lib/useSearchAllowed";
 import type { Puzzle } from "../../lib/types";
 
 type SoloPhase = "setup" | "playing" | "won";
@@ -32,8 +33,10 @@ export function SoloScreen({
   elapsedDisplay, canGoBack, onStart, onNavigate, onBack, onQuit, onNewGame, onRetry,
 }: SoloScreenProps) {
   const breadcrumbEndRef = useRef<HTMLDivElement>(null);
+  const { allowed: searchAllowed, toggle: toggleSearch } = useSearchAllowed();
 
   useEffect(() => {
+
     breadcrumbEndRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "end" });
   }, [history]);
 
@@ -49,6 +52,15 @@ export function SoloScreen({
       <p className="text-[#888] text-sm sm:text-base leading-relaxed">
         Deux articles aléatoires seront choisis. Atteins l&apos;article cible en cliquant uniquement sur les liens !
       </p>
+      <button
+        onClick={toggleSearch}
+        className={`w-full min-h-11 rounded-xl text-sm font-semibold border transition-colors cursor-pointer flex items-center justify-between px-4 ${searchAllowed ? "bg-[#7c3aed]/10 border-[#7c3aed] text-[#a78bfa]" : "bg-[#1a1a1a] border-[#2e2e2e] text-[#888]"}`}
+      >
+        <span>🔍 Recherche Ctrl+F</span>
+        <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${searchAllowed ? "bg-[#7c3aed]/30 text-[#a78bfa]" : "bg-[#242424] text-[#555]"}`}>
+          {searchAllowed ? "Autorisée" : "Bloquée"}
+        </span>
+      </button>
       <button className={btnPrimary} onClick={onStart} disabled={loading}>
         {loading ? "Préparation..." : "Lancer une partie"}
       </button>

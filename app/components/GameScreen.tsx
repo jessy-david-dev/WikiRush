@@ -117,7 +117,7 @@ export function GameScreen({
           </div>
           <Breadcrumbs history={history} endRef={breadcrumbEndRef} />
         </div>
-        <div className="flex gap-2 sm:gap-3 shrink-0 text-[10px] sm:text-xs font-bold text-[#888] tabular-nums">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0 text-[10px] sm:text-xs font-bold text-[#888] tabular-nums">
           <span>{elapsed}</span>
           <span>{clicks} clics</span>
           <span className="hidden sm:inline">{myPlayer?.score ?? 0} pts</span>

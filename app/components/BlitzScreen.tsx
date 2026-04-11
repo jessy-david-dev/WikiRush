@@ -3,6 +3,7 @@
 import { useBlitzGame } from "../../lib/useBlitzGame";
 import { ArticleView } from "./ArticleView";
 import { ShareBar } from "./ShareBar";
+import { useSearchAllowed } from "../../lib/useSearchAllowed";
 
 function fmtLeft(s: number): string {
   const m = Math.floor(s / 60);
@@ -12,6 +13,8 @@ function fmtLeft(s: number): string {
 
 export function BlitzScreen({ onBack }: { onBack: () => void }) {
   const game = useBlitzGame();
+  const { allowed: searchAllowed, toggle: toggleSearch } = useSearchAllowed();
+
 
   const btnPrimary = "w-full min-h-11 rounded-xl text-sm font-semibold bg-[#7c3aed] text-white hover:bg-[#6d28d9] disabled:opacity-50 cursor-pointer transition-colors";
   const btnGhost = "w-full min-h-11 rounded-xl text-sm font-semibold bg-[#242424] border border-[#2e2e2e] text-[#f0f0f0] hover:bg-[#1a1a1a] cursor-pointer transition-colors";
@@ -28,6 +31,15 @@ export function BlitzScreen({ onBack }: { onBack: () => void }) {
       <p className="text-[#888] text-sm sm:text-base leading-relaxed">
         Tu as <span className="text-[#f0f0f0] font-bold">2 minutes</span>{" "}pour naviguer de l&apos;article de départ jusqu&apos;à l&apos;article cible en cliquant sur les liens Wikipedia. Plus tu es rapide, mieux c&apos;est !
       </p>
+      <button
+        onClick={toggleSearch}
+        className={`w-full min-h-11 rounded-xl text-sm font-semibold border transition-colors cursor-pointer flex items-center justify-between px-4 ${searchAllowed ? "bg-[#7c3aed]/10 border-[#7c3aed] text-[#a78bfa]" : "bg-[#1a1a1a] border-[#2e2e2e] text-[#888]"}`}
+      >
+        <span>🔍 Recherche Ctrl+F</span>
+        <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${searchAllowed ? "bg-[#7c3aed]/30 text-[#a78bfa]" : "bg-[#242424] text-[#555]"}`}>
+          {searchAllowed ? "Autorisée" : "Bloquée"}
+        </span>
+      </button>
       <button className={btnPrimary} onClick={game.start} disabled={game.loading}>
         {game.loading ? "Préparation..." : "Lancer le chrono !"}
       </button>

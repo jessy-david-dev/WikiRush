@@ -68,6 +68,14 @@ export function AuthModal({ onClose, onSuccess }: { onClose: () => void; onSucce
           <button className="w-full min-h-11 px-5 rounded-xl text-sm font-semibold bg-[#7c3aed] text-white hover:bg-[#6d28d9] disabled:opacity-50 cursor-pointer mt-1" type="submit" disabled={loading}>
             {loading ? "Chargement..." : mode === "login" ? "Se connecter" : "Créer un compte"}
           </button>
+          {mode === "register" && (
+            <p className="text-xs text-[#555] text-center leading-relaxed">
+              En créant un compte, vous acceptez notre{" "}
+              <a href="/privacy" className="text-[#888] hover:text-[#f0f0f0] underline underline-offset-2 transition-colors">
+                politique de confidentialité
+              </a>.
+            </p>
+          )}
         </form>
       </div>
     </div>
