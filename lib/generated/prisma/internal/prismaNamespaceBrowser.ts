@@ -54,6 +54,7 @@ export const ModelName = {
   User: 'User',
   Game: 'Game',
   DailyPuzzle: 'DailyPuzzle',
+  Room: 'Room',
   DailyResult: 'DailyResult'
 } as const
 
@@ -111,6 +112,25 @@ export const DailyPuzzleScalarFieldEnum = {
 export type DailyPuzzleScalarFieldEnum = (typeof DailyPuzzleScalarFieldEnum)[keyof typeof DailyPuzzleScalarFieldEnum]
 
 
+export const RoomScalarFieldEnum = {
+  code: 'code',
+  players: 'players',
+  phase: 'phase',
+  round: 'round',
+  totalRounds: 'totalRounds',
+  maxPlayers: 'maxPlayers',
+  startArticle: 'startArticle',
+  targetArticle: 'targetArticle',
+  roundWinner: 'roundWinner',
+  countdownStart: 'countdownStart',
+  roundStart: 'roundStart',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RoomScalarFieldEnum = (typeof RoomScalarFieldEnum)[keyof typeof RoomScalarFieldEnum]
+
+
 export const DailyResultScalarFieldEnum = {
   id: 'id',
   puzzleId: 'puzzleId',
@@ -133,10 +153,34 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 

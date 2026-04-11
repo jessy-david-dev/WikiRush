@@ -42,6 +42,22 @@ model DailyPuzzle {
   results       DailyResult[]
 }
 
+model Room {
+  code          String   @id
+  players       Json     @default("[]")
+  phase         String   @default("waiting")
+  round         Int      @default(0)
+  totalRounds   Int      @default(3)
+  maxPlayers    Int      @default(16)
+  startArticle  String   @default("")
+  targetArticle String   @default("")
+  roundWinner   String?
+  countdownStart BigInt?
+  roundStart    BigInt?
+  createdAt     BigInt
+  updatedAt     DateTime @updatedAt
+}
+
 model DailyResult {
   id          String      @id @default(uuid(7))
   puzzleId    String

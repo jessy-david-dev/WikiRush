@@ -3,18 +3,36 @@
 
 import { NextRequest } from "next/server";
 import type { Room, Player } from "../route";
+import { prisma } from "../../../../lib/prisma";
 
-// Acces au singleton
-
-declare global {
-  var __wikirooms: Map<string, Room> | undefined;
-}
-
-function getRooms(): Map<string, Room> {
-  if (!global.__wikirooms) {
-    global.__wikirooms = new Map();
-  }
-  return global.__wikirooms;
+function dbToRoom(row: {
+  code: string;
+  players: unknown;
+  phase: string;
+  round: number;
+  totalRounds: number;
+  maxPlayers: number;
+  startArticle: string;
+  targetArticle: string;
+  roundWinner: string | null;
+  countdownStart: bigint | null;
+  roundStart: bigint | null;
+  createdAt: bigint;
+}): Room {
+  return {
+    code: row.code,
+    players: row.players as Player[],
+    phase: row.phase as Room["phase"],
+    round: row.round,
+    totalRounds: row.totalRounds,
+    maxPlayers: row.maxPlayers,
+    startArticle: row.startArticle,
+    targetArticle: row.targetArticle,
+    roundWinner: row.roundWinner,
+    countdownStart: row.countdownStart !== null ? Number(row.countdownStart) : null,
+    roundStart: row.roundStart !== null ? Number(row.roundStart) : null,
+    createdAt: Number(row.createdAt),
+  };
 }
 
 function generatePlayerId(): string {
@@ -24,11 +42,9 @@ function generatePlayerId(): string {
 // Timeout joueur inactif : 15s
 const PLAYER_TIMEOUT_MS = 15_000;
 
-function prunePlayers(room: Room) {
+function prunePlayers(players: Player[]): Player[] {
   const now = Date.now();
-  room.players = room.players.filter(
-    (p) => now - p.lastSeen < PLAYER_TIMEOUT_MS,
-  );
+  return players.filter((p) => now - p.lastSeen < PLAYER_TIMEOUT_MS);
 }
 
 // PATCH /api/rooms/[code]
@@ -37,12 +53,13 @@ export async function PATCH(
   { params }: { params: Promise<{ code: string }> },
 ) {
   const { code } = await params;
-  const rooms = getRooms();
-  const room = rooms.get(code.toUpperCase());
+  const row = await prisma.room.findUnique({ where: { code: code.toUpperCase() } });
 
-  if (!room) {
+  if (!row) {
     return Response.json({ error: "Room introuvable" }, { status: 404 });
   }
+
+  const room = dbToRoom(row);
 
   const body = await request.json();
   const { action, playerId, playerName, article, startArticle, targetArticle } =
@@ -56,7 +73,7 @@ export async function PATCH(
     };
 
   // Nettoyer les joueurs inactifs avant chaque action
-  prunePlayers(room);
+  room.players = prunePlayers(room.players);
 
   switch (action) {
     // Rejoindre
@@ -92,6 +109,7 @@ export async function PATCH(
         lastSeen: Date.now(),
       };
       room.players.push(player);
+      await saveRoom(room);
       return Response.json({ room, playerId: newId });
     }
 
@@ -101,6 +119,7 @@ export async function PATCH(
       if (player) {
         player.lastSeen = Date.now();
       }
+      await saveRoom(room);
       return Response.json({ room });
     }
 
@@ -144,6 +163,7 @@ export async function PATCH(
         p.hasWon = false;
       }
 
+      await saveRoom(room);
       return Response.json({ room });
     }
 
@@ -152,11 +172,11 @@ export async function PATCH(
       if (room.phase !== "countdown") {
         return Response.json({ room });
       }
-      // On laisse les clients gerer le timing - le 1er qui appelle play apres 3s active
       const elapsed = Date.now() - (room.countdownStart ?? 0);
       if (elapsed >= 3000) {
         room.phase = "playing";
         room.roundStart = Date.now();
+        await saveRoom(room);
       }
       return Response.json({ room });
     }
@@ -177,7 +197,6 @@ export async function PATCH(
       player.currentArticle = article;
       player.lastSeen = Date.now();
 
-      // Verifier si le joueur a atteint la cible
       const normalize = (s: string) =>
         decodeURIComponent(s).replace(/_/g, " ").toLowerCase().trim();
 
@@ -187,7 +206,6 @@ export async function PATCH(
       ) {
         player.hasWon = true;
 
-        // 1er joueur a gagner = +10 points
         const alreadyWon = room.players.some(
           (p) => p.hasWon && p.id !== player.id,
         );
@@ -198,6 +216,7 @@ export async function PATCH(
         }
       }
 
+      await saveRoom(room);
       return Response.json({ room });
     }
 
@@ -218,6 +237,7 @@ export async function PATCH(
         p.hasWon = false;
         p.currentArticle = "";
       }
+      await saveRoom(room);
       return Response.json({ room });
     }
 
@@ -240,10 +260,29 @@ export async function PATCH(
         p.hasWon = false;
         p.currentArticle = "";
       }
+      await saveRoom(room);
       return Response.json({ room });
     }
 
     default:
       return Response.json({ error: "Action inconnue" }, { status: 400 });
   }
+}
+
+async function saveRoom(room: Room) {
+  await prisma.room.update({
+    where: { code: room.code },
+    data: {
+      players: room.players as object[],
+      phase: room.phase,
+      round: room.round,
+      totalRounds: room.totalRounds,
+      maxPlayers: room.maxPlayers,
+      startArticle: room.startArticle,
+      targetArticle: room.targetArticle,
+      roundWinner: room.roundWinner,
+      countdownStart: room.countdownStart !== null ? BigInt(room.countdownStart) : null,
+      roundStart: room.roundStart !== null ? BigInt(room.roundStart) : null,
+    },
+  });
 }

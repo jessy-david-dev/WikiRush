@@ -33,6 +33,11 @@ export type Game = Prisma.GameModel
  */
 export type DailyPuzzle = Prisma.DailyPuzzleModel
 /**
+ * Model Room
+ * 
+ */
+export type Room = Prisma.RoomModel
+/**
  * Model DailyResult
  * 
  */

@@ -2,6 +2,7 @@
 // GET /api/rooms?code=XXXX - recuperer l'etat d'une room
 
 import { NextRequest } from "next/server";
+import { prisma } from "../../../lib/prisma";
 
 // Types
 
@@ -24,24 +25,11 @@ export type Room = {
   maxPlayers: number;
   startArticle: string;
   targetArticle: string;
-  roundWinner: string | null; // player id
-  countdownStart: number | null; // timestamp ms
-  roundStart: number | null; // timestamp ms
+  roundWinner: string | null;
+  countdownStart: number | null;
+  roundStart: number | null;
   createdAt: number;
 };
-
-// Stockage en memoire (singleton Node.js)
-
-declare global {
-  var __wikirooms: Map<string, Room> | undefined;
-}
-
-function getRooms(): Map<string, Room> {
-  if (!global.__wikirooms) {
-    global.__wikirooms = new Map();
-  }
-  return global.__wikirooms;
-}
 
 // Helpers
 
@@ -58,17 +46,41 @@ function generatePlayerId(): string {
   return crypto.randomUUID();
 }
 
-// Nettoie les rooms inactives depuis plus de 2h
-function pruneOldRooms(rooms: Map<string, Room>) {
-  const now = Date.now();
-  for (const [code, room] of rooms) {
-    if (now - room.createdAt > 2 * 60 * 60 * 1000) {
-      rooms.delete(code);
-    }
-  }
+function dbToRoom(row: {
+  code: string;
+  players: unknown;
+  phase: string;
+  round: number;
+  totalRounds: number;
+  maxPlayers: number;
+  startArticle: string;
+  targetArticle: string;
+  roundWinner: string | null;
+  countdownStart: bigint | null;
+  roundStart: bigint | null;
+  createdAt: bigint;
+}): Room {
+  return {
+    code: row.code,
+    players: row.players as Player[],
+    phase: row.phase as Room["phase"],
+    round: row.round,
+    totalRounds: row.totalRounds,
+    maxPlayers: row.maxPlayers,
+    startArticle: row.startArticle,
+    targetArticle: row.targetArticle,
+    roundWinner: row.roundWinner,
+    countdownStart: row.countdownStart !== null ? Number(row.countdownStart) : null,
+    roundStart: row.roundStart !== null ? Number(row.roundStart) : null,
+    createdAt: Number(row.createdAt),
+  };
 }
 
-// Handlers
+// Nettoie les rooms inactives depuis plus de 2h
+async function pruneOldRooms() {
+  const cutoff = BigInt(Date.now() - 2 * 60 * 60 * 1000);
+  await prisma.room.deleteMany({ where: { createdAt: { lt: cutoff } } });
+}
 
 // POST /api/rooms
 // Body: { playerName: string }
@@ -98,46 +110,51 @@ export async function POST(request: NextRequest) {
     10,
   );
 
-  const rooms = getRooms();
-  pruneOldRooms(rooms);
+  await pruneOldRooms();
 
   // Generer un code unique
   let code = generateCode();
   let attempts = 0;
-  while (rooms.has(code) && attempts < 20) {
+  while (attempts < 20) {
+    const existing = await prisma.room.findUnique({ where: { code } });
+    if (!existing) break;
     code = generateCode();
     attempts++;
   }
 
   const playerId = generatePlayerId();
+  const now = BigInt(Date.now());
 
-  const room: Room = {
-    code,
-    players: [
-      {
-        id: playerId,
-        name: playerName.trim().slice(0, 20),
-        score: 0,
-        currentArticle: "",
-        hasWon: false,
-        isHost: true,
-        lastSeen: Date.now(),
-      },
-    ],
-    phase: "waiting",
-    round: 0,
-    totalRounds: clampedRounds,
-    maxPlayers: clampedMax,
-    startArticle: "",
-    targetArticle: "",
-    roundWinner: null,
-    countdownStart: null,
-    roundStart: null,
-    createdAt: Date.now(),
-  };
+  const players: Player[] = [
+    {
+      id: playerId,
+      name: playerName.trim().slice(0, 20),
+      score: 0,
+      currentArticle: "",
+      hasWon: false,
+      isHost: true,
+      lastSeen: Date.now(),
+    },
+  ];
 
-  rooms.set(code, room);
+  const row = await prisma.room.create({
+    data: {
+      code,
+      players: players as object[],
+      phase: "waiting",
+      round: 0,
+      totalRounds: clampedRounds,
+      maxPlayers: clampedMax,
+      startArticle: "",
+      targetArticle: "",
+      roundWinner: null,
+      countdownStart: null,
+      roundStart: null,
+      createdAt: now,
+    },
+  });
 
+  const room = dbToRoom(row);
   return Response.json({ room, playerId });
 }
 
@@ -150,12 +167,11 @@ export async function GET(request: NextRequest) {
     return Response.json({ error: "Code manquant" }, { status: 400 });
   }
 
-  const rooms = getRooms();
-  const room = rooms.get(code.toUpperCase());
+  const row = await prisma.room.findUnique({ where: { code: code.toUpperCase() } });
 
-  if (!room) {
+  if (!row) {
     return Response.json({ error: "Room introuvable" }, { status: 404 });
   }
 
-  return Response.json({ room });
+  return Response.json({ room: dbToRoom(row) });
 }
