@@ -83,7 +83,9 @@ async function fetchRandomCandidates(): Promise<string[]> {
   });
   const res = await fetch(`${WIKI_API_BASE}?${params}`);
   if (!res.ok) throw new Error("Erreur reseau");
-  const data = await res.json() as { query: { pages: Record<string, WikiPageInfo> } };
+  const data = (await res.json()) as {
+    query: { pages: Record<string, WikiPageInfo> };
+  };
   return Object.values(data.query.pages)
     .filter(isGoodArticle)
     .map((p) => p.title);
@@ -96,7 +98,8 @@ export async function pickTwoArticles(): Promise<Puzzle> {
       const batch = await fetchRandomCandidates();
       for (const title of batch) {
         if (!collected.includes(title)) collected.push(title);
-        if (collected.length >= 2) return { start: collected[0], target: collected[1] };
+        if (collected.length >= 2)
+          return { start: collected[0], target: collected[1] };
       }
     }
   } catch {

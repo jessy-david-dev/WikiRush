@@ -1,4 +1,12 @@
-export type Screen = "home" | "lobby" | "game" | "solo" | "profile" | "leaderboard" | "daily" | "blitz";
+export type Screen =
+  | "home"
+  | "lobby"
+  | "game"
+  | "solo"
+  | "profile"
+  | "leaderboard"
+  | "daily"
+  | "blitz";
 
 export type WikiArticle = {
   title: string;

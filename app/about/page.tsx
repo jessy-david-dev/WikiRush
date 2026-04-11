@@ -150,10 +150,16 @@ export default function AboutPage() {
               { emoji: "🎯", label: "500 parties et plus", range: "500+" },
               { emoji: "⚡", label: "1 000 parties et plus", range: "1 000+" },
               { emoji: "🔥", label: "5 000 parties et plus", range: "5 000+" },
-              { emoji: "🚀", label: "10 000 parties et plus", range: "10 000+" },
+              {
+                emoji: "🚀",
+                label: "10 000 parties et plus",
+                range: "10 000+",
+              },
             ].map(({ emoji, label, range }) => (
               <div key={range} className="flex items-center gap-3 px-4 py-2.5">
-                <span className="text-xl w-7 text-center shrink-0">{emoji}</span>
+                <span className="text-xl w-7 text-center shrink-0">
+                  {emoji}
+                </span>
                 <span className="text-sm text-[#aaa] flex-1">{label}</span>
                 <span className="text-xs font-mono text-[#555]">{range}</span>
               </div>

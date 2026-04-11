@@ -37,21 +37,35 @@ export function useGameEffects({
     const saved = loadSession();
     if (!saved) return;
 
-    if (saved.screen === "solo" && saved.soloPuzzle && saved.soloHistory?.length) {
+    if (
+      saved.screen === "solo" &&
+      saved.soloPuzzle &&
+      saved.soloHistory?.length
+    ) {
       setScreen("solo");
-      solo.restore(saved.soloPuzzle, saved.soloHistory, saved.soloClicks ?? 0)
-        .then((ok) => { if (!ok) { clearSession(); setScreen("home"); } });
+      solo
+        .restore(saved.soloPuzzle, saved.soloHistory, saved.soloClicks ?? 0)
+        .then((ok) => {
+          if (!ok) {
+            clearSession();
+            setScreen("home");
+          }
+        });
     } else if (
       (saved.screen === "lobby" || saved.screen === "game") &&
-      saved.multiRoomCode && saved.multiPlayerId
+      saved.multiRoomCode &&
+      saved.multiPlayerId
     ) {
       if (saved.playerName) setPlayerName(saved.playerName);
       multi.restore(saved.multiRoomCode, saved.multiPlayerId).then((ok) => {
         if (ok) setScreen("lobby");
-        else { clearSession(); setScreen("home"); }
+        else {
+          clearSession();
+          setScreen("home");
+        }
       });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Bloquer le bouton retour navigateur

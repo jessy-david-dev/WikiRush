@@ -64,8 +64,8 @@ export default function MentionsLegalesPage() {
                 SAPINET
               </p>
               <p>
-                <span className="text-[#888]">SIREN :</span> 899 483 457 (RCS
-                de Nanterre)
+                <span className="text-[#888]">SIREN :</span> 899 483 457 (RCS de
+                Nanterre)
               </p>
               <p>
                 <span className="text-[#888]">Adresse :</span> 65 rue de la

@@ -20,29 +20,64 @@ type Handlers = {
 };
 
 export function useGameHandlers({
-  solo, multi, playerName, joinCode, maxPlayers, totalRounds, gameMode, setScreen, setError, setLoading,
+  solo,
+  multi,
+  playerName,
+  joinCode,
+  maxPlayers,
+  totalRounds,
+  gameMode,
+  setScreen,
+  setError,
+  setLoading,
 }: Handlers) {
   async function handleCreateRoom() {
-    if (!playerName.trim()) { setError("Entre ton pseudo !"); return; }
-    setLoading(true); setError(null);
-    const { error: err } = await multi.createRoom(playerName.trim(), maxPlayers, totalRounds, gameMode);
+    if (!playerName.trim()) {
+      setError("Entre ton pseudo !");
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    const { error: err } = await multi.createRoom(
+      playerName.trim(),
+      maxPlayers,
+      totalRounds,
+      gameMode,
+    );
     setLoading(false);
-    if (err) { setError(err); return; }
+    if (err) {
+      setError(err);
+      return;
+    }
     setScreen("lobby");
   }
 
   async function handleJoinRoom() {
-    if (!playerName.trim()) { setError("Entre ton pseudo !"); return; }
-    if (joinCode.trim().length !== 4) { setError("Le code doit faire 4 lettres"); return; }
-    setLoading(true); setError(null);
-    const { error: err } = await multi.joinRoom(playerName.trim(), joinCode.trim().toUpperCase());
+    if (!playerName.trim()) {
+      setError("Entre ton pseudo !");
+      return;
+    }
+    if (joinCode.trim().length !== 4) {
+      setError("Le code doit faire 4 lettres");
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    const { error: err } = await multi.joinRoom(
+      playerName.trim(),
+      joinCode.trim().toUpperCase(),
+    );
     setLoading(false);
-    if (err) { setError(err); return; }
+    if (err) {
+      setError(err);
+      return;
+    }
     setScreen("lobby");
   }
 
   async function handleStartGame() {
-    setLoading(true); setError(null);
+    setLoading(true);
+    setError(null);
     const { error: err } = await multi.startGame();
     setLoading(false);
     if (err) setError(err);
@@ -50,12 +85,12 @@ export function useGameHandlers({
 
   async function handleNextRound() {
     await multi.nextRound();
-    // On reste sur "game" — le GameScreen affiche le lobby quand phase === "waiting"
+    // On reste sur "game" - le GameScreen affiche le lobby quand phase === "waiting"
   }
 
   async function handleResetGame() {
     await multi.resetGame();
-    // On reste sur "game" — le GameScreen affiche le lobby quand phase === "waiting"
+    // On reste sur "game" - le GameScreen affiche le lobby quand phase === "waiting"
   }
 
   function handleLeave() {

@@ -17,7 +17,9 @@ export type SessionData = {
 export function saveSession(data: SessionData) {
   try {
     sessionStorage.setItem(KEY, JSON.stringify(data));
-  } catch { /* ignore quota */ }
+  } catch {
+    /* ignore quota */
+  }
 }
 
 export function loadSession(): SessionData | null {
@@ -30,5 +32,9 @@ export function loadSession(): SessionData | null {
 }
 
 export function clearSession() {
-  try { sessionStorage.removeItem(KEY); } catch { /* ignore */ }
+  try {
+    sessionStorage.removeItem(KEY);
+  } catch {
+    /* ignore */
+  }
 }

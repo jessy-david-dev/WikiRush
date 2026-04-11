@@ -35,18 +35,34 @@ export function LeaderboardScreen({ onBack }: { onBack: () => void }) {
   useEffect(() => {
     fetch("/api/leaderboard")
       .then((r) => r.json())
-      .then((data) => { setRows(data); setLoading(false); });
+      .then((data) => {
+        setRows(data);
+        setLoading(false);
+      });
   }, []);
 
   if (viewingUserId) {
-    return <PublicProfileScreen userId={viewingUserId} onBack={() => setViewingUserId(null)} />;
+    return (
+      <PublicProfileScreen
+        userId={viewingUserId}
+        onBack={() => setViewingUserId(null)}
+      />
+    );
   }
 
   const sorted = [...rows]
-    .filter((r) => mode === "solo" ? r.soloGames > 0 : mode === "multi" ? r.multiGames > 0 : true)
+    .filter((r) =>
+      mode === "solo"
+        ? r.soloGames > 0
+        : mode === "multi"
+          ? r.multiGames > 0
+          : true,
+    )
     .sort((a, b) => {
-      if (mode === "solo") return b.soloWins - a.soloWins || b.soloGames - a.soloGames;
-      if (mode === "multi") return b.multiWins - a.multiWins || b.multiGames - a.multiGames;
+      if (mode === "solo")
+        return b.soloWins - a.soloWins || b.soloGames - a.soloGames;
+      if (mode === "multi")
+        return b.multiWins - a.multiWins || b.multiGames - a.multiGames;
       return b.wins - a.wins || b.totalGames - a.totalGames;
     });
 
@@ -77,28 +93,64 @@ export function LeaderboardScreen({ onBack }: { onBack: () => void }) {
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-12"><div className="spinner" /></div>
+        <div className="flex justify-center py-12">
+          <div className="spinner" />
+        </div>
       ) : sorted.length === 0 ? (
-        <p className="text-[#888] text-sm text-center py-12">Aucune partie jouée pour le moment.</p>
+        <p className="text-[#888] text-sm text-center py-12">
+          Aucune partie jouée pour le moment.
+        </p>
       ) : (
         <div className="flex flex-col gap-2 sm:gap-2.5">
           {sorted.map((row, i) => {
-            const games = mode === "solo" ? row.soloGames : mode === "multi" ? row.multiGames : row.totalGames;
-            const wins = mode === "solo" ? row.soloWins : mode === "multi" ? row.multiWins : row.wins;
+            const games =
+              mode === "solo"
+                ? row.soloGames
+                : mode === "multi"
+                  ? row.multiGames
+                  : row.totalGames;
+            const wins =
+              mode === "solo"
+                ? row.soloWins
+                : mode === "multi"
+                  ? row.multiWins
+                  : row.wins;
 
             return (
-              <div key={row.id} onClick={() => setViewingUserId(row.id)} className={`flex items-center gap-2.5 px-3.5 py-3 rounded-xl border cursor-pointer hover:brightness-110 transition-all ${i < 3 ? "border-[#7c3aed] bg-[#7c3aed]/8" : "border-[#2e2e2e] bg-[#1a1a1a]"}`}>
-                <span className="text-xl w-8 text-center shrink-0">{MEDALS[i] ?? `#${i + 1}`}</span>
+              <div
+                key={row.id}
+                onClick={() => setViewingUserId(row.id)}
+                className={`flex items-center gap-2.5 px-3.5 py-3 rounded-xl border cursor-pointer hover:brightness-110 transition-all ${i < 3 ? "border-[#7c3aed] bg-[#7c3aed]/8" : "border-[#2e2e2e] bg-[#1a1a1a]"}`}
+              >
+                <span className="text-xl w-8 text-center shrink-0">
+                  {MEDALS[i] ?? `#${i + 1}`}
+                </span>
                 <div className="flex-1 min-w-0 flex flex-col gap-1">
                   <span className="font-bold text-sm truncate">{row.name}</span>
                   <div className="flex flex-wrap gap-x-3 gap-y-0.5">
-                    <span className="text-xs text-[#888]"><span className="font-bold text-[#f0f0f0]">{wins}</span> victoires</span>
-                    <span className="text-xs text-[#888]"><span className="font-bold text-[#f0f0f0]">{games}</span> parties</span>
+                    <span className="text-xs text-[#888]">
+                      <span className="font-bold text-[#f0f0f0]">{wins}</span>{" "}
+                      victoires
+                    </span>
+                    <span className="text-xs text-[#888]">
+                      <span className="font-bold text-[#f0f0f0]">{games}</span>{" "}
+                      parties
+                    </span>
                     {row.avgClicks != null && (
-                      <span className="text-xs text-[#888]"><span className="font-bold text-[#f0f0f0]">{row.avgClicks}</span> clics moy.</span>
+                      <span className="text-xs text-[#888]">
+                        <span className="font-bold text-[#f0f0f0]">
+                          {row.avgClicks}
+                        </span>{" "}
+                        clics moy.
+                      </span>
                     )}
                     {row.bestTime != null && (
-                      <span className="text-xs text-[#888]"><span className="font-bold text-[#f0f0f0]">{fmt(row.bestTime)}</span> meilleur</span>
+                      <span className="text-xs text-[#888]">
+                        <span className="font-bold text-[#f0f0f0]">
+                          {fmt(row.bestTime)}
+                        </span>{" "}
+                        meilleur
+                      </span>
                     )}
                   </div>
                 </div>

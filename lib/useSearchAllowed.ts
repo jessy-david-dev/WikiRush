@@ -36,6 +36,7 @@ export function useCtrlFBlock(allowed: boolean) {
       }
     }
     window.addEventListener("keydown", handleKeyDown, { capture: true });
-    return () => window.removeEventListener("keydown", handleKeyDown, { capture: true });
+    return () =>
+      window.removeEventListener("keydown", handleKeyDown, { capture: true });
   }, [allowed]);
 }

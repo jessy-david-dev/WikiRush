@@ -4,7 +4,12 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { fetchArticle, normalizeTitle } from "./wiki";
 import { useTimer } from "./useTimer";
 
-export type DailyPhase = "loading" | "playing" | "won" | "gave_up" | "already_played";
+export type DailyPhase =
+  | "loading"
+  | "playing"
+  | "won"
+  | "gave_up"
+  | "already_played";
 
 export type DailyPuzzleInfo = {
   id: string;
@@ -42,22 +47,31 @@ export function useDailyGame() {
   useEffect(() => {
     fetch("/api/daily")
       .then((r) => r.json())
-      .then(async (data: { puzzle: DailyPuzzleInfo; alreadyPlayed: boolean; myResult: DailyResult | null }) => {
-        setPuzzle(data.puzzle);
-        if (data.alreadyPlayed && data.myResult) {
-          setMyResult(data.myResult);
-          setPhase("already_played");
-          return;
-        }
-        // Charger l'article de départ
-        const art = await fetchArticle(data.puzzle.startArticle);
-        if (!art) { setLoadError("Impossible de charger l'article de départ."); return; }
-        setHtml(art.html);
-        setTitle(art.title);
-        pathRef.current = [art.title];
-        setHistory([art.title]);
-        setPhase("playing");
-      })
+      .then(
+        async (data: {
+          puzzle: DailyPuzzleInfo;
+          alreadyPlayed: boolean;
+          myResult: DailyResult | null;
+        }) => {
+          setPuzzle(data.puzzle);
+          if (data.alreadyPlayed && data.myResult) {
+            setMyResult(data.myResult);
+            setPhase("already_played");
+            return;
+          }
+          // Charger l'article de départ
+          const art = await fetchArticle(data.puzzle.startArticle);
+          if (!art) {
+            setLoadError("Impossible de charger l'article de départ.");
+            return;
+          }
+          setHtml(art.html);
+          setTitle(art.title);
+          pathRef.current = [art.title];
+          setHistory([art.title]);
+          setPhase("playing");
+        },
+      )
       .catch(() => setLoadError("Impossible de charger le défi du jour."));
   }, []);
 
@@ -68,7 +82,10 @@ export function useDailyGame() {
     const art = await fetchArticle(t);
     setLoading(false);
     loadingRef.current = false;
-    if (!art) { setLoadError(`Impossible de charger "${t}".`); return null; }
+    if (!art) {
+      setLoadError(`Impossible de charger "${t}".`);
+      return null;
+    }
     setHtml(art.html);
     setTitle(art.title);
     return art.title;
@@ -86,44 +103,65 @@ export function useDailyGame() {
     await fetch("/api/daily", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ puzzleId: puzzle.id, ...result, path: result.path }),
+      body: JSON.stringify({
+        puzzleId: puzzle.id,
+        ...result,
+        path: result.path,
+      }),
     }).catch(() => {});
   }
 
-  const navigate = useCallback(async (t: string) => {
-    if (loadingRef.current || gameEndedRef.current) return;
-    clicksRef.current += 1;
-    setClicks(clicksRef.current);
-    if (!timerStartedRef.current) { timer.start(); timerStartedRef.current = true; }
+  const navigate = useCallback(
+    async (t: string) => {
+      if (loadingRef.current || gameEndedRef.current) return;
+      clicksRef.current += 1;
+      setClicks(clicksRef.current);
+      if (!timerStartedRef.current) {
+        timer.start();
+        timerStartedRef.current = true;
+      }
 
-    const canonical = await loadArticle(t);
-    if (!canonical) return;
-    const newPath = [...pathRef.current, canonical];
-    pathRef.current = newPath;
-    setHistory(newPath);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+      const canonical = await loadArticle(t);
+      if (!canonical) return;
+      const newPath = [...pathRef.current, canonical];
+      pathRef.current = newPath;
+      setHistory(newPath);
+      window.scrollTo({ top: 0, behavior: "smooth" });
 
-    if (puzzle && normalizeTitle(canonical) === normalizeTitle(puzzle.targetArticle)) {
-      timer.stop();
-      gameEndedRef.current = true;
-      setPhase("won");
-      await submitResult(true);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [puzzle]);
+      if (
+        puzzle &&
+        normalizeTitle(canonical) === normalizeTitle(puzzle.targetArticle)
+      ) {
+        timer.stop();
+        gameEndedRef.current = true;
+        setPhase("won");
+        await submitResult(true);
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [puzzle],
+  );
 
   const goBack = useCallback(async () => {
-    if (loadingRef.current || gameEndedRef.current || pathRef.current.length <= 1) return;
+    if (
+      loadingRef.current ||
+      gameEndedRef.current ||
+      pathRef.current.length <= 1
+    )
+      return;
     clicksRef.current += 1;
     setClicks(clicksRef.current);
-    if (!timerStartedRef.current) { timer.start(); timerStartedRef.current = true; }
+    if (!timerStartedRef.current) {
+      timer.start();
+      timerStartedRef.current = true;
+    }
     const newPath = pathRef.current.slice(0, -1);
     const canonical = await loadArticle(newPath[newPath.length - 1]);
     if (!canonical) return;
     pathRef.current = newPath;
     setHistory(newPath);
     window.scrollTo({ top: 0, behavior: "smooth" });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function giveUp() {
@@ -134,11 +172,20 @@ export function useDailyGame() {
   }
 
   return {
-    phase, puzzle, myResult,
-    html, title, loading, loadError,
-    history, clicks, elapsed: timer.elapsed,
+    phase,
+    puzzle,
+    myResult,
+    html,
+    title,
+    loading,
+    loadError,
+    history,
+    clicks,
+    elapsed: timer.elapsed,
     canGoBack: pathRef.current.length > 1,
-    navigate, goBack, giveUp,
+    navigate,
+    goBack,
+    giveUp,
     retryLoad: () => title && loadArticle(title),
   };
 }

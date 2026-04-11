@@ -15,122 +15,186 @@ export function BlitzScreen({ onBack }: { onBack: () => void }) {
   const game = useBlitzGame();
   const { allowed: searchAllowed, toggle: toggleSearch } = useSearchAllowed();
 
-
-  const btnPrimary = "w-full min-h-11 rounded-xl text-sm font-semibold bg-[#7c3aed] text-white hover:bg-[#6d28d9] disabled:opacity-50 cursor-pointer transition-colors";
-  const btnGhost = "w-full min-h-11 rounded-xl text-sm font-semibold bg-[#242424] border border-[#2e2e2e] text-[#f0f0f0] hover:bg-[#1a1a1a] cursor-pointer transition-colors";
+  const btnPrimary =
+    "w-full min-h-11 rounded-xl text-sm font-semibold bg-[#7c3aed] text-white hover:bg-[#6d28d9] disabled:opacity-50 cursor-pointer transition-colors";
+  const btnGhost =
+    "w-full min-h-11 rounded-xl text-sm font-semibold bg-[#242424] border border-[#2e2e2e] text-[#f0f0f0] hover:bg-[#1a1a1a] cursor-pointer transition-colors";
 
   const danger = game.timeLeft < 30;
 
-  if (game.phase === "setup") return (
-    <div className="min-h-dvh bg-[#0f0f0f] text-[#f0f0f0] animate-fade-in flex flex-col items-center justify-center px-4 py-8 gap-5 max-w-sm mx-auto text-center">
-      <button className="self-start min-h-9 px-3 rounded-lg text-sm font-semibold bg-[#242424] border border-[#2e2e2e] hover:bg-[#1a1a1a] cursor-pointer" onClick={onBack}>
-        Retour
-      </button>
-      <div className="text-5xl">⚡</div>
-      <h2 className="text-2xl sm:text-3xl font-black">Mode Blitz</h2>
-      <p className="text-[#888] text-sm sm:text-base leading-relaxed">
-        Tu as <span className="text-[#f0f0f0] font-bold">2 minutes</span>{" "}pour naviguer de l&apos;article de départ jusqu&apos;à l&apos;article cible en cliquant sur les liens Wikipedia. Plus tu es rapide, mieux c&apos;est !
-      </p>
-      <button
-        onClick={toggleSearch}
-        className={`w-full min-h-11 rounded-xl text-sm font-semibold border transition-colors cursor-pointer flex items-center justify-between px-4 ${searchAllowed ? "bg-[#7c3aed]/10 border-[#7c3aed] text-[#a78bfa]" : "bg-[#1a1a1a] border-[#2e2e2e] text-[#888]"}`}
-      >
-        <span>🔍 Recherche Ctrl+F</span>
-        <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${searchAllowed ? "bg-[#7c3aed]/30 text-[#a78bfa]" : "bg-[#242424] text-[#555]"}`}>
-          {searchAllowed ? "Autorisée" : "Bloquée"}
-        </span>
-      </button>
-      <button className={btnPrimary} onClick={game.start} disabled={game.loading}>
-        {game.loading ? "Préparation..." : "Lancer le chrono !"}
-      </button>
-    </div>
-  );
-
-  if (game.phase === "won") return (
-    <div className="min-h-dvh bg-[#0f0f0f] text-[#f0f0f0] animate-fade-in flex items-center justify-center px-4 py-8">
-      <div className="w-full max-w-sm sm:max-w-md text-center flex flex-col gap-5">
-        <div className="text-5xl sm:text-6xl leading-none">🎉</div>
-        <h2 className="text-2xl sm:text-3xl font-black">Article trouvé !</h2>
-        {game.puzzle && (
-          <p className="text-[#888] text-sm">
-            <span className="text-[#f0f0f0] font-semibold">{game.puzzle.start}</span>
-            {" → "}
-            <span className="text-[#7c3aed] font-semibold">{game.puzzle.target}</span>
-          </p>
-        )}
-        <div className="flex gap-8 justify-center">
-          <div className="flex flex-col gap-1">
-            <span className="text-4xl font-black text-[#7c3aed]">{fmtLeft(game.timeLeft)}</span>
-            <span className="text-xs text-[#888]">temps restant</span>
-          </div>
-          <div className="flex flex-col gap-1">
-            <span className="text-4xl font-black text-[#7c3aed]">{game.clicks}</span>
-            <span className="text-xs text-[#888]">clics</span>
-          </div>
-          <div className="flex flex-col gap-1">
-            <span className="text-4xl font-black text-[#7c3aed]">{game.history.length}</span>
-            <span className="text-xs text-[#888]">articles</span>
-          </div>
-        </div>
-        <div className="bg-[#1a1a1a] rounded-xl px-4 py-3 flex flex-wrap gap-1 text-xs text-[#888] text-left max-h-48 overflow-y-auto">
-          {game.history.map((t, i) => (
-            <span key={i} className="flex items-center gap-1">
-              {i > 0 && <span className="text-[#555]">›</span>}
-              <span className={t === game.puzzle?.target ? "text-[#7c3aed] font-bold" : ""}>{t}</span>
-            </span>
-          ))}
-        </div>
-        <ShareBar text={`⚡ Mode Blitz WikiRush : j'ai atteint "${game.puzzle?.target}" en ${game.clicks} clics avec ${fmtLeft(game.timeLeft)} restant !`} />
-        <div className="flex flex-col gap-2.5">
-          <button className={btnPrimary} onClick={game.start} disabled={game.loading}>
-            Rejouer
-          </button>
-          <button className={btnGhost} onClick={() => { game.reset(); onBack(); }}>Accueil</button>
-        </div>
+  if (game.phase === "setup")
+    return (
+      <div className="min-h-dvh bg-[#0f0f0f] text-[#f0f0f0] animate-fade-in flex flex-col items-center justify-center px-4 py-8 gap-5 max-w-sm mx-auto text-center">
+        <button
+          className="self-start min-h-9 px-3 rounded-lg text-sm font-semibold bg-[#242424] border border-[#2e2e2e] hover:bg-[#1a1a1a] cursor-pointer"
+          onClick={onBack}
+        >
+          Retour
+        </button>
+        <div className="text-5xl">⚡</div>
+        <h2 className="text-2xl sm:text-3xl font-black">Mode Blitz</h2>
+        <p className="text-[#888] text-sm sm:text-base leading-relaxed">
+          Tu as <span className="text-[#f0f0f0] font-bold">2 minutes</span> pour
+          naviguer de l&apos;article de départ jusqu&apos;à l&apos;article cible
+          en cliquant sur les liens Wikipedia. Plus tu es rapide, mieux
+          c&apos;est !
+        </p>
+        <button
+          onClick={toggleSearch}
+          className={`w-full min-h-11 rounded-xl text-sm font-semibold border transition-colors cursor-pointer flex items-center justify-between px-4 ${searchAllowed ? "bg-[#7c3aed]/10 border-[#7c3aed] text-[#a78bfa]" : "bg-[#1a1a1a] border-[#2e2e2e] text-[#888]"}`}
+        >
+          <span>🔍 Recherche Ctrl+F</span>
+          <span
+            className={`text-xs font-bold px-2 py-0.5 rounded-full ${searchAllowed ? "bg-[#7c3aed]/30 text-[#a78bfa]" : "bg-[#242424] text-[#555]"}`}
+          >
+            {searchAllowed ? "Autorisée" : "Bloquée"}
+          </span>
+        </button>
+        <button
+          className={btnPrimary}
+          onClick={game.start}
+          disabled={game.loading}
+        >
+          {game.loading ? "Préparation..." : "Lancer le chrono !"}
+        </button>
       </div>
-    </div>
-  );
+    );
 
-  if (game.phase === "lost") return (
-    <div className="min-h-dvh bg-[#0f0f0f] text-[#f0f0f0] animate-fade-in flex items-center justify-center px-4 py-8">
-      <div className="w-full max-w-sm sm:max-w-md text-center flex flex-col gap-5">
-        <div className="text-5xl sm:text-6xl leading-none">⏱️</div>
-        <h2 className="text-2xl sm:text-3xl font-black">Temps écoulé !</h2>
-        {game.puzzle && (
-          <p className="text-[#888] text-sm">
-            L&apos;objectif était d&apos;atteindre{" "}
-            <span className="text-[#7c3aed] font-semibold">{game.puzzle.target}</span>
-          </p>
-        )}
-        <div className="flex gap-8 justify-center">
-          <div className="flex flex-col gap-1">
-            <span className="text-4xl font-black text-red-400">{game.clicks}</span>
-            <span className="text-xs text-[#888]">clics</span>
+  if (game.phase === "won")
+    return (
+      <div className="min-h-dvh bg-[#0f0f0f] text-[#f0f0f0] animate-fade-in flex items-center justify-center px-4 py-8">
+        <div className="w-full max-w-sm sm:max-w-md text-center flex flex-col gap-5">
+          <div className="text-5xl sm:text-6xl leading-none">🎉</div>
+          <h2 className="text-2xl sm:text-3xl font-black">Article trouvé !</h2>
+          {game.puzzle && (
+            <p className="text-[#888] text-sm">
+              <span className="text-[#f0f0f0] font-semibold">
+                {game.puzzle.start}
+              </span>
+              {" → "}
+              <span className="text-[#7c3aed] font-semibold">
+                {game.puzzle.target}
+              </span>
+            </p>
+          )}
+          <div className="flex gap-8 justify-center">
+            <div className="flex flex-col gap-1">
+              <span className="text-4xl font-black text-[#7c3aed]">
+                {fmtLeft(game.timeLeft)}
+              </span>
+              <span className="text-xs text-[#888]">temps restant</span>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-4xl font-black text-[#7c3aed]">
+                {game.clicks}
+              </span>
+              <span className="text-xs text-[#888]">clics</span>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-4xl font-black text-[#7c3aed]">
+                {game.history.length}
+              </span>
+              <span className="text-xs text-[#888]">articles</span>
+            </div>
           </div>
-          <div className="flex flex-col gap-1">
-            <span className="text-4xl font-black text-red-400">{game.history.length}</span>
-            <span className="text-xs text-[#888]">articles visités</span>
-          </div>
-        </div>
-        {game.history.length > 0 && (
           <div className="bg-[#1a1a1a] rounded-xl px-4 py-3 flex flex-wrap gap-1 text-xs text-[#888] text-left max-h-48 overflow-y-auto">
             {game.history.map((t, i) => (
               <span key={i} className="flex items-center gap-1">
                 {i > 0 && <span className="text-[#555]">›</span>}
-                <span>{t}</span>
+                <span
+                  className={
+                    t === game.puzzle?.target ? "text-[#7c3aed] font-bold" : ""
+                  }
+                >
+                  {t}
+                </span>
               </span>
             ))}
           </div>
-        )}
-        <div className="flex flex-col gap-2.5">
-          <button className={btnPrimary} onClick={game.start} disabled={game.loading}>
-            Réessayer
-          </button>
-          <button className={btnGhost} onClick={() => { game.reset(); onBack(); }}>Accueil</button>
+          <ShareBar
+            text={`⚡ Mode Blitz WikiRush : j'ai atteint "${game.puzzle?.target}" en ${game.clicks} clics avec ${fmtLeft(game.timeLeft)} restant !`}
+          />
+          <div className="flex flex-col gap-2.5">
+            <button
+              className={btnPrimary}
+              onClick={game.start}
+              disabled={game.loading}
+            >
+              Rejouer
+            </button>
+            <button
+              className={btnGhost}
+              onClick={() => {
+                game.reset();
+                onBack();
+              }}
+            >
+              Accueil
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+
+  if (game.phase === "lost")
+    return (
+      <div className="min-h-dvh bg-[#0f0f0f] text-[#f0f0f0] animate-fade-in flex items-center justify-center px-4 py-8">
+        <div className="w-full max-w-sm sm:max-w-md text-center flex flex-col gap-5">
+          <div className="text-5xl sm:text-6xl leading-none">⏱️</div>
+          <h2 className="text-2xl sm:text-3xl font-black">Temps écoulé !</h2>
+          {game.puzzle && (
+            <p className="text-[#888] text-sm">
+              L&apos;objectif était d&apos;atteindre{" "}
+              <span className="text-[#7c3aed] font-semibold">
+                {game.puzzle.target}
+              </span>
+            </p>
+          )}
+          <div className="flex gap-8 justify-center">
+            <div className="flex flex-col gap-1">
+              <span className="text-4xl font-black text-red-400">
+                {game.clicks}
+              </span>
+              <span className="text-xs text-[#888]">clics</span>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-4xl font-black text-red-400">
+                {game.history.length}
+              </span>
+              <span className="text-xs text-[#888]">articles visités</span>
+            </div>
+          </div>
+          {game.history.length > 0 && (
+            <div className="bg-[#1a1a1a] rounded-xl px-4 py-3 flex flex-wrap gap-1 text-xs text-[#888] text-left max-h-48 overflow-y-auto">
+              {game.history.map((t, i) => (
+                <span key={i} className="flex items-center gap-1">
+                  {i > 0 && <span className="text-[#555]">›</span>}
+                  <span>{t}</span>
+                </span>
+              ))}
+            </div>
+          )}
+          <div className="flex flex-col gap-2.5">
+            <button
+              className={btnPrimary}
+              onClick={game.start}
+              disabled={game.loading}
+            >
+              Réessayer
+            </button>
+            <button
+              className={btnGhost}
+              onClick={() => {
+                game.reset();
+                onBack();
+              }}
+            >
+              Accueil
+            </button>
+          </div>
+        </div>
+      </div>
+    );
 
   // Playing
   return (
@@ -139,18 +203,27 @@ export function BlitzScreen({ onBack }: { onBack: () => void }) {
         <div className="article-container">
           {game.title && <h1 className="article-title">{game.title}</h1>}
           {game.loading && (
-            <div className="flex items-center gap-3 py-10 px-4 text-[#888]"><div className="spinner" /> Chargement...</div>
+            <div className="flex items-center gap-3 py-10 px-4 text-[#888]">
+              <div className="spinner" /> Chargement...
+            </div>
           )}
           {game.loadError && (
             <div className="flex flex-col items-center gap-4 py-10 px-4 text-center">
               <p className="text-[#888] text-sm">{game.loadError}</p>
-              <button className="min-h-11 px-5 rounded-xl text-sm font-semibold bg-[#2563eb] text-white cursor-pointer" onClick={() => game.retryLoad()}>
+              <button
+                className="min-h-11 px-5 rounded-xl text-sm font-semibold bg-[#2563eb] text-white cursor-pointer"
+                onClick={() => game.retryLoad()}
+              >
                 Réessayer
               </button>
             </div>
           )}
           {!game.loading && !game.loadError && game.html && (
-            <ArticleView html={game.html} onNavigate={game.navigate} disabled={game.loading} />
+            <ArticleView
+              html={game.html}
+              onNavigate={game.navigate}
+              disabled={game.loading}
+            />
           )}
         </div>
       </div>
@@ -160,20 +233,30 @@ export function BlitzScreen({ onBack }: { onBack: () => void }) {
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="flex flex-col items-center gap-0.5">
-              <span className="text-[8px] font-bold uppercase tracking-wider text-[#888]">Clics</span>
-              <span className="text-sm font-black tabular-nums">{game.clicks}</span>
+              <span className="text-[8px] font-bold uppercase tracking-wider text-[#888]">
+                Clics
+              </span>
+              <span className="text-sm font-black tabular-nums">
+                {game.clicks}
+              </span>
             </div>
           </div>
 
           {/* Timer */}
-          <div className={`text-2xl sm:text-3xl font-black tabular-nums transition-colors ${danger ? "text-red-400 animate-pulse" : "text-[#f0f0f0]"}`}>
+          <div
+            className={`text-2xl sm:text-3xl font-black tabular-nums transition-colors ${danger ? "text-red-400 animate-pulse" : "text-[#f0f0f0]"}`}
+          >
             {fmtLeft(game.timeLeft)}
           </div>
 
           {game.puzzle && (
             <div className="text-right">
-              <div className="text-[8px] font-bold uppercase tracking-wider text-[#888]">Cible</div>
-              <div className="text-xs font-bold text-[#7c3aed] max-w-28 truncate">{game.puzzle.target}</div>
+              <div className="text-[8px] font-bold uppercase tracking-wider text-[#888]">
+                Cible
+              </div>
+              <div className="text-xs font-bold text-[#7c3aed] max-w-28 truncate">
+                {game.puzzle.target}
+              </div>
             </div>
           )}
         </div>

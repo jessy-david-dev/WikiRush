@@ -33,7 +33,10 @@ export function useSoloGame() {
     const art = await fetchArticle(t);
     setLoading(false);
     loadingRef.current = false;
-    if (!art) { setLoadError(`Impossible de charger "${t}".`); return null; }
+    if (!art) {
+      setLoadError(`Impossible de charger "${t}".`);
+      return null;
+    }
     setHtml(art.html);
     setTitle(art.title);
     return art.title;
@@ -41,8 +44,10 @@ export function useSoloGame() {
 
   async function start() {
     setLoading(true);
-    clicksRef.current = 0; setClicksDisplay(0);
-    pathRef.current = []; setHistory([]);
+    clicksRef.current = 0;
+    setClicksDisplay(0);
+    pathRef.current = [];
+    setHistory([]);
     timerStartedRef.current = false;
     gameEndedRef.current = false;
     timer.reset();
@@ -55,38 +60,65 @@ export function useSoloGame() {
     pathRef.current = [canonical];
     setHistory([canonical]);
     setPhase("playing");
-    saveSession({ screen: "solo", soloPuzzle: p, soloHistory: [canonical], soloClicks: 0 });
+    saveSession({
+      screen: "solo",
+      soloPuzzle: p,
+      soloHistory: [canonical],
+      soloClicks: 0,
+    });
   }
 
-  const navigate = useCallback(async (t: string) => {
-    if (loadingRef.current || gameEndedRef.current) return;
-    clicksRef.current += 1;
-    setClicksDisplay(clicksRef.current);
-    if (!timerStartedRef.current) { timer.start(); timerStartedRef.current = true; }
+  const navigate = useCallback(
+    async (t: string) => {
+      if (loadingRef.current || gameEndedRef.current) return;
+      clicksRef.current += 1;
+      setClicksDisplay(clicksRef.current);
+      if (!timerStartedRef.current) {
+        timer.start();
+        timerStartedRef.current = true;
+      }
 
-    const canonical = await loadArticle(t);
-    if (!canonical) return;
-    const newPath = [...pathRef.current, canonical];
-    pathRef.current = newPath;
-    setHistory(newPath);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+      const canonical = await loadArticle(t);
+      if (!canonical) return;
+      const newPath = [...pathRef.current, canonical];
+      pathRef.current = newPath;
+      setHistory(newPath);
+      window.scrollTo({ top: 0, behavior: "smooth" });
 
-    if (puzzle && normalizeTitle(canonical) === normalizeTitle(puzzle.target)) {
-      timer.stop();
-      gameEndedRef.current = true;
-      setPhase("won");
-      clearSession();
-    } else {
-      saveSession({ screen: "solo", soloPuzzle: puzzle ?? undefined, soloHistory: newPath, soloClicks: clicksRef.current });
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [puzzle]);
+      if (
+        puzzle &&
+        normalizeTitle(canonical) === normalizeTitle(puzzle.target)
+      ) {
+        timer.stop();
+        gameEndedRef.current = true;
+        setPhase("won");
+        clearSession();
+      } else {
+        saveSession({
+          screen: "solo",
+          soloPuzzle: puzzle ?? undefined,
+          soloHistory: newPath,
+          soloClicks: clicksRef.current,
+        });
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [puzzle],
+  );
 
   const goBack = useCallback(async () => {
-    if (loadingRef.current || gameEndedRef.current || pathRef.current.length <= 1) return;
+    if (
+      loadingRef.current ||
+      gameEndedRef.current ||
+      pathRef.current.length <= 1
+    )
+      return;
     clicksRef.current += 1;
     setClicksDisplay(clicksRef.current);
-    if (!timerStartedRef.current) { timer.start(); timerStartedRef.current = true; }
+    if (!timerStartedRef.current) {
+      timer.start();
+      timerStartedRef.current = true;
+    }
 
     const newPath = pathRef.current.slice(0, -1);
     const canonical = await loadArticle(newPath[newPath.length - 1]);
@@ -94,16 +126,19 @@ export function useSoloGame() {
     pathRef.current = newPath;
     setHistory(newPath);
     window.scrollTo({ top: 0, behavior: "smooth" });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function reset() {
     timer.reset();
-    clicksRef.current = 0; setClicksDisplay(0);
-    pathRef.current = []; setHistory([]);
+    clicksRef.current = 0;
+    setClicksDisplay(0);
+    pathRef.current = [];
+    setHistory([]);
     timerStartedRef.current = false;
     gameEndedRef.current = false;
-    setHtml(""); setTitle("");
+    setHtml("");
+    setTitle("");
     setPuzzle(null);
     setPhase("setup");
     setLoadError(null);
@@ -111,9 +146,14 @@ export function useSoloGame() {
   }
 
   // Expose une fonction pour restaurer une session sauvegardée
-  async function restore(savedPuzzle: Puzzle, savedHistory: string[], savedClicks: number) {
+  async function restore(
+    savedPuzzle: Puzzle,
+    savedHistory: string[],
+    savedClicks: number,
+  ) {
     setPuzzle(savedPuzzle);
-    clicksRef.current = savedClicks; setClicksDisplay(savedClicks);
+    clicksRef.current = savedClicks;
+    setClicksDisplay(savedClicks);
     const lastTitle = savedHistory[savedHistory.length - 1];
     const canonical = await loadArticle(lastTitle);
     if (!canonical) return false;
@@ -126,18 +166,26 @@ export function useSoloGame() {
   }
 
   return {
-    phase, puzzle, html, title, loading, loadError, history,
-    clicks: clicksDisplay, elapsed: timer.elapsed,
+    phase,
+    puzzle,
+    html,
+    title,
+    loading,
+    loadError,
+    history,
+    clicks: clicksDisplay,
+    elapsed: timer.elapsed,
     canGoBack: pathRef.current.length > 1,
-    start, navigate, goBack, reset, restore,
+    start,
+    navigate,
+    goBack,
+    reset,
+    restore,
     retryLoad: () => title && loadArticle(title),
   };
 }
 
-export function useSoloKeyboard(
-  active: boolean,
-  goBack: () => void,
-) {
+export function useSoloKeyboard(active: boolean, goBack: () => void) {
   useEffect(() => {
     if (!active) return;
     const onKey = (e: KeyboardEvent) => {

@@ -22,20 +22,49 @@ export default function WikiRush() {
   const solo = useSoloGame();
   const multi = useMultiGame();
 
-  const { session } = useGameEffects({ solo, multi, screen, setScreen, setPlayerName });
-  const handlers = useGameHandlers({ solo, multi, playerName, joinCode, maxPlayers, totalRounds, gameMode, setScreen, setError, setLoading });
+  const { session } = useGameEffects({
+    solo,
+    multi,
+    screen,
+    setScreen,
+    setPlayerName,
+  });
+  const handlers = useGameHandlers({
+    solo,
+    multi,
+    playerName,
+    joinCode,
+    maxPlayers,
+    totalRounds,
+    gameMode,
+    setScreen,
+    setError,
+    setLoading,
+  });
 
   return (
     <ScreenRouter
-      screen={screen} setScreen={setScreen} session={session}
-      solo={solo} multi={multi} handlers={handlers}
-      playerName={playerName} setPlayerName={setPlayerName}
-      joinCode={joinCode} setJoinCode={setJoinCode}
-      maxPlayers={maxPlayers} setMaxPlayers={setMaxPlayers}
-      totalRounds={totalRounds} setTotalRounds={setTotalRounds}
-      gameMode={gameMode} setGameMode={setGameMode}
-      error={error} setError={setError} loading={loading}
-      showAuth={showAuth} setShowAuth={setShowAuth}
+      screen={screen}
+      setScreen={setScreen}
+      session={session}
+      solo={solo}
+      multi={multi}
+      handlers={handlers}
+      playerName={playerName}
+      setPlayerName={setPlayerName}
+      joinCode={joinCode}
+      setJoinCode={setJoinCode}
+      maxPlayers={maxPlayers}
+      setMaxPlayers={setMaxPlayers}
+      totalRounds={totalRounds}
+      setTotalRounds={setTotalRounds}
+      gameMode={gameMode}
+      setGameMode={setGameMode}
+      error={error}
+      setError={setError}
+      loading={loading}
+      showAuth={showAuth}
+      setShowAuth={setShowAuth}
     />
   );
 }

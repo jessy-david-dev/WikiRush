@@ -39,7 +39,12 @@ export function useTimer() {
   const stop = useCallback(() => stopRef.current(), []);
   const reset = useCallback(() => resetRef.current(), []);
 
-  useEffect(() => () => { if (rafRef.current !== null) cancelAnimationFrame(rafRef.current); }, []);
+  useEffect(
+    () => () => {
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+    },
+    [],
+  );
 
   return { elapsed, start, stop, reset };
 }
