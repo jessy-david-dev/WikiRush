@@ -30,6 +30,10 @@ type HomeScreenProps = {
   setPlayerName: (v: string) => void;
   joinCode: string;
   setJoinCode: (v: string) => void;
+  maxPlayers: number;
+  setMaxPlayers: (v: number) => void;
+  totalRounds: number;
+  setTotalRounds: (v: number) => void;
   error: string | null;
   setError: (v: string | null) => void;
   loading: boolean;
@@ -49,6 +53,10 @@ export function HomeScreen({
   setPlayerName,
   joinCode,
   setJoinCode,
+  maxPlayers,
+  setMaxPlayers,
+  totalRounds,
+  setTotalRounds,
   error,
   setError,
   loading,
@@ -94,120 +102,154 @@ export function HomeScreen({
 
       {/* Hero */}
       <div className="flex-1 flex flex-col items-center justify-center gap-6 sm:gap-8 w-full max-w-sm sm:max-w-md">
-      <div className="text-center">
-        <Image
-          src="/wikirush.png"
-          alt="WikiRush"
-          width={320}
-          height={320}
-          className="w-40 sm:w-56 md:w-72 h-auto mx-auto mix-blend-screen"
-          priority
-        />
-        <p className="mt-3 text-sm sm:text-base font-semibold text-[#f0f0f0] max-w-xs sm:max-w-sm mx-auto leading-relaxed tracking-wide">
-          Navigue entre les articles Wikipedia pour atteindre la cible en
-          premier !
-        </p>
-        {today !== null && (
-          <p className="mt-2 text-xs text-[#888]">
-            {todayEmoji(today)}{" "}
-            <span className="font-semibold text-[#f0f0f0]">
-              {today.toLocaleString("fr-FR")}
-            </span>{" "}
-            partie{today > 1 ? "s" : ""} jouée{today > 1 ? "s" : ""} au total
+        <div className="text-center">
+          <Image
+            src="/wikirush.png"
+            alt="WikiRush"
+            width={320}
+            height={320}
+            className="w-40 sm:w-56 md:w-72 h-auto mx-auto mix-blend-screen"
+            priority
+          />
+          <p className="mt-3 text-sm sm:text-base font-semibold text-[#f0f0f0] max-w-xs sm:max-w-sm mx-auto leading-relaxed tracking-wide">
+            Navigue entre les articles Wikipedia pour atteindre la cible en
+            premier !
           </p>
-        )}
-      </div>
+          {today !== null && (
+            <p className="mt-2 text-xs text-[#888]">
+              {todayEmoji(today)}{" "}
+              <span className="font-semibold text-[#f0f0f0]">
+                {today.toLocaleString("fr-FR")}
+              </span>{" "}
+              partie{today > 1 ? "s" : ""} jouée{today > 1 ? "s" : ""} au total
+            </p>
+          )}
+        </div>
 
-      {/* Form */}
-      <div className="w-full flex flex-col gap-3 sm:gap-4">
-        {error && (
-          <div className="flex items-center justify-between gap-3 bg-red-950/40 border border-red-600 text-red-300 px-3 py-2.5 rounded-xl text-xs sm:text-sm">
-            {error}
+        {/* Form */}
+        <div className="w-full flex flex-col gap-3 sm:gap-4">
+          {error && (
+            <div className="flex items-center justify-between gap-3 bg-red-950/40 border border-red-600 text-red-300 px-3 py-2.5 rounded-xl text-xs sm:text-sm">
+              {error}
+              <button
+                onClick={() => setError(null)}
+                className="shrink-0 px-1.5 py-0.5 rounded hover:bg-white/10 cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+          )}
+
+          <input
+            className="w-full min-h-11 px-3.5 bg-[#1a1a1a] border-[1.5px] border-[#2e2e2e] rounded-xl text-[#f0f0f0] text-sm outline-none focus:border-[#7c3aed] transition-colors"
+            type="text"
+            placeholder="Ton pseudo"
+            value={playerName}
+            onChange={(e) => setPlayerName(e.target.value)}
+            maxLength={20}
+            onKeyDown={(e) => e.key === "Enter" && onCreateRoom()}
+          />
+
+          {/* Multijoueur */}
+          <div className="bg-[#1a1a1a] border border-[#2e2e2e] rounded-xl p-4 sm:p-5 flex flex-col gap-3">
+            <h3 className="text-[10px] sm:text-xs font-bold text-[#888] uppercase tracking-wider">
+              Multijoueur
+            </h3>
+            <div className="flex items-center justify-between gap-3">
+              <button
+                className="flex-1 min-h-11 rounded-xl text-sm font-semibold bg-[#7c3aed] text-white hover:bg-[#6d28d9] disabled:opacity-50 cursor-pointer transition-colors"
+                onClick={onCreateRoom}
+                disabled={loading}
+              >
+                {loading ? "Création..." : "Créer une partie"}
+              </button>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <span className="text-xs text-[#888] whitespace-nowrap">
+                  Max
+                </span>
+                <select
+                  value={maxPlayers}
+                  onChange={(e) => setMaxPlayers(Number(e.target.value))}
+                  className="min-h-11 px-2 bg-[#1a1a1a] border border-[#2e2e2e] rounded-xl text-sm text-[#f0f0f0] outline-none focus:border-[#7c3aed] cursor-pointer transition-colors"
+                >
+                  {[2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16].map((n) => (
+                    <option key={n} value={n}>
+                      {n} joueurs
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <span className="text-xs text-[#888] whitespace-nowrap">
+                  Manches
+                </span>
+                <select
+                  value={totalRounds}
+                  onChange={(e) => setTotalRounds(Number(e.target.value))}
+                  className="min-h-11 px-2 bg-[#1a1a1a] border border-[#2e2e2e] rounded-xl text-sm text-[#f0f0f0] outline-none focus:border-[#7c3aed] cursor-pointer transition-colors"
+                >
+                  {[1, 2, 3, 4, 5, 7, 10].map((n) => (
+                    <option key={n} value={n}>
+                      {n}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            {/* Join row - colonne sur mobile, ligne sur sm+ */}
+            <div className="flex flex-col sm:flex-row gap-2">
+              <input
+                className="flex-1 min-h-11 px-3.5 bg-[#0f0f0f] border-[1.5px] border-[#2e2e2e] rounded-xl text-[#f0f0f0] font-mono text-base sm:text-lg tracking-widest uppercase outline-none focus:border-[#7c3aed] transition-colors"
+                type="text"
+                placeholder="Code de la partie"
+                value={joinCode}
+                onChange={(e) =>
+                  setJoinCode(e.target.value.toUpperCase().slice(0, 4))
+                }
+                maxLength={4}
+                onKeyDown={(e) => e.key === "Enter" && onJoinRoom()}
+              />
+              <button
+                className="w-full sm:w-auto min-h-11 px-5 rounded-xl text-sm font-semibold bg-[#2563eb] text-white hover:bg-[#1d4ed8] disabled:opacity-50 cursor-pointer shrink-0 transition-colors"
+                onClick={onJoinRoom}
+                disabled={loading}
+              >
+                Rejoindre
+              </button>
+            </div>
+          </div>
+
+          {/* Divider */}
+          <div className="relative text-center text-[#888] text-xs py-1">
+            <span className="relative z-10 px-3 bg-[#0f0f0f]">ou</span>
+            <div className="absolute inset-x-0 top-1/2 h-px bg-[#2e2e2e]" />
+          </div>
+
+          {/* Solo */}
+          <div className="bg-[#1a1a1a] border border-[#2e2e2e] rounded-xl p-4 sm:p-5 flex flex-col gap-3">
+            <h3 className="text-[10px] sm:text-xs font-bold text-[#888] uppercase tracking-wider">
+              Solo
+            </h3>
             <button
-              onClick={() => setError(null)}
-              className="shrink-0 px-1.5 py-0.5 rounded hover:bg-white/10 cursor-pointer"
+              className="w-full min-h-11 rounded-xl text-sm font-semibold bg-[#242424] border border-[#2e2e2e] text-[#f0f0f0] hover:bg-[#1a1a1a] cursor-pointer transition-colors"
+              onClick={onSolo}
             >
-              ✕
+              🎯 Jouer en solo
+            </button>
+            <button
+              className="w-full min-h-11 rounded-xl text-sm font-semibold bg-[#242424] border border-[#2e2e2e] text-[#f0f0f0] hover:bg-[#1a1a1a] cursor-pointer transition-colors"
+              onClick={onDaily}
+            >
+              🗓 Défi du jour
+            </button>
+            <button
+              className="w-full min-h-11 rounded-xl text-sm font-semibold bg-[#242424] border border-[#2e2e2e] text-[#f0f0f0] hover:bg-[#1a1a1a] cursor-pointer transition-colors"
+              onClick={onBlitz}
+            >
+              ⚡ Mode Blitz - 2 min
             </button>
           </div>
-        )}
-
-        <input
-          className="w-full min-h-11 px-3.5 bg-[#1a1a1a] border-[1.5px] border-[#2e2e2e] rounded-xl text-[#f0f0f0] text-sm outline-none focus:border-[#7c3aed] transition-colors"
-          type="text"
-          placeholder="Ton pseudo"
-          value={playerName}
-          onChange={(e) => setPlayerName(e.target.value)}
-          maxLength={20}
-          onKeyDown={(e) => e.key === "Enter" && onCreateRoom()}
-        />
-
-        {/* Multijoueur */}
-        <div className="bg-[#1a1a1a] border border-[#2e2e2e] rounded-xl p-4 sm:p-5 flex flex-col gap-3">
-          <h3 className="text-[10px] sm:text-xs font-bold text-[#888] uppercase tracking-wider">
-            Multijoueur
-          </h3>
-          <button
-            className="w-full min-h-11 rounded-xl text-sm font-semibold bg-[#7c3aed] text-white hover:bg-[#6d28d9] disabled:opacity-50 cursor-pointer transition-colors"
-            onClick={onCreateRoom}
-            disabled={loading}
-          >
-            {loading ? "Création..." : "Créer une partie"}
-          </button>
-          {/* Join row - colonne sur mobile, ligne sur sm+ */}
-          <div className="flex flex-col sm:flex-row gap-2">
-            <input
-              className="flex-1 min-h-11 px-3.5 bg-[#0f0f0f] border-[1.5px] border-[#2e2e2e] rounded-xl text-[#f0f0f0] font-mono text-base sm:text-lg tracking-widest uppercase outline-none focus:border-[#7c3aed] transition-colors"
-              type="text"
-              placeholder="Code de la partie"
-              value={joinCode}
-              onChange={(e) =>
-                setJoinCode(e.target.value.toUpperCase().slice(0, 4))
-              }
-              maxLength={4}
-              onKeyDown={(e) => e.key === "Enter" && onJoinRoom()}
-            />
-            <button
-              className="w-full sm:w-auto min-h-11 px-5 rounded-xl text-sm font-semibold bg-[#2563eb] text-white hover:bg-[#1d4ed8] disabled:opacity-50 cursor-pointer shrink-0 transition-colors"
-              onClick={onJoinRoom}
-              disabled={loading}
-            >
-              Rejoindre
-            </button>
-          </div>
         </div>
-
-        {/* Divider */}
-        <div className="relative text-center text-[#888] text-xs py-1">
-          <span className="relative z-10 px-3 bg-[#0f0f0f]">ou</span>
-          <div className="absolute inset-x-0 top-1/2 h-px bg-[#2e2e2e]" />
-        </div>
-
-        {/* Solo */}
-        <div className="bg-[#1a1a1a] border border-[#2e2e2e] rounded-xl p-4 sm:p-5 flex flex-col gap-3">
-          <h3 className="text-[10px] sm:text-xs font-bold text-[#888] uppercase tracking-wider">
-            Solo
-          </h3>
-          <button
-            className="w-full min-h-11 rounded-xl text-sm font-semibold bg-[#242424] border border-[#2e2e2e] text-[#f0f0f0] hover:bg-[#1a1a1a] cursor-pointer transition-colors"
-            onClick={onSolo}
-          >
-            🎯 Jouer en solo
-          </button>
-          <button
-            className="w-full min-h-11 rounded-xl text-sm font-semibold bg-[#242424] border border-[#2e2e2e] text-[#f0f0f0] hover:bg-[#1a1a1a] cursor-pointer transition-colors"
-            onClick={onDaily}
-          >
-            🗓 Défi du jour
-          </button>
-          <button
-            className="w-full min-h-11 rounded-xl text-sm font-semibold bg-[#242424] border border-[#2e2e2e] text-[#f0f0f0] hover:bg-[#1a1a1a] cursor-pointer transition-colors"
-            onClick={onBlitz}
-          >
-            ⚡ Mode Blitz - 2 min
-          </button>
-        </div>
-      </div>
       </div>
     </div>
   );

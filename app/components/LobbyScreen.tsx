@@ -62,7 +62,7 @@ export function LobbyScreen({
       {/* Players */}
       <div className="w-full">
         <h3 className="text-[10px] sm:text-xs font-bold text-[#888] uppercase tracking-wider mb-2">
-          Joueurs ({room.players.length}/8)
+          Joueurs ({room.players.length}/{room.maxPlayers})
         </h3>
         <ul className="flex flex-col gap-2">
           {room.players.map((p) => (

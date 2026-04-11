@@ -65,8 +65,8 @@ export async function PATCH(
       if (!playerName || typeof playerName !== "string" || playerName.trim() === "") {
         return Response.json({ error: "Pseudo invalide" }, { status: 400 });
       }
-      if (room.players.length >= 8) {
-        return Response.json({ error: "Salle pleine (8 joueurs max)" }, { status: 409 });
+      if (room.players.length >= room.maxPlayers) {
+        return Response.json({ error: `Salle pleine (${room.maxPlayers} joueurs max)` }, { status: 409 });
       }
       if (room.phase !== "waiting" && room.phase !== "results") {
         return Response.json({ error: "Partie en cours, attends la prochaine manche" }, { status: 409 });

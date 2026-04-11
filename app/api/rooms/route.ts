@@ -21,6 +21,7 @@ export type Room = {
   phase: "waiting" | "countdown" | "playing" | "results";
   round: number;
   totalRounds: number;
+  maxPlayers: number;
   startArticle: string;
   targetArticle: string;
   roundWinner: string | null; // player id
@@ -75,11 +76,14 @@ function pruneOldRooms(rooms: Map<string, Room>) {
 // Response: { room: Room, playerId: string }
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const { playerName } = body as { playerName: string };
+  const { playerName, maxPlayers, totalRounds } = body as { playerName: string; maxPlayers?: number; totalRounds?: number };
 
   if (!playerName || typeof playerName !== "string" || playerName.trim() === "") {
     return Response.json({ error: "Pseudo invalide" }, { status: 400 });
   }
+
+  const clampedMax = Math.min(Math.max(typeof maxPlayers === "number" ? Math.floor(maxPlayers) : 16, 2), 16);
+  const clampedRounds = Math.min(Math.max(typeof totalRounds === "number" ? Math.floor(totalRounds) : 3, 1), 10);
 
   const rooms = getRooms();
   pruneOldRooms(rooms);
@@ -109,7 +113,8 @@ export async function POST(request: NextRequest) {
     ],
     phase: "waiting",
     round: 0,
-    totalRounds: 3,
+    totalRounds: clampedRounds,
+    maxPlayers: clampedMax,
     startArticle: "",
     targetArticle: "",
     roundWinner: null,

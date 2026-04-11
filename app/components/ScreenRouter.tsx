@@ -28,6 +28,10 @@ type Props = {
   setPlayerName: Dispatch<SetStateAction<string>>;
   joinCode: string;
   setJoinCode: Dispatch<SetStateAction<string>>;
+  maxPlayers: number;
+  setMaxPlayers: Dispatch<SetStateAction<number>>;
+  totalRounds: number;
+  setTotalRounds: Dispatch<SetStateAction<number>>;
   error: string | null;
   setError: Dispatch<SetStateAction<string | null>>;
   loading: boolean;
@@ -38,6 +42,8 @@ type Props = {
 export function ScreenRouter({
   screen, setScreen, session, solo, multi, handlers,
   playerName, setPlayerName, joinCode, setJoinCode,
+  maxPlayers, setMaxPlayers,
+  totalRounds, setTotalRounds,
   error, setError, loading, showAuth, setShowAuth,
 }: Props) {
   if (screen === "profile") return (
@@ -61,6 +67,8 @@ export function ScreenRouter({
       <HomeScreen
         playerName={playerName} setPlayerName={setPlayerName}
         joinCode={joinCode} setJoinCode={setJoinCode}
+        maxPlayers={maxPlayers} setMaxPlayers={setMaxPlayers}
+        totalRounds={totalRounds} setTotalRounds={setTotalRounds}
         error={error} setError={setError} loading={loading}
         onCreateRoom={handlers.handleCreateRoom}
         onJoinRoom={handlers.handleJoinRoom}

@@ -152,11 +152,11 @@ export function useMultiGame() {
 
   // Room actions
 
-  async function createRoom(playerName: string): Promise<{ error?: string }> {
+  async function createRoom(playerName: string, maxPlayers = 16, totalRounds = 3): Promise<{ error?: string }> {
     const res = await fetch("/api/rooms", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ playerName }),
+      body: JSON.stringify({ playerName, maxPlayers, totalRounds }),
     });
     const data = await res.json() as { room?: Room; playerId?: string; error?: string };
     if (!res.ok) return { error: data.error ?? "Erreur" };

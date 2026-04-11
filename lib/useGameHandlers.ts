@@ -11,18 +11,20 @@ type Handlers = {
   multi: UseMultiGame;
   playerName: string;
   joinCode: string;
+  maxPlayers: number;
+  totalRounds: number;
   setScreen: Dispatch<SetStateAction<Screen>>;
   setError: Dispatch<SetStateAction<string | null>>;
   setLoading: Dispatch<SetStateAction<boolean>>;
 };
 
 export function useGameHandlers({
-  solo, multi, playerName, joinCode, setScreen, setError, setLoading,
+  solo, multi, playerName, joinCode, maxPlayers, totalRounds, setScreen, setError, setLoading,
 }: Handlers) {
   async function handleCreateRoom() {
     if (!playerName.trim()) { setError("Entre ton pseudo !"); return; }
     setLoading(true); setError(null);
-    const { error: err } = await multi.createRoom(playerName.trim());
+    const { error: err } = await multi.createRoom(playerName.trim(), maxPlayers, totalRounds);
     setLoading(false);
     if (err) { setError(err); return; }
     setScreen("lobby");
