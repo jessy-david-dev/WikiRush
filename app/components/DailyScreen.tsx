@@ -46,7 +46,7 @@ export function DailyScreen({ onBack, currentUserId }: { onBack: () => void; cur
   );
 
   // Erreur initiale
-  if (game.loadError && game.phase === "loading") return (
+  if (game.loadError) return (
     <div className="min-h-dvh bg-[#0f0f0f] text-[#f0f0f0] flex flex-col items-center justify-center gap-4 px-4">
       <p className="text-[#888]">{game.loadError}</p>
       <button className={btnGhost} style={{ width: "auto", padding: "0 20px" }} onClick={onBack}>Retour</button>
