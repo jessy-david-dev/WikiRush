@@ -114,8 +114,11 @@ export async function PATCH(
     value?: boolean;
   };
 
-  // Nettoyer les joueurs inactifs avant chaque action
-  room.players = prunePlayers(room.players);
+  // Nettoyer les joueurs inactifs uniquement hors partie (lobby/résultats)
+  // En playing, un joueur peut lire une longue page sans heartbeat pendant +40s
+  if (room.phase !== "playing" && room.phase !== "countdown") {
+    room.players = prunePlayers(room.players);
+  }
 
   switch (action) {
     // Rejoindre
