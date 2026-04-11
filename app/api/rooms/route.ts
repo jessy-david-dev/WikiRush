@@ -16,6 +16,7 @@ export type Player = {
   hasSurrendered: boolean;
   isHost: boolean;
   lastSeen: number; // timestamp ms
+  wonAt: number | null; // timestamp ms quand le joueur a trouvé l'article cible
 };
 
 export type Room = {
@@ -152,6 +153,7 @@ export async function POST(request: NextRequest) {
       hasSurrendered: false,
       isHost: true,
       lastSeen: Date.now(),
+      wonAt: null,
     },
   ];
 

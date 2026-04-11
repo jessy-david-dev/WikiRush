@@ -54,11 +54,27 @@ function prunePlayers(players: Player[]): Player[] {
   return players.filter((p) => now - p.lastSeen < PLAYER_TIMEOUT_MS);
 }
 
-// En mode all_finish : calcule les points selon le rang d'arrivée
-// 1er = 10pts, 2ème = 7pts, 3ème = 5pts, reste = 3pts, forfait = 0pts
-const RANK_POINTS = [10, 7, 5, 3];
-function getRankPoints(rank: number): number {
-  return RANK_POINTS[rank] ?? RANK_POINTS[RANK_POINTS.length - 1];
+// Calcule les points d'un joueur selon ses clics et son temps
+// Points clics : max 10, -1 par tranche de 5 clics
+// Points temps : max 10, selon le temps restant (avec timeLimit) ou -1 par 30s (sans limite)
+// Total max : 20 pts
+function calcPlayerPoints(player: Player, room: Room): number {
+  const clicks = Math.max(0, (player.path?.length ?? 1) - 1);
+  const clickPts = Math.max(0, 10 - Math.floor(clicks / 5));
+
+  const wonAt = player.wonAt ?? Date.now();
+  const roundStart = room.roundStart ?? wonAt;
+  const elapsed = wonAt - roundStart;
+
+  let timePts: number;
+  if (room.timeLimit > 0) {
+    const timeLeft = room.timeLimit * 1000 - elapsed;
+    timePts = Math.max(0, Math.floor((timeLeft / (room.timeLimit * 1000)) * 10));
+  } else {
+    timePts = Math.max(0, 10 - Math.floor(elapsed / 30000));
+  }
+
+  return clickPts + timePts;
 }
 
 // Vérifie si la manche doit se terminer en mode all_finish
@@ -67,14 +83,12 @@ function checkAllFinished(room: Room): boolean {
   return room.players.every((p) => p.hasWon || p.hasSurrendered);
 }
 
-// Attribue les points en mode all_finish selon l'ordre d'arrivée
+// Attribue les points aux gagnants selon clics + temps
 function assignAllFinishPoints(room: Room) {
   const winners = room.players.filter((p) => p.hasWon);
-  // On leur attribue les points selon leur rang (ordre d'arrivée = ordre dans le tableau, déjà fixé au moment où ils ont gagné)
-  winners.forEach((p, i) => {
-    p.score += getRankPoints(i);
+  winners.forEach((p) => {
+    p.score += calcPlayerPoints(p, room);
   });
-  // roundWinner = premier arrivé
   if (winners.length > 0) {
     room.roundWinner = winners[0].id;
   }
@@ -156,6 +170,7 @@ export async function PATCH(
         hasSurrendered: false,
         isHost: false,
         lastSeen: Date.now(),
+        wonAt: null,
       };
       room.players.push(player);
       await saveRoom(room);
@@ -212,6 +227,7 @@ export async function PATCH(
         p.path = [startArticle];
         p.hasWon = false;
         p.hasSurrendered = false;
+        p.wonAt = null;
       }
 
       await saveRoom(room);
@@ -259,6 +275,7 @@ export async function PATCH(
         normalize(player.currentArticle) === normalize(room.targetArticle)
       ) {
         player.hasWon = true;
+        player.wonAt = Date.now();
 
         if (room.gameMode === "race") {
           // Mode course : 1er arrivé gagne la manche immédiatement
@@ -266,7 +283,7 @@ export async function PATCH(
             (p) => p.hasWon && p.id !== player.id,
           );
           if (!alreadyWon) {
-            player.score += 10;
+            player.score += calcPlayerPoints(player, room);
             room.roundWinner = player.id;
             room.phase = "results";
           }
@@ -386,6 +403,7 @@ export async function PATCH(
         p.hasWon = false;
         p.hasSurrendered = false;
         p.currentArticle = "";
+        p.wonAt = null;
       }
       await saveRoom(room);
       return Response.json({ room });
@@ -410,6 +428,7 @@ export async function PATCH(
         p.hasWon = false;
         p.hasSurrendered = false;
         p.currentArticle = "";
+        p.wonAt = null;
       }
       await saveRoom(room);
       return Response.json({ room });
