@@ -17,6 +17,8 @@ type LobbyScreenProps = {
   setMaxPlayers: (v: number) => void;
   totalRounds: number;
   setTotalRounds: (v: number) => void;
+  gameMode: Room["gameMode"];
+  setGameMode: (v: Room["gameMode"]) => void;
 };
 
 export function LobbyScreen({
@@ -32,6 +34,8 @@ export function LobbyScreen({
   setMaxPlayers,
   totalRounds,
   setTotalRounds,
+  gameMode,
+  setGameMode,
 }: LobbyScreenProps) {
   const isHost = room.players.find((p) => p.id === playerId)?.isHost ?? false;
   const [copied, setCopied] = useState(false);
@@ -141,6 +145,17 @@ export function LobbyScreen({
           <h3 className="text-[10px] sm:text-xs font-bold text-[#888] uppercase tracking-wider">
             Paramètres
           </h3>
+          <div className="flex flex-col gap-1.5">
+            <span className="text-xs text-[#888]">Mode de jeu</span>
+            <select
+              value={gameMode}
+              onChange={(e) => setGameMode(e.target.value as Room["gameMode"])}
+              className="w-full min-h-11 px-2 bg-[#0f0f0f] border border-[#2e2e2e] rounded-xl text-sm text-[#f0f0f0] outline-none focus:border-[#7c3aed] cursor-pointer transition-colors"
+            >
+              <option value="race">🏁 Course — le premier arrivé gagne</option>
+              <option value="all_finish">⏱ Normal — tout le monde joue jusqu&apos;au bout</option>
+            </select>
+          </div>
           <div className="flex gap-3">
             <div className="flex-1 flex flex-col gap-1.5">
               <span className="text-xs text-[#888]">Joueurs max</span>

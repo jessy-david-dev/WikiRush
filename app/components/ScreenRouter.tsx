@@ -32,6 +32,8 @@ type Props = {
   setMaxPlayers: Dispatch<SetStateAction<number>>;
   totalRounds: number;
   setTotalRounds: Dispatch<SetStateAction<number>>;
+  gameMode: "race" | "all_finish";
+  setGameMode: Dispatch<SetStateAction<"race" | "all_finish">>;
   error: string | null;
   setError: Dispatch<SetStateAction<string | null>>;
   loading: boolean;
@@ -44,6 +46,7 @@ export function ScreenRouter({
   playerName, setPlayerName, joinCode, setJoinCode,
   maxPlayers, setMaxPlayers,
   totalRounds, setTotalRounds,
+  gameMode, setGameMode,
   error, setError, loading, showAuth, setShowAuth,
 }: Props) {
   if (screen === "profile") return (
@@ -108,6 +111,7 @@ export function ScreenRouter({
       onReset={handlers.handleResetGame}
       maxPlayers={maxPlayers} setMaxPlayers={setMaxPlayers}
       totalRounds={totalRounds} setTotalRounds={setTotalRounds}
+      gameMode={gameMode} setGameMode={setGameMode}
     />
   );
 
@@ -123,6 +127,7 @@ export function ScreenRouter({
       onRetry={multi.retryLoad}
       onNextRound={handlers.handleNextRound}
       onResetGame={handlers.handleResetGame}
+      onSurrender={handlers.handleSurrender}
     />
   );
 

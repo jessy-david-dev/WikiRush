@@ -862,6 +862,7 @@ export const RoomScalarFieldEnum = {
   round: 'round',
   totalRounds: 'totalRounds',
   maxPlayers: 'maxPlayers',
+  gameMode: 'gameMode',
   startArticle: 'startArticle',
   targetArticle: 'targetArticle',
   roundWinner: 'roundWinner',

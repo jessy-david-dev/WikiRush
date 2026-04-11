@@ -152,11 +152,11 @@ export function useMultiGame() {
 
   // Room actions
 
-  async function createRoom(playerName: string, maxPlayers = 16, totalRounds = 3): Promise<{ error?: string }> {
+  async function createRoom(playerName: string, maxPlayers = 16, totalRounds = 3, gameMode: "race" | "all_finish" = "race"): Promise<{ error?: string }> {
     const res = await fetch("/api/rooms", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ playerName, maxPlayers, totalRounds }),
+      body: JSON.stringify({ playerName, maxPlayers, totalRounds, gameMode }),
     });
     const data = await res.json() as { room?: Room; playerId?: string; error?: string };
     if (!res.ok) return { error: data.error ?? "Erreur" };
@@ -193,6 +193,16 @@ export function useMultiGame() {
     prefetchArticle(puzzle.start);
     setRoom(data.room!);
     return {};
+  }
+
+  async function surrender() {
+    if (!room || !playerId) return;
+    const res = await fetch(`/api/rooms/${room.code}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "surrender", playerId }),
+    });
+    if (res.ok) setRoom((await res.json() as { room: Room }).room);
   }
 
   async function nextRound() {
@@ -247,7 +257,7 @@ export function useMultiGame() {
   return {
     room, playerId, html, title, loading, loadError,
     history, clicks: clicksDisplay, elapsed: timer.elapsed, countdown,
-    createRoom, joinRoom, startGame, nextRound, resetGame, leave, navigate, restore,
+    createRoom, joinRoom, startGame, nextRound, resetGame, leave, navigate, surrender, restore,
     retryLoad: () => title && loadArticle(title),
   };
 }

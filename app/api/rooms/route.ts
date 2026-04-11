@@ -12,6 +12,7 @@ export type Player = {
   score: number;
   currentArticle: string;
   hasWon: boolean;
+  hasSurrendered: boolean;
   isHost: boolean;
   lastSeen: number; // timestamp ms
 };
@@ -23,6 +24,7 @@ export type Room = {
   round: number;
   totalRounds: number;
   maxPlayers: number;
+  gameMode: "race" | "all_finish"; // race = 1er gagne, all_finish = tout le monde joue
   startArticle: string;
   targetArticle: string;
   roundWinner: string | null;
@@ -53,6 +55,7 @@ function dbToRoom(row: {
   round: number;
   totalRounds: number;
   maxPlayers: number;
+  gameMode: string;
   startArticle: string;
   targetArticle: string;
   roundWinner: string | null;
@@ -67,6 +70,7 @@ function dbToRoom(row: {
     round: row.round,
     totalRounds: row.totalRounds,
     maxPlayers: row.maxPlayers,
+    gameMode: (row.gameMode ?? "race") as Room["gameMode"],
     startArticle: row.startArticle,
     targetArticle: row.targetArticle,
     roundWinner: row.roundWinner,
@@ -87,10 +91,11 @@ async function pruneOldRooms() {
 // Response: { room: Room, playerId: string }
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const { playerName, maxPlayers, totalRounds } = body as {
+  const { playerName, maxPlayers, totalRounds, gameMode } = body as {
     playerName: string;
     maxPlayers?: number;
     totalRounds?: number;
+    gameMode?: string;
   };
 
   if (
@@ -125,6 +130,8 @@ export async function POST(request: NextRequest) {
   const playerId = generatePlayerId();
   const now = BigInt(Date.now());
 
+  const clampedMode: Room["gameMode"] = gameMode === "all_finish" ? "all_finish" : "race";
+
   const players: Player[] = [
     {
       id: playerId,
@@ -132,6 +139,7 @@ export async function POST(request: NextRequest) {
       score: 0,
       currentArticle: "",
       hasWon: false,
+      hasSurrendered: false,
       isHost: true,
       lastSeen: Date.now(),
     },
@@ -145,6 +153,7 @@ export async function POST(request: NextRequest) {
       round: 0,
       totalRounds: clampedRounds,
       maxPlayers: clampedMax,
+      gameMode: clampedMode,
       startArticle: "",
       targetArticle: "",
       roundWinner: null,

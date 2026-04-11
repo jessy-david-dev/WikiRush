@@ -14,6 +14,7 @@ export default function WikiRush() {
   const [joinCode, setJoinCode] = useState("");
   const [maxPlayers, setMaxPlayers] = useState(16);
   const [totalRounds, setTotalRounds] = useState(3);
+  const [gameMode, setGameMode] = useState<"race" | "all_finish">("race");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
@@ -22,7 +23,7 @@ export default function WikiRush() {
   const multi = useMultiGame();
 
   const { session } = useGameEffects({ solo, multi, screen, setScreen, setPlayerName });
-  const handlers = useGameHandlers({ solo, multi, playerName, joinCode, maxPlayers, totalRounds, setScreen, setError, setLoading });
+  const handlers = useGameHandlers({ solo, multi, playerName, joinCode, maxPlayers, totalRounds, gameMode, setScreen, setError, setLoading });
 
   return (
     <ScreenRouter
@@ -32,6 +33,7 @@ export default function WikiRush() {
       joinCode={joinCode} setJoinCode={setJoinCode}
       maxPlayers={maxPlayers} setMaxPlayers={setMaxPlayers}
       totalRounds={totalRounds} setTotalRounds={setTotalRounds}
+      gameMode={gameMode} setGameMode={setGameMode}
       error={error} setError={setError} loading={loading}
       showAuth={showAuth} setShowAuth={setShowAuth}
     />

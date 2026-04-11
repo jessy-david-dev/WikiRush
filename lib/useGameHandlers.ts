@@ -13,18 +13,19 @@ type Handlers = {
   joinCode: string;
   maxPlayers: number;
   totalRounds: number;
+  gameMode: "race" | "all_finish";
   setScreen: Dispatch<SetStateAction<Screen>>;
   setError: Dispatch<SetStateAction<string | null>>;
   setLoading: Dispatch<SetStateAction<boolean>>;
 };
 
 export function useGameHandlers({
-  solo, multi, playerName, joinCode, maxPlayers, totalRounds, setScreen, setError, setLoading,
+  solo, multi, playerName, joinCode, maxPlayers, totalRounds, gameMode, setScreen, setError, setLoading,
 }: Handlers) {
   async function handleCreateRoom() {
     if (!playerName.trim()) { setError("Entre ton pseudo !"); return; }
     setLoading(true); setError(null);
-    const { error: err } = await multi.createRoom(playerName.trim(), maxPlayers, totalRounds);
+    const { error: err } = await multi.createRoom(playerName.trim(), maxPlayers, totalRounds, gameMode);
     setLoading(false);
     if (err) { setError(err); return; }
     setScreen("lobby");
@@ -67,6 +68,10 @@ export function useGameHandlers({
     setScreen("solo");
   }
 
+  async function handleSurrender() {
+    await multi.surrender();
+  }
+
   return {
     handleCreateRoom,
     handleJoinRoom,
@@ -75,5 +80,6 @@ export function useGameHandlers({
     handleResetGame,
     handleLeave,
     handleSolo,
+    handleSurrender,
   };
 }

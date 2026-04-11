@@ -1,5 +1,5 @@
 // Route handler pour les actions sur une room specifique
-// PATCH /api/rooms/[code] - actions: join, heartbeat, start, navigate, leave, nextRound
+// PATCH /api/rooms/[code] - actions: join, heartbeat, start, navigate, surrender, nextRound, resetGame
 
 import { NextRequest } from "next/server";
 import type { Room, Player } from "../route";
@@ -12,6 +12,7 @@ function dbToRoom(row: {
   round: number;
   totalRounds: number;
   maxPlayers: number;
+  gameMode: string;
   startArticle: string;
   targetArticle: string;
   roundWinner: string | null;
@@ -26,6 +27,7 @@ function dbToRoom(row: {
     round: row.round,
     totalRounds: row.totalRounds,
     maxPlayers: row.maxPlayers,
+    gameMode: (row.gameMode ?? "race") as Room["gameMode"],
     startArticle: row.startArticle,
     targetArticle: row.targetArticle,
     roundWinner: row.roundWinner,
@@ -45,6 +47,33 @@ const PLAYER_TIMEOUT_MS = 15_000;
 function prunePlayers(players: Player[]): Player[] {
   const now = Date.now();
   return players.filter((p) => now - p.lastSeen < PLAYER_TIMEOUT_MS);
+}
+
+// En mode all_finish : calcule les points selon le rang d'arrivée
+// 1er = 10pts, 2ème = 7pts, 3ème = 5pts, reste = 3pts, forfait = 0pts
+const RANK_POINTS = [10, 7, 5, 3];
+function getRankPoints(rank: number): number {
+  return RANK_POINTS[rank] ?? RANK_POINTS[RANK_POINTS.length - 1];
+}
+
+// Vérifie si la manche doit se terminer en mode all_finish
+function checkAllFinished(room: Room): boolean {
+  if (room.gameMode !== "all_finish") return false;
+  return room.players.every((p) => p.hasWon || p.hasSurrendered);
+}
+
+// Attribue les points en mode all_finish selon l'ordre d'arrivée
+function assignAllFinishPoints(room: Room) {
+  const winners = room.players.filter((p) => p.hasWon);
+  // On leur attribue les points selon leur rang (ordre d'arrivée = ordre dans le tableau, déjà fixé au moment où ils ont gagné)
+  winners.forEach((p, i) => {
+    p.score += getRankPoints(i);
+  });
+  // roundWinner = premier arrivé
+  if (winners.length > 0) {
+    room.roundWinner = winners[0].id;
+  }
+  room.phase = "results";
 }
 
 // PATCH /api/rooms/[code]
@@ -105,6 +134,7 @@ export async function PATCH(
         score: 0,
         currentArticle: "",
         hasWon: false,
+        hasSurrendered: false,
         isHost: false,
         lastSeen: Date.now(),
       };
@@ -161,6 +191,7 @@ export async function PATCH(
       for (const p of room.players) {
         p.currentArticle = startArticle;
         p.hasWon = false;
+        p.hasSurrendered = false;
       }
 
       await saveRoom(room);
@@ -202,17 +233,61 @@ export async function PATCH(
 
       if (
         !player.hasWon &&
+        !player.hasSurrendered &&
         normalize(player.currentArticle) === normalize(room.targetArticle)
       ) {
         player.hasWon = true;
 
-        const alreadyWon = room.players.some(
-          (p) => p.hasWon && p.id !== player.id,
-        );
-        if (!alreadyWon) {
-          player.score += 10;
-          room.roundWinner = player.id;
+        if (room.gameMode === "race") {
+          // Mode course : 1er arrivé gagne la manche immédiatement
+          const alreadyWon = room.players.some(
+            (p) => p.hasWon && p.id !== player.id,
+          );
+          if (!alreadyWon) {
+            player.score += 10;
+            room.roundWinner = player.id;
+            room.phase = "results";
+          }
+        } else {
+          // Mode all_finish : on attend que tout le monde finisse ou abandonne
+          if (checkAllFinished(room)) {
+            assignAllFinishPoints(room);
+          }
+        }
+      }
+
+      await saveRoom(room);
+      return Response.json({ room });
+    }
+
+    // Forfait
+    case "surrender": {
+      if (room.phase !== "playing") {
+        return Response.json({ room });
+      }
+      const player = room.players.find((p) => p.id === playerId);
+      if (!player) {
+        return Response.json({ error: "Joueur inconnu" }, { status: 404 });
+      }
+      if (player.hasWon || player.hasSurrendered) {
+        return Response.json({ room });
+      }
+
+      player.hasSurrendered = true;
+      player.lastSeen = Date.now();
+
+      if (room.gameMode === "race") {
+        // En mode course, forfait ne termine pas la manche — on attend qu'un vrai gagnant arrive
+        // Sauf si tous ont abandonné
+        const anyoneStillPlaying = room.players.some((p) => !p.hasWon && !p.hasSurrendered);
+        if (!anyoneStillPlaying) {
           room.phase = "results";
+          // Pas de roundWinner si tout le monde a abandonné
+        }
+      } else {
+        // Mode all_finish : si tout le monde a fini ou abandonné, on termine
+        if (checkAllFinished(room)) {
+          assignAllFinishPoints(room);
         }
       }
 
@@ -235,6 +310,7 @@ export async function PATCH(
       room.roundStart = null;
       for (const p of room.players) {
         p.hasWon = false;
+        p.hasSurrendered = false;
         p.currentArticle = "";
       }
       await saveRoom(room);
@@ -258,6 +334,7 @@ export async function PATCH(
       for (const p of room.players) {
         p.score = 0;
         p.hasWon = false;
+        p.hasSurrendered = false;
         p.currentArticle = "";
       }
       await saveRoom(room);
@@ -278,6 +355,7 @@ async function saveRoom(room: Room) {
       round: room.round,
       totalRounds: room.totalRounds,
       maxPlayers: room.maxPlayers,
+      gameMode: room.gameMode,
       startArticle: room.startArticle,
       targetArticle: room.targetArticle,
       roundWinner: room.roundWinner,

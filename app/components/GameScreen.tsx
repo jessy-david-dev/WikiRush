@@ -20,15 +20,17 @@ type GameScreenProps = {
   onRetry: () => void;
   onNextRound: () => void;
   onResetGame: () => void;
+  onSurrender: () => void;
 };
 
 export function GameScreen({
   room, playerId, html, title, loading, loadError, history, clicks, elapsed,
-  countdown, onNavigate, onRetry, onNextRound, onResetGame,
+  countdown, onNavigate, onRetry, onNextRound, onResetGame, onSurrender,
 }: GameScreenProps) {
   const breadcrumbEndRef = useRef<HTMLDivElement>(null);
   const myPlayer = room.players.find((p) => p.id === playerId);
   const isHost = myPlayer?.isHost ?? false;
+  const myFinished = myPlayer?.hasWon || myPlayer?.hasSurrendered;
   const sortedPlayers = [...room.players].sort((a, b) => b.score - a.score);
   const winner = room.roundWinner ? room.players.find((p) => p.id === room.roundWinner) : null;
 
@@ -65,7 +67,8 @@ export function GameScreen({
               <li key={p.id} className={`flex items-center gap-2 bg-[#1a1a1a] rounded-xl px-3.5 py-2.5 min-h-11 border ${p.id === playerId ? "border-[#7c3aed]" : "border-[#2e2e2e]"}`}>
                 <span className="text-xs sm:text-sm font-bold text-[#888] min-w-6 sm:min-w-7">#{i + 1}</span>
                 <span className="flex-1 font-semibold text-sm truncate">{p.name}</span>
-                {p.hasWon && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-900/40 text-green-300 uppercase tracking-wide shrink-0">Gagnant</span>}
+                {p.hasWon && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-900/40 text-green-300 uppercase tracking-wide shrink-0">✓ Trouvé</span>}
+                {p.hasSurrendered && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#242424] text-[#888] uppercase tracking-wide shrink-0">Forfait</span>}
                 <span className="font-bold text-[#7c3aed] text-sm shrink-0">{p.score} pts</span>
               </li>
             ))}
@@ -117,10 +120,26 @@ export function GameScreen({
           </div>
           <Breadcrumbs history={history} endRef={breadcrumbEndRef} />
         </div>
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0 text-[10px] sm:text-xs font-bold text-[#888] tabular-nums">
-          <span>{elapsed}</span>
-          <span>{clicks} clics</span>
-          <span className="hidden sm:inline">{myPlayer?.score ?? 0} pts</span>
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-xs font-bold text-[#888] tabular-nums">
+            <span>{elapsed}</span>
+            <span>{clicks} clics</span>
+            <span className="hidden sm:inline">{myPlayer?.score ?? 0} pts</span>
+          </div>
+          {!myFinished && (
+            <button
+              onClick={onSurrender}
+              className="min-h-8 px-2 rounded-lg text-xs font-semibold bg-red-950/40 border border-red-900 text-red-400 hover:bg-red-900/40 cursor-pointer shrink-0"
+            >
+              Forfait
+            </button>
+          )}
+          {myFinished && myPlayer?.hasWon && (
+            <span className="text-xs font-bold text-green-400 shrink-0">✓ Trouvé !</span>
+          )}
+          {myFinished && myPlayer?.hasSurrendered && (
+            <span className="text-xs font-bold text-[#888] shrink-0">Forfait</span>
+          )}
         </div>
       </div>
 
@@ -156,7 +175,8 @@ export function GameScreen({
               <li key={p.id} className="flex flex-col gap-0.5">
                 <span className={`text-xs font-semibold truncate ${p.id === playerId ? "text-[#7c3aed]" : "text-[#f0f0f0]"}`}>{p.name}</span>
                 <span className="text-xs text-[#888]">{p.score} pts</span>
-                {p.hasWon && <span className="text-[10px] text-green-400 font-bold">Gagné !</span>}
+                {p.hasWon && <span className="text-[10px] text-green-400 font-bold">✓ Trouvé</span>}
+                {p.hasSurrendered && <span className="text-[10px] text-[#888] font-bold">Forfait</span>}
               </li>
             ))}
           </ul>
