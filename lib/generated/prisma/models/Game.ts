@@ -535,10 +535,6 @@ export type FloatFieldUpdateOperationsInput = {
   divide?: number
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type GameCreateWithoutUserInput = {
   id?: string
   mode: string

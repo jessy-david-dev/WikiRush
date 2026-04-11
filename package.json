@@ -12,8 +12,10 @@
     "postinstall": "npx node-gyp rebuild --directory node_modules/.pnpm/better-sqlite3@12.8.0/node_modules/better-sqlite3 2>/dev/null || true"
   },
   "dependencies": {
+    "@panva/hkdf": "^1.2.1",
     "@prisma/client": "^7.7.0",
     "bcryptjs": "^3.0.3",
+    "jose": "^6.2.2",
     "next": "16.2.3",
     "next-auth": "5.0.0-beta.30",
     "react": "19.2.4",

@@ -30,10 +30,6 @@ type HomeScreenProps = {
   setPlayerName: (v: string) => void;
   joinCode: string;
   setJoinCode: (v: string) => void;
-  maxPlayers: number;
-  setMaxPlayers: (v: number) => void;
-  totalRounds: number;
-  setTotalRounds: (v: number) => void;
   error: string | null;
   setError: (v: string | null) => void;
   loading: boolean;
@@ -53,10 +49,6 @@ export function HomeScreen({
   setPlayerName,
   joinCode,
   setJoinCode,
-  maxPlayers,
-  setMaxPlayers,
-  totalRounds,
-  setTotalRounds,
   error,
   setError,
   loading,
@@ -155,47 +147,13 @@ export function HomeScreen({
             <h3 className="text-[10px] sm:text-xs font-bold text-[#888] uppercase tracking-wider">
               Multijoueur
             </h3>
-            <div className="flex items-center justify-between gap-3">
-              <button
-                className="flex-1 min-h-11 rounded-xl text-sm font-semibold bg-[#7c3aed] text-white hover:bg-[#6d28d9] disabled:opacity-50 cursor-pointer transition-colors"
-                onClick={onCreateRoom}
-                disabled={loading}
-              >
-                {loading ? "Création..." : "Créer une partie"}
-              </button>
-              <div className="flex items-center gap-1.5 shrink-0">
-                <span className="text-xs text-[#888] whitespace-nowrap">
-                  Max
-                </span>
-                <select
-                  value={maxPlayers}
-                  onChange={(e) => setMaxPlayers(Number(e.target.value))}
-                  className="min-h-11 px-2 bg-[#1a1a1a] border border-[#2e2e2e] rounded-xl text-sm text-[#f0f0f0] outline-none focus:border-[#7c3aed] cursor-pointer transition-colors"
-                >
-                  {[2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16].map((n) => (
-                    <option key={n} value={n}>
-                      {n} joueurs
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="flex items-center gap-1.5 shrink-0">
-                <span className="text-xs text-[#888] whitespace-nowrap">
-                  Manches
-                </span>
-                <select
-                  value={totalRounds}
-                  onChange={(e) => setTotalRounds(Number(e.target.value))}
-                  className="min-h-11 px-2 bg-[#1a1a1a] border border-[#2e2e2e] rounded-xl text-sm text-[#f0f0f0] outline-none focus:border-[#7c3aed] cursor-pointer transition-colors"
-                >
-                  {[1, 2, 3, 4, 5, 7, 10].map((n) => (
-                    <option key={n} value={n}>
-                      {n}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
+            <button
+              className="w-full min-h-11 rounded-xl text-sm font-semibold bg-[#7c3aed] text-white hover:bg-[#6d28d9] disabled:opacity-50 cursor-pointer transition-colors"
+              onClick={onCreateRoom}
+              disabled={loading}
+            >
+              {loading ? "Création..." : "Créer une partie"}
+            </button>
             {/* Join row - colonne sur mobile, ligne sur sm+ */}
             <div className="flex flex-col sm:flex-row gap-2">
               <input

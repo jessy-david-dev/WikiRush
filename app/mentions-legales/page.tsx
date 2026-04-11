@@ -60,25 +60,35 @@ export default function MentionsLegalesPage() {
             </h2>
             <div className="bg-[#1a1a1a] border border-[#2e2e2e] rounded-xl p-4 flex flex-col gap-1.5 text-sm">
               <p>
-                <span className="text-[#888]">Raison sociale :</span>{" "}
-                QuantumCraft Studios
+                <span className="text-[#888]">Raison sociale :</span> SAS
+                SAPINET
               </p>
               <p>
-                <span className="text-[#888]">SIRET :</span> 932 107 758 00017
+                <span className="text-[#888]">SIREN :</span> 899 483 457 (RCS
+                de Nanterre)
               </p>
               <p>
-                <span className="text-[#888]">Adresse :</span> 58 Rue de
-                Monceau, 75008 Paris, France
+                <span className="text-[#888]">Adresse :</span> 65 rue de la
+                Croix, 92000 Nanterre
+              </p>
+              <p>
+                <span className="text-[#888]">Contact :</span>{" "}
+                <a
+                  href="mailto:contact@sapi.net"
+                  className="text-[#7c3aed] hover:underline"
+                >
+                  contact@sapi.net
+                </a>
               </p>
               <p>
                 <span className="text-[#888]">Site web :</span>{" "}
                 <a
-                  href="https://www.quantumcraft-studios.com"
+                  href="https://sapi.net"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-[#7c3aed] hover:underline"
                 >
-                  quantumcraft-studios.com
+                  sapi.net
                 </a>
               </p>
             </div>

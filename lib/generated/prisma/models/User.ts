@@ -29,6 +29,7 @@ export type UserMinAggregateOutputType = {
   name: string | null
   email: string | null
   password: string | null
+  banned: boolean | null
   createdAt: Date | null
 }
 
@@ -37,6 +38,7 @@ export type UserMaxAggregateOutputType = {
   name: string | null
   email: string | null
   password: string | null
+  banned: boolean | null
   createdAt: Date | null
 }
 
@@ -45,6 +47,7 @@ export type UserCountAggregateOutputType = {
   name: number
   email: number
   password: number
+  banned: number
   createdAt: number
   _all: number
 }
@@ -55,6 +58,7 @@ export type UserMinAggregateInputType = {
   name?: true
   email?: true
   password?: true
+  banned?: true
   createdAt?: true
 }
 
@@ -63,6 +67,7 @@ export type UserMaxAggregateInputType = {
   name?: true
   email?: true
   password?: true
+  banned?: true
   createdAt?: true
 }
 
@@ -71,6 +76,7 @@ export type UserCountAggregateInputType = {
   name?: true
   email?: true
   password?: true
+  banned?: true
   createdAt?: true
   _all?: true
 }
@@ -152,6 +158,7 @@ export type UserGroupByOutputType = {
   name: string
   email: string
   password: string
+  banned: boolean
   createdAt: Date
   _count: UserCountAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
@@ -181,6 +188,7 @@ export type UserWhereInput = {
   name?: Prisma.StringFilter<"User"> | string
   email?: Prisma.StringFilter<"User"> | string
   password?: Prisma.StringFilter<"User"> | string
+  banned?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   games?: Prisma.GameListRelationFilter
   dailyResults?: Prisma.DailyResultListRelationFilter
@@ -191,6 +199,7 @@ export type UserOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
+  banned?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   games?: Prisma.GameOrderByRelationAggregateInput
   dailyResults?: Prisma.DailyResultOrderByRelationAggregateInput
@@ -204,6 +213,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   name?: Prisma.StringFilter<"User"> | string
   password?: Prisma.StringFilter<"User"> | string
+  banned?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   games?: Prisma.GameListRelationFilter
   dailyResults?: Prisma.DailyResultListRelationFilter
@@ -214,6 +224,7 @@ export type UserOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
+  banned?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
@@ -228,6 +239,7 @@ export type UserScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"User"> | string
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
   password?: Prisma.StringWithAggregatesFilter<"User"> | string
+  banned?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
 
@@ -236,6 +248,7 @@ export type UserCreateInput = {
   name: string
   email: string
   password: string
+  banned?: boolean
   createdAt?: Date | string
   games?: Prisma.GameCreateNestedManyWithoutUserInput
   dailyResults?: Prisma.DailyResultCreateNestedManyWithoutUserInput
@@ -246,6 +259,7 @@ export type UserUncheckedCreateInput = {
   name: string
   email: string
   password: string
+  banned?: boolean
   createdAt?: Date | string
   games?: Prisma.GameUncheckedCreateNestedManyWithoutUserInput
   dailyResults?: Prisma.DailyResultUncheckedCreateNestedManyWithoutUserInput
@@ -256,6 +270,7 @@ export type UserUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  banned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   games?: Prisma.GameUpdateManyWithoutUserNestedInput
   dailyResults?: Prisma.DailyResultUpdateManyWithoutUserNestedInput
@@ -266,6 +281,7 @@ export type UserUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  banned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   games?: Prisma.GameUncheckedUpdateManyWithoutUserNestedInput
   dailyResults?: Prisma.DailyResultUncheckedUpdateManyWithoutUserNestedInput
@@ -276,6 +292,7 @@ export type UserCreateManyInput = {
   name: string
   email: string
   password: string
+  banned?: boolean
   createdAt?: Date | string
 }
 
@@ -284,6 +301,7 @@ export type UserUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  banned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -292,6 +310,7 @@ export type UserUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  banned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -300,6 +319,7 @@ export type UserCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
+  banned?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -308,6 +328,7 @@ export type UserMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
+  banned?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -316,6 +337,7 @@ export type UserMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
+  banned?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -326,6 +348,10 @@ export type UserScalarRelationFilter = {
 
 export type StringFieldUpdateOperationsInput = {
   set?: string
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
 }
 
 export type DateTimeFieldUpdateOperationsInput = {
@@ -365,6 +391,7 @@ export type UserCreateWithoutGamesInput = {
   name: string
   email: string
   password: string
+  banned?: boolean
   createdAt?: Date | string
   dailyResults?: Prisma.DailyResultCreateNestedManyWithoutUserInput
 }
@@ -374,6 +401,7 @@ export type UserUncheckedCreateWithoutGamesInput = {
   name: string
   email: string
   password: string
+  banned?: boolean
   createdAt?: Date | string
   dailyResults?: Prisma.DailyResultUncheckedCreateNestedManyWithoutUserInput
 }
@@ -399,6 +427,7 @@ export type UserUpdateWithoutGamesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  banned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dailyResults?: Prisma.DailyResultUpdateManyWithoutUserNestedInput
 }
@@ -408,6 +437,7 @@ export type UserUncheckedUpdateWithoutGamesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  banned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dailyResults?: Prisma.DailyResultUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -417,6 +447,7 @@ export type UserCreateWithoutDailyResultsInput = {
   name: string
   email: string
   password: string
+  banned?: boolean
   createdAt?: Date | string
   games?: Prisma.GameCreateNestedManyWithoutUserInput
 }
@@ -426,6 +457,7 @@ export type UserUncheckedCreateWithoutDailyResultsInput = {
   name: string
   email: string
   password: string
+  banned?: boolean
   createdAt?: Date | string
   games?: Prisma.GameUncheckedCreateNestedManyWithoutUserInput
 }
@@ -451,6 +483,7 @@ export type UserUpdateWithoutDailyResultsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  banned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   games?: Prisma.GameUpdateManyWithoutUserNestedInput
 }
@@ -460,6 +493,7 @@ export type UserUncheckedUpdateWithoutDailyResultsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  banned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   games?: Prisma.GameUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -509,6 +543,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   name?: boolean
   email?: boolean
   password?: boolean
+  banned?: boolean
   createdAt?: boolean
   games?: boolean | Prisma.User$gamesArgs<ExtArgs>
   dailyResults?: boolean | Prisma.User$dailyResultsArgs<ExtArgs>
@@ -520,6 +555,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   name?: boolean
   email?: boolean
   password?: boolean
+  banned?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["user"]>
 
@@ -528,6 +564,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   name?: boolean
   email?: boolean
   password?: boolean
+  banned?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["user"]>
 
@@ -536,10 +573,11 @@ export type UserSelectScalar = {
   name?: boolean
   email?: boolean
   password?: boolean
+  banned?: boolean
   createdAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "password" | "createdAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "password" | "banned" | "createdAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   games?: boolean | Prisma.User$gamesArgs<ExtArgs>
   dailyResults?: boolean | Prisma.User$dailyResultsArgs<ExtArgs>
@@ -559,6 +597,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     name: string
     email: string
     password: string
+    banned: boolean
     createdAt: Date
   }, ExtArgs["result"]["user"]>
   composites: {}
@@ -989,6 +1028,7 @@ export interface UserFieldRefs {
   readonly name: Prisma.FieldRef<"User", 'String'>
   readonly email: Prisma.FieldRef<"User", 'String'>
   readonly password: Prisma.FieldRef<"User", 'String'>
+  readonly banned: Prisma.FieldRef<"User", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
 }
     

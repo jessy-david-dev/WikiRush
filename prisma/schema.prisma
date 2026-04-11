@@ -12,6 +12,7 @@ model User {
   name         String
   email        String        @unique
   password     String
+  banned       Boolean       @default(false)
   createdAt    DateTime      @default(now())
   games        Game[]
   dailyResults DailyResult[]

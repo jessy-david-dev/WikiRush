@@ -67,8 +67,6 @@ export function ScreenRouter({
       <HomeScreen
         playerName={playerName} setPlayerName={setPlayerName}
         joinCode={joinCode} setJoinCode={setJoinCode}
-        maxPlayers={maxPlayers} setMaxPlayers={setMaxPlayers}
-        totalRounds={totalRounds} setTotalRounds={setTotalRounds}
         error={error} setError={setError} loading={loading}
         onCreateRoom={handlers.handleCreateRoom}
         onJoinRoom={handlers.handleJoinRoom}
@@ -108,6 +106,8 @@ export function ScreenRouter({
       onLeave={handlers.handleLeave}
       onStart={handlers.handleStartGame}
       onReset={handlers.handleResetGame}
+      maxPlayers={maxPlayers} setMaxPlayers={setMaxPlayers}
+      totalRounds={totalRounds} setTotalRounds={setTotalRounds}
     />
   );
 
