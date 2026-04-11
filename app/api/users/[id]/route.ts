@@ -33,7 +33,9 @@ export async function GET(_req: Request, { params }: Params) {
     ? Math.round(won.reduce((s, g) => s + g.clicks, 0) / won.length)
     : null;
   const bestClicks = won.length ? Math.min(...won.map((g) => g.clicks)) : null;
-  const bestTime = won.length ? Math.min(...won.map((g) => g.timeSeconds)) : null;
+  const bestTime = won.length
+    ? Math.min(...won.map((g) => g.timeSeconds))
+    : null;
   const avgTime = won.length
     ? won.reduce((s, g) => s + g.timeSeconds, 0) / won.length
     : null;

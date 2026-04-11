@@ -16,8 +16,15 @@ export async function GET() {
   const games = await prisma.game.findMany({
     where: { userId: session.user.id },
     select: {
-      id: true, mode: true, startArticle: true, targetArticle: true,
-      path: true, clicks: true, timeSeconds: true, won: true, playedAt: true,
+      id: true,
+      mode: true,
+      startArticle: true,
+      targetArticle: true,
+      path: true,
+      clicks: true,
+      timeSeconds: true,
+      won: true,
+      playedAt: true,
     },
     orderBy: { playedAt: "desc" },
   });
@@ -25,8 +32,13 @@ export async function GET() {
   const dailyResults = await prisma.dailyResult.findMany({
     where: { userId: session.user.id },
     select: {
-      id: true, puzzleId: true, path: true, clicks: true,
-      timeSeconds: true, won: true, playedAt: true,
+      id: true,
+      puzzleId: true,
+      path: true,
+      clicks: true,
+      timeSeconds: true,
+      won: true,
+      playedAt: true,
     },
     orderBy: { playedAt: "desc" },
   });
@@ -34,7 +46,10 @@ export async function GET() {
   const data = {
     profile: user,
     games: games.map((g) => ({ ...g, path: JSON.parse(g.path) as string[] })),
-    dailyResults: dailyResults.map((d) => ({ ...d, path: JSON.parse(d.path) as string[] })),
+    dailyResults: dailyResults.map((d) => ({
+      ...d,
+      path: JSON.parse(d.path) as string[],
+    })),
     exportedAt: new Date().toISOString(),
   };
 

@@ -13,11 +13,13 @@ export async function GET() {
     take: 20,
   });
 
-  return NextResponse.json(results.map((r, i) => ({
-    rank: i + 1,
-    name: r.user.name,
-    clicks: r.clicks,
-    timeSeconds: r.timeSeconds,
-    userId: r.userId,
-  })));
+  return NextResponse.json(
+    results.map((r, i) => ({
+      rank: i + 1,
+      name: r.user.name,
+      clicks: r.clicks,
+      timeSeconds: r.timeSeconds,
+      userId: r.userId,
+    })),
+  );
 }

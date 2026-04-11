@@ -10,48 +10,55 @@ export async function GET() {
   const since14 = new Date(todayStart);
   since14.setDate(since14.getDate() - 13);
 
-  const [totalUsers, totalGames, todayGames, recentUsers, recentGames, modeStats, activityRaw] =
-    await Promise.all([
-      prisma.user.count(),
-      prisma.game.count(),
-      prisma.game.count({ where: { playedAt: { gte: todayStart } } }),
-      prisma.user.findMany({
-        orderBy: { createdAt: "desc" },
-        take: 50,
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          banned: true,
-          createdAt: true,
-          _count: { select: { games: true } },
-        },
-      }),
-      prisma.game.findMany({
-        orderBy: { playedAt: "desc" },
-        take: 50,
-        select: {
-          id: true,
-          mode: true,
-          startArticle: true,
-          targetArticle: true,
-          clicks: true,
-          timeSeconds: true,
-          won: true,
-          playedAt: true,
-          user: { select: { name: true } },
-        },
-      }),
-      prisma.game.groupBy({
-        by: ["mode"],
-        _count: { id: true },
-        _avg: { clicks: true, timeSeconds: true },
-      }),
-      prisma.game.findMany({
-        where: { playedAt: { gte: since14 } },
-        select: { playedAt: true },
-      }),
-    ]);
+  const [
+    totalUsers,
+    totalGames,
+    todayGames,
+    recentUsers,
+    recentGames,
+    modeStats,
+    activityRaw,
+  ] = await Promise.all([
+    prisma.user.count(),
+    prisma.game.count(),
+    prisma.game.count({ where: { playedAt: { gte: todayStart } } }),
+    prisma.user.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 50,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        banned: true,
+        createdAt: true,
+        _count: { select: { games: true } },
+      },
+    }),
+    prisma.game.findMany({
+      orderBy: { playedAt: "desc" },
+      take: 50,
+      select: {
+        id: true,
+        mode: true,
+        startArticle: true,
+        targetArticle: true,
+        clicks: true,
+        timeSeconds: true,
+        won: true,
+        playedAt: true,
+        user: { select: { name: true } },
+      },
+    }),
+    prisma.game.groupBy({
+      by: ["mode"],
+      _count: { id: true },
+      _avg: { clicks: true, timeSeconds: true },
+    }),
+    prisma.game.findMany({
+      where: { playedAt: { gte: since14 } },
+      select: { playedAt: true },
+    }),
+  ]);
 
   // Agréger l'activité par jour
   const activityMap = new Map<string, number>();

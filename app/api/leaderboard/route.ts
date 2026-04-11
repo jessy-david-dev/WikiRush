@@ -23,7 +23,9 @@ export async function GET() {
         const wins = all.filter((g) => g.won);
         const wonGames = wins.filter((g) => g.clicks > 0);
         const avgClicks = wonGames.length
-          ? Math.round(wonGames.reduce((s, g) => s + g.clicks, 0) / wonGames.length)
+          ? Math.round(
+              wonGames.reduce((s, g) => s + g.clicks, 0) / wonGames.length,
+            )
           : null;
         const bestTime = wins.length
           ? Math.min(...wins.map((g) => g.timeSeconds))

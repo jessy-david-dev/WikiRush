@@ -76,14 +76,28 @@ function pruneOldRooms(rooms: Map<string, Room>) {
 // Response: { room: Room, playerId: string }
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const { playerName, maxPlayers, totalRounds } = body as { playerName: string; maxPlayers?: number; totalRounds?: number };
+  const { playerName, maxPlayers, totalRounds } = body as {
+    playerName: string;
+    maxPlayers?: number;
+    totalRounds?: number;
+  };
 
-  if (!playerName || typeof playerName !== "string" || playerName.trim() === "") {
+  if (
+    !playerName ||
+    typeof playerName !== "string" ||
+    playerName.trim() === ""
+  ) {
     return Response.json({ error: "Pseudo invalide" }, { status: 400 });
   }
 
-  const clampedMax = Math.min(Math.max(typeof maxPlayers === "number" ? Math.floor(maxPlayers) : 16, 2), 16);
-  const clampedRounds = Math.min(Math.max(typeof totalRounds === "number" ? Math.floor(totalRounds) : 3, 1), 10);
+  const clampedMax = Math.min(
+    Math.max(typeof maxPlayers === "number" ? Math.floor(maxPlayers) : 16, 2),
+    16,
+  );
+  const clampedRounds = Math.min(
+    Math.max(typeof totalRounds === "number" ? Math.floor(totalRounds) : 3, 1),
+    10,
+  );
 
   const rooms = getRooms();
   pruneOldRooms(rooms);

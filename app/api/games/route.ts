@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
   }
 
   const { mode, startArticle, targetArticle, path, clicks, timeSeconds, won } =
-    await req.json() as {
+    (await req.json()) as {
       mode: string;
       startArticle: string;
       targetArticle: string;
@@ -53,6 +53,6 @@ export async function GET() {
     games.map((g) => ({
       ...g,
       path: JSON.parse(g.path) as string[],
-    }))
+    })),
   );
 }

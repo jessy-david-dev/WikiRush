@@ -28,14 +28,14 @@ const PLAYER_TIMEOUT_MS = 15_000;
 function prunePlayers(room: Room) {
   const now = Date.now();
   room.players = room.players.filter(
-    (p) => now - p.lastSeen < PLAYER_TIMEOUT_MS
+    (p) => now - p.lastSeen < PLAYER_TIMEOUT_MS,
   );
 }
 
 // PATCH /api/rooms/[code]
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: Promise<{ code: string }> }
+  { params }: { params: Promise<{ code: string }> },
 ) {
   const { code } = await params;
   const rooms = getRooms();
@@ -62,14 +62,24 @@ export async function PATCH(
   switch (action) {
     // Rejoindre
     case "join": {
-      if (!playerName || typeof playerName !== "string" || playerName.trim() === "") {
+      if (
+        !playerName ||
+        typeof playerName !== "string" ||
+        playerName.trim() === ""
+      ) {
         return Response.json({ error: "Pseudo invalide" }, { status: 400 });
       }
       if (room.players.length >= room.maxPlayers) {
-        return Response.json({ error: `Salle pleine (${room.maxPlayers} joueurs max)` }, { status: 409 });
+        return Response.json(
+          { error: `Salle pleine (${room.maxPlayers} joueurs max)` },
+          { status: 409 },
+        );
       }
       if (room.phase !== "waiting" && room.phase !== "results") {
-        return Response.json({ error: "Partie en cours, attends la prochaine manche" }, { status: 409 });
+        return Response.json(
+          { error: "Partie en cours, attends la prochaine manche" },
+          { status: 409 },
+        );
       }
 
       const newId = generatePlayerId();
@@ -99,10 +109,16 @@ export async function PATCH(
     case "start": {
       const host = room.players.find((p) => p.id === playerId);
       if (!host?.isHost) {
-        return Response.json({ error: "Seul l'hote peut demarrer" }, { status: 403 });
+        return Response.json(
+          { error: "Seul l'hote peut demarrer" },
+          { status: 403 },
+        );
       }
       if (room.players.length < 1) {
-        return Response.json({ error: "Pas assez de joueurs" }, { status: 400 });
+        return Response.json(
+          { error: "Pas assez de joueurs" },
+          { status: 400 },
+        );
       }
       if (!startArticle || !targetArticle) {
         return Response.json({ error: "Articles manquants" }, { status: 400 });
@@ -174,7 +190,7 @@ export async function PATCH(
 
         // 1er joueur a gagner = +10 points
         const alreadyWon = room.players.some(
-          (p) => p.hasWon && p.id !== player.id
+          (p) => p.hasWon && p.id !== player.id,
         );
         if (!alreadyWon) {
           player.score += 10;
@@ -190,7 +206,10 @@ export async function PATCH(
     case "nextRound": {
       const host = room.players.find((p) => p.id === playerId);
       if (!host?.isHost) {
-        return Response.json({ error: "Seul l'hote peut continuer" }, { status: 403 });
+        return Response.json(
+          { error: "Seul l'hote peut continuer" },
+          { status: 403 },
+        );
       }
       room.phase = "waiting";
       room.roundWinner = null;
@@ -207,7 +226,10 @@ export async function PATCH(
     case "resetGame": {
       const host = room.players.find((p) => p.id === playerId);
       if (!host?.isHost) {
-        return Response.json({ error: "Seul l'hote peut reinitialiser" }, { status: 403 });
+        return Response.json(
+          { error: "Seul l'hote peut reinitialiser" },
+          { status: 403 },
+        );
       }
       room.phase = "waiting";
       room.round = 0;
@@ -226,4 +248,3 @@ export async function PATCH(
       return Response.json({ error: "Action inconnue" }, { status: 400 });
   }
 }
-
