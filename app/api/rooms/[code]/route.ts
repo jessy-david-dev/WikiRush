@@ -44,8 +44,8 @@ function generatePlayerId(): string {
   return crypto.randomUUID();
 }
 
-// Timeout joueur inactif : 15s
-const PLAYER_TIMEOUT_MS = 15_000;
+// Timeout joueur inactif : 45s (heartbeat toutes les 2s, on laisse large pour les tabs en arrière-plan)
+const PLAYER_TIMEOUT_MS = 45_000;
 
 function prunePlayers(players: Player[]): Player[] {
   const now = Date.now();

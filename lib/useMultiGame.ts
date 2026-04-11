@@ -74,10 +74,28 @@ export function useMultiGame() {
     } catch { /* ignore */ }
   }
 
+  const pollCodeRef = useRef<string | null>(null);
+  const pollPidRef = useRef<string | null>(null);
+
   function startPolling(code: string, pid: string) {
     stopPolling();
+    pollCodeRef.current = code;
+    pollPidRef.current = pid;
     pollRef.current = setInterval(() => poll(code, pid), POLL_INTERVAL);
   }
+
+  // Relance le polling quand le tab redevient visible (les setInterval sont throttlés en arrière-plan)
+  useEffect(() => {
+    function onVisible() {
+      if (document.visibilityState === "visible" && pollCodeRef.current && pollPidRef.current) {
+        poll(pollCodeRef.current, pollPidRef.current);
+        startPolling(pollCodeRef.current, pollPidRef.current);
+      }
+    }
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Phase sync
 
@@ -130,6 +148,13 @@ export function useMultiGame() {
     if (!room || !playerId || loadingRef.current || room.phase !== "playing") return;
     clicksRef.current += 1; setClicksDisplay(clicksRef.current);
     if (!timerStartedRef.current) { timer.start(); timerStartedRef.current = true; }
+
+    // Heartbeat optimiste pour éviter le kick pendant le chargement de l'article
+    fetch(`/api/rooms/${room.code}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "heartbeat", playerId }),
+    }).catch(() => {});
 
     const canonical = await loadArticle(t);
     if (!canonical) return;
