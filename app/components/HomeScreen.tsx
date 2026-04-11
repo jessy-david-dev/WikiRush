@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import type { Session } from "next-auth";
 
-function todayEmoji(n: number): string {
+function totalEmoji(n: number): string {
   if (n >= 10000) return "🚀";
   if (n >= 5000) return "🔥";
   if (n >= 1000) return "⚡";
@@ -117,7 +117,7 @@ export function HomeScreen({
           </p>
           {today !== null && (
             <p className="mt-2 text-xs text-[#888]">
-              {todayEmoji(today)}{" "}
+              {totalEmoji(today)}{" "}
               <span className="font-semibold text-[#f0f0f0]">
                 {today.toLocaleString("fr-FR")}
               </span>{" "}
