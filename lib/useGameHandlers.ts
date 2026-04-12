@@ -85,7 +85,7 @@ export function useGameHandlers({
 
   async function handleNextRound() {
     await multi.nextRound();
-    setScreen("lobby");
+    // On reste sur "game" - GameScreen affiche l'écran waiting entre les manches
   }
 
   async function handleResetGame() {
