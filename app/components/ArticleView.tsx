@@ -50,7 +50,7 @@ function cleanWikiHtml(container: HTMLElement): void {
     .forEach((el) => el.remove());
   container
     .querySelectorAll(
-      ".ambox, .tmbox, .cmbox, .ombox, .fmbox, .hatnote, .bandeau-container, .bandeau",
+      ".ambox, .tmbox, .cmbox, .ombox, .fmbox, .bandeau-container, .bandeau",
     )
     .forEach((el) => el.remove());
   container
