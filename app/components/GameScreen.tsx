@@ -23,6 +23,7 @@ type GameScreenProps = {
   canGoBack: boolean;
   onRetry: () => void;
   onNextRound: () => void;
+  onStartGame: () => void;
   onResetGame: () => void;
   onSurrender: () => void;
 };
@@ -44,6 +45,7 @@ export function GameScreen({
   canGoBack,
   onRetry,
   onNextRound,
+  onStartGame,
   onResetGame,
   onSurrender,
 }: GameScreenProps) {
@@ -201,7 +203,7 @@ export function GameScreen({
           </p>
           {isHost && (
             <div className="flex flex-col gap-2.5 w-full max-w-xs mt-2">
-              <button className={btnPrimary} onClick={onNextRound}>
+              <button className={btnPrimary} onClick={onStartGame}>
                 Manche suivante
               </button>
               <button className={btnGhost} onClick={onResetGame}>

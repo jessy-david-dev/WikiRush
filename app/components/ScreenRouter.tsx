@@ -183,6 +183,7 @@ export function ScreenRouter({
         canGoBack={multi.canGoBack}
         onRetry={multi.retryLoad}
         onNextRound={handlers.handleNextRound}
+        onStartGame={handlers.handleStartGame}
         onResetGame={handlers.handleResetGame}
         onSurrender={handlers.handleSurrender}
       />
