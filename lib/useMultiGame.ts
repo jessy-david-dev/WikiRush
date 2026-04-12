@@ -361,6 +361,16 @@ export function useMultiGame() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [room, playerId]);
 
+  async function setGameMode(value: "race" | "all_finish") {
+    if (!room || !playerId) return;
+    const res = await fetch(`/api/rooms/${room.code}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "setGameMode", playerId, value }),
+    });
+    if (res.ok) setRoom((await res.json() as { room: Room }).room);
+  }
+
   async function setTimeLimit(value: number) {
     if (!room || !playerId) return;
     const res = await fetch(`/api/rooms/${room.code}`, {
@@ -468,6 +478,7 @@ export function useMultiGame() {
     canGoBack: historyRef.current.length > 1,
     surrender,
     timeLeft,
+    setGameMode,
     setTimeLimit,
     setSearchAllowed,
     restore,

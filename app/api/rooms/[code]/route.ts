@@ -127,7 +127,7 @@ export async function PATCH(
     article?: string;
     startArticle?: string;
     targetArticle?: string;
-    value?: boolean;
+    value?: boolean | number | string;
   };
 
   // Nettoyer les joueurs inactifs uniquement hors partie (lobby/résultats)
@@ -348,6 +348,19 @@ export async function PATCH(
       room.searchAllowed =
         typeof value === "boolean" ? value : !room.searchAllowed;
       await saveRoom(room);
+      return Response.json({ room });
+    }
+
+    // Hôte change le mode de jeu
+    case "setGameMode": {
+      const host = room.players.find((p) => p.id === playerId);
+      if (!host?.isHost) {
+        return Response.json({ error: "Seul l'hôte peut modifier ce paramètre" }, { status: 403 });
+      }
+      if (value === "race" || value === "all_finish") {
+        room.gameMode = value;
+        await saveRoom(room);
+      }
       return Response.json({ room });
     }
 

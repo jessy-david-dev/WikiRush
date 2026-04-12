@@ -158,6 +158,7 @@ export function ScreenRouter({
         setTotalRounds={setTotalRounds}
         gameMode={gameMode}
         setGameMode={setGameMode}
+        onSetGameMode={(v) => multi.setGameMode(v)}
         onSetSearchAllowed={(v) => multi.setSearchAllowed(v)}
         onSetTimeLimit={(v) => multi.setTimeLimit(v)}
       />

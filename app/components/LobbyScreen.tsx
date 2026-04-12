@@ -18,6 +18,7 @@ type LobbyScreenProps = {
   setTotalRounds: (v: number) => void;
   gameMode: Room["gameMode"];
   setGameMode: (v: Room["gameMode"]) => void;
+  onSetGameMode: (v: Room["gameMode"]) => void;
   onSetSearchAllowed: (v: boolean) => void;
   onSetTimeLimit: (v: number) => void;
 };
@@ -37,6 +38,7 @@ export function LobbyScreen({
   setTotalRounds,
   gameMode,
   setGameMode,
+  onSetGameMode,
   onSetSearchAllowed,
   onSetTimeLimit,
 }: LobbyScreenProps) {
@@ -151,7 +153,7 @@ export function LobbyScreen({
             <span className="text-xs text-[#888]">Mode de jeu</span>
             <select
               value={gameMode}
-              onChange={(e) => setGameMode(e.target.value as Room["gameMode"])}
+              onChange={(e) => { const v = e.target.value as Room["gameMode"]; setGameMode(v); onSetGameMode(v); }}
               className="w-full min-h-11 px-2 bg-[#0f0f0f] border border-[#2e2e2e] rounded-xl text-sm text-[#f0f0f0] outline-none focus:border-[#7c3aed] cursor-pointer transition-colors"
             >
               <option value="race">Course - le premier arrivé gagne</option>
