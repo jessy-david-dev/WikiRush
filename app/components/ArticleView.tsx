@@ -26,23 +26,20 @@ const FORBIDDEN_NAMESPACES = [
 
 const REMOVED_SECTION_IDS = [
   "Liens_externes",
-  "R\u00e9f\u00e9rences",
-  "Notes",
-  "Bibliographie",
-  "Voir_aussi",
-  "Notes_et_r\u00e9f\u00e9rences",
-  "Sources",
-  "Annexes",
-  "Articles_connexes",
 ];
+
+function getHeadingId(el: Element): string {
+  // Nouvelle structure Wikipedia : <div class="mw-heading"><h2 id="...">
+  const idEl = el.querySelector("[id]");
+  if (idEl) return idEl.getAttribute("id") ?? "";
+  // Ancienne structure : <h2><span id="...">
+  const span = el.querySelector("span[id]");
+  return span?.getAttribute("id") ?? "";
+}
 
 function cleanWikiHtml(container: HTMLElement): void {
   container.querySelectorAll(".mw-editsection").forEach((el) => el.remove());
-  container
-    .querySelectorAll(
-      ".reflist, .references, .mw-references-wrap, sup.reference, .mw-ref, .reference",
-    )
-    .forEach((el) => el.remove());
+
   container
     .querySelectorAll(
       ".navbox, .navbox-inner, .vertical-navbox, .catlinks, .sistersitebox, .bandeau-portail",
@@ -59,6 +56,8 @@ function cleanWikiHtml(container: HTMLElement): void {
   container.querySelectorAll(".gallery").forEach((el) => el.remove());
   container.querySelectorAll("#toc, .toc").forEach((el) => el.remove());
 
+  // Supprimer les divs de navigation pure (liens internes type sommaire flottant)
+  // mais pas les listes de références qui contiennent des ancres #cite_note-
   container.querySelectorAll("div, nav").forEach((el) => {
     const links = el.querySelectorAll("a");
     if (links.length > 3) {
@@ -66,14 +65,19 @@ function cleanWikiHtml(container: HTMLElement): void {
         const href = a.getAttribute("href") ?? "";
         return href.startsWith("#") || href.includes("#");
       });
-      if (anchorOnly) el.remove();
+      const hasCiteLinks = Array.from(links).some((a) =>
+        (a.getAttribute("href") ?? "").includes("cite_"),
+      );
+      if (anchorOnly && !hasCiteLinks) el.remove();
     }
   });
 
-  container.querySelectorAll("h2, h3").forEach((heading) => {
-    const span = heading.querySelector("span[id]");
-    if (!span) return;
-    const id = span.getAttribute("id") ?? "";
+  // Supprimer les sections indésirables — supporte ancienne et nouvelle structure Wikipedia
+  // Nouvelle : <div class="mw-heading mw-heading2"> / Ancienne : <h2><span id="...">
+  const headingSelectors = "h2, h3, .mw-heading";
+  container.querySelectorAll(headingSelectors).forEach((heading) => {
+    const id = getHeadingId(heading);
+    if (!id) return;
     if (REMOVED_SECTION_IDS.some((s) => id === s || id.startsWith(s + "_"))) {
       let sibling: Element | null = heading;
       while (sibling) {
