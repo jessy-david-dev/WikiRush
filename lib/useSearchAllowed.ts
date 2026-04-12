@@ -24,19 +24,39 @@ export function useSearchAllowed() {
   return { allowed, toggle };
 }
 
-// Pour le mode multi : blocage Ctrl+F basé sur room.searchAllowed (vérité côté serveur)
+// Pour le mode multi : blocage Ctrl+F + DevTools basé sur room.searchAllowed (vérité côté serveur)
 export function useCtrlFBlock(allowed: boolean) {
   useEffect(() => {
+    if (allowed) return;
+
     function handleKeyDown(e: KeyboardEvent) {
-      if ((e.ctrlKey || e.metaKey) && e.key === "f") {
-        if (!allowed) {
-          e.preventDefault();
-          e.stopPropagation();
-        }
+      const ctrl = e.ctrlKey || e.metaKey;
+      // Ctrl+F (recherche)
+      if (ctrl && e.key === "f") {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+      // Raccourcis DevTools : F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+U
+      if (
+        e.key === "F12" ||
+        (ctrl && e.shiftKey && (e.key === "I" || e.key === "i" || e.key === "J" || e.key === "j" || e.key === "C" || e.key === "c")) ||
+        (ctrl && (e.key === "U" || e.key === "u"))
+      ) {
+        e.preventDefault();
+        e.stopPropagation();
       }
     }
+
+    function handleContextMenu(e: MouseEvent) {
+      e.preventDefault();
+    }
+
     window.addEventListener("keydown", handleKeyDown, { capture: true });
-    return () =>
+    window.addEventListener("contextmenu", handleContextMenu, { capture: true });
+    return () => {
       window.removeEventListener("keydown", handleKeyDown, { capture: true });
+      window.removeEventListener("contextmenu", handleContextMenu, { capture: true });
+    };
   }, [allowed]);
 }
