@@ -147,6 +147,44 @@ export function SoloScreen({
   // Playing
   return (
     <div className="min-h-dvh w-full bg-[#0f0f0f] flex flex-col">
+      {/* Topbar */}
+      <div className="sticky top-0 z-50 bg-[#0f0f0f]/97 backdrop-blur-sm border-b border-[#2e2e2e] flex flex-col px-3 sm:px-3.5 py-2 gap-1">
+        {/* Cible centrée */}
+        <div className="flex justify-center">
+          <span className="text-sm sm:text-base font-black text-white bg-[#7c3aed] px-2 py-0.5 rounded-lg leading-tight">
+            {puzzle?.target}
+          </span>
+        </div>
+        {/* Breadcrumbs + stats */}
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          <div className="flex-1 min-w-0">
+            <Breadcrumbs history={history} endRef={breadcrumbEndRef} />
+          </div>
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <div className="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-xs font-bold tabular-nums text-[#888]">
+              <span>{elapsedDisplay}</span>
+              <span>{clicks} clics</span>
+            </div>
+            {canGoBack && (
+              <button
+                className="min-h-8 px-2 rounded-lg text-xs font-semibold bg-[#242424] border border-[#2e2e2e] text-[#f0f0f0] hover:bg-[#1a1a1a] disabled:opacity-50 cursor-pointer shrink-0"
+                onClick={onBack}
+                disabled={loading}
+              >
+                ← +1
+              </button>
+            )}
+            <button
+              className="min-h-8 px-2 rounded-lg text-xs font-semibold bg-red-950/40 border border-red-900 text-red-400 hover:bg-red-900/40 cursor-pointer shrink-0"
+              onClick={onQuit}
+            >
+              Quitter
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
       <div className="flex-1 overflow-y-auto bg-white">
         <div className="article-container">
           {title && <h1 className="article-title">{title}</h1>}
@@ -173,52 +211,6 @@ export function SoloScreen({
               disabled={loading}
             />
           )}
-        </div>
-      </div>
-
-      {/* Bottom bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#0f0f0f]/97 backdrop-blur-sm border-t border-[#2e2e2e] flex items-center justify-between px-3 sm:px-4 py-2 gap-2 sm:gap-3">
-        <div className="flex-1 min-w-0 flex flex-col gap-0.5">
-          <span className="text-[8px] sm:text-[9px] font-bold tracking-widest text-[#888] uppercase">
-            Trouver
-          </span>
-          <span className="text-sm sm:text-base font-black text-[#7c3aed] truncate">
-            {puzzle?.target}
-          </span>
-          <Breadcrumbs history={history} endRef={breadcrumbEndRef} />
-        </div>
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-          <div className="flex flex-col items-center gap-0.5 min-w-10">
-            <span className="text-[8px] sm:text-[9px] font-bold tracking-wider text-[#888] uppercase">
-              Temps
-            </span>
-            <span className="text-xs sm:text-sm font-black tabular-nums">
-              {elapsedDisplay}
-            </span>
-          </div>
-          <div className="flex flex-col items-center gap-0.5 min-w-10">
-            <span className="text-[8px] sm:text-[9px] font-bold tracking-wider text-[#888] uppercase">
-              Clics
-            </span>
-            <span className="text-xs sm:text-sm font-black tabular-nums">
-              {clicks}
-            </span>
-          </div>
-          {canGoBack && (
-            <button
-              className="min-h-8 sm:min-h-9 px-2 sm:px-3 rounded-lg text-xs font-semibold bg-[#242424] border border-[#2e2e2e] text-[#f0f0f0] hover:bg-[#1a1a1a] disabled:opacity-50 cursor-pointer"
-              onClick={onBack}
-              disabled={loading}
-            >
-              ← +1
-            </button>
-          )}
-          <button
-            className="min-h-8 sm:min-h-9 px-2 sm:px-3 rounded-lg text-xs font-semibold bg-[#242424] border border-[#2e2e2e] text-[#f0f0f0] hover:bg-[#1a1a1a] cursor-pointer"
-            onClick={onQuit}
-          >
-            Quitter
-          </button>
         </div>
       </div>
     </div>
