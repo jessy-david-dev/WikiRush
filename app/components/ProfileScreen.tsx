@@ -58,8 +58,10 @@ export function ProfileScreen({
   const [games, setGames] = useState<Game[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "solo" | "multi">("all");
+  const [page, setPage] = useState(1);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const PAGE_SIZE = 10;
 
   async function handleDeleteAccount() {
     setDeleting(true);
@@ -77,6 +79,8 @@ export function ProfileScreen({
 
   const filtered =
     filter === "all" ? games : games.filter((g) => g.mode === filter);
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
   const stats = computeStats(filtered);
 
   const allStats = computeStats(games);
@@ -186,7 +190,7 @@ export function ProfileScreen({
           <button
             key={f}
             className={`px-3 sm:px-4 py-1.5 rounded-full text-xs font-semibold border cursor-pointer transition-colors ${filter === f ? "bg-[#7c3aed] border-[#7c3aed] text-white" : "bg-[#242424] border-[#2e2e2e] text-[#888] hover:text-[#f0f0f0]"}`}
-            onClick={() => setFilter(f)}
+            onClick={() => { setFilter(f); setPage(1); }}
           >
             {f === "all" ? "Tout" : f === "solo" ? "Solo" : "Multi"}
           </button>
@@ -205,7 +209,7 @@ export function ProfileScreen({
             Aucune partie enregistrée.
           </p>
         )}
-        {filtered.map((g) => (
+        {paginated.map((g) => (
           <div
             key={g.id}
             className={`bg-[#1a1a1a] rounded-xl px-3.5 sm:px-4 py-3 sm:py-3.5 flex flex-col gap-2 border-l-4 border-y border-r ${g.won ? "border-l-[#16a34a] border-[#2e2e2e]" : "border-l-[#2e2e2e] border-[#2e2e2e] opacity-70"}`}
@@ -258,6 +262,29 @@ export function ProfileScreen({
           </div>
         ))}
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2 mt-4">
+          <button
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page === 1}
+            className="min-h-9 px-3 rounded-lg text-xs font-semibold bg-[#242424] border border-[#2e2e2e] text-[#f0f0f0] hover:bg-[#1a1a1a] disabled:opacity-30 cursor-pointer transition-colors"
+          >
+            ←
+          </button>
+          <span className="text-xs text-[#888]">
+            {page} / {totalPages}
+          </span>
+          <button
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={page === totalPages}
+            className="min-h-9 px-3 rounded-lg text-xs font-semibold bg-[#242424] border border-[#2e2e2e] text-[#f0f0f0] hover:bg-[#1a1a1a] disabled:opacity-30 cursor-pointer transition-colors"
+          >
+            →
+          </button>
+        </div>
+      )}
 
       {/* Mes données */}
       <div className="mt-8 border border-[#2e2e2e] rounded-xl p-4 flex items-center justify-between gap-3 flex-wrap">
