@@ -253,12 +253,12 @@ export function GameScreen({
     <div className="min-h-dvh w-full bg-[#0f0f0f] flex flex-col">
       {/* Topbar */}
       <div className="sticky top-0 z-50 bg-[#0f0f0f]/97 backdrop-blur-sm border-b border-[#2e2e2e] flex items-center gap-2 sm:gap-3 px-3 sm:px-3.5 py-2">
-        <div className="flex-1 min-w-0 flex flex-col gap-0.5 sm:gap-1">
-          <div className="flex items-center gap-1.5">
-            <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-[#888] shrink-0">
-              Cible
+        <div className="flex-1 min-w-0 flex flex-col gap-1">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <span className="shrink-0 text-xs font-black text-[#a78bfa]">
+              Cible →
             </span>
-            <span className="text-xs font-bold text-[#7c3aed] truncate">
+            <span className="truncate text-sm sm:text-base font-black text-white bg-[#7c3aed] px-2 py-0.5 rounded-lg leading-tight">
               {room.targetArticle}
             </span>
           </div>
@@ -267,13 +267,17 @@ export function GameScreen({
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <div className="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-xs font-bold tabular-nums">
             {timeLeft !== null && (
-              <span className={`font-black ${timeLeft <= 10 ? "text-red-400 animate-pulse" : timeLeft <= 30 ? "text-orange-400" : "text-[#888]"}`}>
+              <span
+                className={`font-black ${timeLeft <= 10 ? "text-red-400 animate-pulse" : timeLeft <= 30 ? "text-orange-400" : "text-[#888]"}`}
+              >
                 {timeLeft}s
               </span>
             )}
             <span className="text-[#888]">{elapsed}</span>
             <span className="text-[#888]">{clicks} clics</span>
-            <span className="hidden sm:inline text-[#888]">{myPlayer?.score ?? 0} pts</span>
+            <span className="hidden sm:inline text-[#888]">
+              {myPlayer?.score ?? 0} pts
+            </span>
           </div>
           {!myFinished && canGoBack && (
             <button
