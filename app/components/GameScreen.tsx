@@ -263,60 +263,61 @@ export function GameScreen({
   return (
     <div className="min-h-dvh w-full bg-[#0f0f0f] flex flex-col">
       {/* Topbar */}
-      <div className="sticky top-0 z-50 bg-[#0f0f0f]/97 backdrop-blur-sm border-b border-[#2e2e2e] flex items-center gap-2 sm:gap-3 px-3 sm:px-3.5 py-2">
-        <div className="flex-1 min-w-0 flex flex-col gap-1">
-          <div className="flex items-center gap-1.5 min-w-0">
-            <span className="shrink-0 text-xs font-black text-[#a78bfa]">
-              Cible →
-            </span>
-            <span className="truncate text-sm sm:text-base font-black text-white bg-[#7c3aed] px-2 py-0.5 rounded-lg leading-tight">
-              {room.targetArticle}
-            </span>
-          </div>
-          <Breadcrumbs history={history} endRef={breadcrumbEndRef} />
+      <div className="sticky top-0 z-50 bg-[#0f0f0f]/97 backdrop-blur-sm border-b border-[#2e2e2e] flex flex-col px-3 sm:px-3.5 py-2 gap-1">
+        {/* Cible centrée */}
+        <div className="flex justify-center">
+          <span className="text-sm sm:text-base font-black text-white bg-[#7c3aed] px-2 py-0.5 rounded-lg leading-tight">
+            {room.targetArticle}
+          </span>
         </div>
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-          <div className="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-xs font-bold tabular-nums">
-            {timeLeft !== null && (
-              <span
-                className={`font-black ${timeLeft <= 10 ? "text-red-400 animate-pulse" : timeLeft <= 30 ? "text-orange-400" : "text-[#888]"}`}
+        {/* Breadcrumbs + stats */}
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          <div className="flex-1 min-w-0">
+            <Breadcrumbs history={history} endRef={breadcrumbEndRef} />
+          </div>
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <div className="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-xs font-bold tabular-nums">
+              {timeLeft !== null && (
+                <span
+                  className={`font-black ${timeLeft <= 10 ? "text-red-400 animate-pulse" : timeLeft <= 30 ? "text-orange-400" : "text-[#888]"}`}
+                >
+                  {timeLeft}s
+                </span>
+              )}
+              <span className="text-[#888]">{elapsed}</span>
+              <span className="text-[#888]">{clicks} clics</span>
+              <span className="hidden sm:inline text-[#888]">
+                {myPlayer?.score ?? 0} pts
+              </span>
+            </div>
+            {!myFinished && canGoBack && (
+              <button
+                onClick={onGoBack}
+                disabled={loading}
+                className="min-h-8 px-2 rounded-lg text-xs font-semibold bg-[#242424] border border-[#2e2e2e] text-[#f0f0f0] hover:bg-[#1a1a1a] disabled:opacity-50 cursor-pointer shrink-0"
               >
-                {timeLeft}s
+                ← +1
+              </button>
+            )}
+            {!myFinished && (
+              <button
+                onClick={onSurrender}
+                className="min-h-8 px-2 rounded-lg text-xs font-semibold bg-red-950/40 border border-red-900 text-red-400 hover:bg-red-900/40 cursor-pointer shrink-0"
+              >
+                Forfait
+              </button>
+            )}
+            {myFinished && myPlayer?.hasWon && (
+              <span className="text-xs font-bold text-green-400 shrink-0">
+                ✓ Trouvé !
               </span>
             )}
-            <span className="text-[#888]">{elapsed}</span>
-            <span className="text-[#888]">{clicks} clics</span>
-            <span className="hidden sm:inline text-[#888]">
-              {myPlayer?.score ?? 0} pts
-            </span>
+            {myFinished && myPlayer?.hasSurrendered && (
+              <span className="text-xs font-bold text-[#888] shrink-0">
+                Forfait
+              </span>
+            )}
           </div>
-          {!myFinished && canGoBack && (
-            <button
-              onClick={onGoBack}
-              disabled={loading}
-              className="min-h-8 px-2 rounded-lg text-xs font-semibold bg-[#242424] border border-[#2e2e2e] text-[#f0f0f0] hover:bg-[#1a1a1a] disabled:opacity-50 cursor-pointer shrink-0"
-            >
-              ← +1
-            </button>
-          )}
-          {!myFinished && (
-            <button
-              onClick={onSurrender}
-              className="min-h-8 px-2 rounded-lg text-xs font-semibold bg-red-950/40 border border-red-900 text-red-400 hover:bg-red-900/40 cursor-pointer shrink-0"
-            >
-              Forfait
-            </button>
-          )}
-          {myFinished && myPlayer?.hasWon && (
-            <span className="text-xs font-bold text-green-400 shrink-0">
-              ✓ Trouvé !
-            </span>
-          )}
-          {myFinished && myPlayer?.hasSurrendered && (
-            <span className="text-xs font-bold text-[#888] shrink-0">
-              Forfait
-            </span>
-          )}
         </div>
       </div>
 
