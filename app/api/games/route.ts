@@ -20,6 +20,14 @@ export async function POST(req: NextRequest) {
       won: boolean;
     };
 
+  const userExists = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { id: true },
+  });
+  if (!userExists) {
+    return NextResponse.json({ error: "Utilisateur introuvable" }, { status: 401 });
+  }
+
   const game = await prisma.game.create({
     data: {
       userId: session.user.id,

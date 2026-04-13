@@ -24,9 +24,7 @@ const FORBIDDEN_NAMESPACES = [
   "WP:",
 ];
 
-const REMOVED_SECTION_IDS = [
-  "Liens_externes",
-];
+const REMOVED_SECTION_IDS = ["Liens_externes"];
 
 function getHeadingId(el: Element): string {
   // Nouvelle structure Wikipedia : <div class="mw-heading"><h2 id="...">
@@ -72,7 +70,7 @@ function cleanWikiHtml(container: HTMLElement): void {
     }
   });
 
-  // Supprimer les sections indésirables — supporte ancienne et nouvelle structure Wikipedia
+  // Supprimer les sections indésirables - supporte ancienne et nouvelle structure Wikipedia
   // Nouvelle : <div class="mw-heading mw-heading2"> / Ancienne : <h2><span id="...">
   const headingSelectors = "h2, h3, .mw-heading";
   container.querySelectorAll(headingSelectors).forEach((heading) => {

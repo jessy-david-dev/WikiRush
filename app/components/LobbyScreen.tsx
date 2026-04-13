@@ -19,6 +19,7 @@ type LobbyScreenProps = {
   gameMode: Room["gameMode"];
   setGameMode: (v: Room["gameMode"]) => void;
   onSetGameMode: (v: Room["gameMode"]) => void;
+  onSetTotalRounds: (v: number) => void;
   onSetSearchAllowed: (v: boolean) => void;
   onSetTimeLimit: (v: number) => void;
 };
@@ -39,6 +40,7 @@ export function LobbyScreen({
   gameMode,
   setGameMode,
   onSetGameMode,
+  onSetTotalRounds,
   onSetSearchAllowed,
   onSetTimeLimit,
 }: LobbyScreenProps) {
@@ -180,8 +182,8 @@ export function LobbyScreen({
             <div className="flex-1 flex flex-col gap-1.5">
               <span className="text-xs text-[#888]">Manches</span>
               <select
-                value={totalRounds}
-                onChange={(e) => setTotalRounds(Number(e.target.value))}
+                value={room.totalRounds}
+                onChange={(e) => { const v = Number(e.target.value); setTotalRounds(v); onSetTotalRounds(v); }}
                 className="w-full min-h-11 px-2 bg-[#0f0f0f] border border-[#2e2e2e] rounded-xl text-sm text-[#f0f0f0] outline-none focus:border-[#7c3aed] cursor-pointer transition-colors"
               >
                 {[1, 2, 3, 4, 5, 7, 10].map((n) => (

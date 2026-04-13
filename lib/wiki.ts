@@ -3,8 +3,25 @@ import { getFallbackPuzzle } from "./puzzles";
 
 const WIKI_API_BASE = "https://fr.wikipedia.org/w/api.php";
 const MIN_ARTICLE_BYTES = 10000;
-const BAD_TITLE_PREFIXES = ["Liste de", "Liste des", "Index de", "Portail:"];
-const BAD_TITLE_SUFFIXES = ["(homonymie)", "(disambiguation)"];
+const BAD_TITLE_PREFIXES = ["Index de", "Portail:"];
+const BAD_TITLE_SUFFIXES = [
+  "(disambiguation)",
+  // Géographie administrative française
+  "(département)",
+  "(canton)",
+  "(commune)",
+  "(arrondissement)",
+  "(circonscription législative)",
+  "(région)",
+];
+const BAD_TITLE_PATTERNS = [
+  // Cantons français : "Canton de X", "Canton de X (Yvelines)", etc
+  /^Canton (de |d'|du )/i,
+  // Arrondissements
+  /^Arrondissement (de |d'|du )/i,
+  // Communes très petites ou listes géo
+  /^Communes (de |d'|du )/i,
+];
 
 // Cache de promesses module-level
 const articleCache = new Map<string, Promise<WikiArticle | null>>();
@@ -66,7 +83,8 @@ function isGoodArticle(page: WikiPageInfo): boolean {
   return (
     page.length >= MIN_ARTICLE_BYTES &&
     !BAD_TITLE_PREFIXES.some((p) => t.startsWith(p)) &&
-    !BAD_TITLE_SUFFIXES.some((s) => t.endsWith(s))
+    !BAD_TITLE_SUFFIXES.some((s) => t.endsWith(s)) &&
+    !BAD_TITLE_PATTERNS.some((r) => r.test(t))
   );
 }
 

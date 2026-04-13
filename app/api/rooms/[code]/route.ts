@@ -69,7 +69,10 @@ function calcPlayerPoints(player: Player, room: Room): number {
   let timePts: number;
   if (room.timeLimit > 0) {
     const timeLeft = room.timeLimit * 1000 - elapsed;
-    timePts = Math.max(0, Math.floor((timeLeft / (room.timeLimit * 1000)) * 10));
+    timePts = Math.max(
+      0,
+      Math.floor((timeLeft / (room.timeLimit * 1000)) * 10),
+    );
   } else {
     timePts = Math.max(0, 10 - Math.floor(elapsed / 30000));
   }
@@ -355,10 +358,29 @@ export async function PATCH(
     case "setGameMode": {
       const host = room.players.find((p) => p.id === playerId);
       if (!host?.isHost) {
-        return Response.json({ error: "Seul l'hôte peut modifier ce paramètre" }, { status: 403 });
+        return Response.json(
+          { error: "Seul l'hôte peut modifier ce paramètre" },
+          { status: 403 },
+        );
       }
       if (value === "race" || value === "all_finish") {
         room.gameMode = value;
+        await saveRoom(room);
+      }
+      return Response.json({ room });
+    }
+
+    // Hôte change le nombre de manches
+    case "setTotalRounds": {
+      const host = room.players.find((p) => p.id === playerId);
+      if (!host?.isHost) {
+        return Response.json(
+          { error: "Seul l'hôte peut modifier ce paramètre" },
+          { status: 403 },
+        );
+      }
+      if (typeof value === "number") {
+        room.totalRounds = Math.min(Math.max(Math.floor(value), 1), 10);
         await saveRoom(room);
       }
       return Response.json({ room });
@@ -368,14 +390,18 @@ export async function PATCH(
     case "setTimeLimit": {
       const host = room.players.find((p) => p.id === playerId);
       if (!host?.isHost) {
-        return Response.json({ error: "Seul l'hôte peut modifier ce paramètre" }, { status: 403 });
+        return Response.json(
+          { error: "Seul l'hôte peut modifier ce paramètre" },
+          { status: 403 },
+        );
       }
-      room.timeLimit = typeof value === "number" ? Math.max(0, Math.floor(value)) : 0;
+      room.timeLimit =
+        typeof value === "number" ? Math.max(0, Math.floor(value)) : 0;
       await saveRoom(room);
       return Response.json({ room });
     }
 
-    // Fin du temps imparti — déclenché par le client qui détecte l'expiration
+    // Fin du temps imparti - déclenché par le client qui détecte l'expiration
     case "timeUp": {
       if (room.phase !== "playing") {
         return Response.json({ room });
