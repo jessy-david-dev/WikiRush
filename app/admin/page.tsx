@@ -57,11 +57,12 @@ function fmt(s: number) {
 }
 
 function MiniBarChart({ data }: { data: ActivityDay[] }) {
+  const MAX_H = 64; // px, correspond à h-16
   const max = Math.max(...data.map((d) => d.count), 1);
   return (
     <div className="flex items-end gap-1 h-16">
       {data.map((d) => {
-        const pct = (d.count / max) * 100;
+        const h = Math.max((d.count / max) * MAX_H, 3);
         const day = new Date(d.date + "T12:00:00").toLocaleDateString("fr-FR", {
           day: "numeric",
           month: "short",
@@ -73,7 +74,7 @@ function MiniBarChart({ data }: { data: ActivityDay[] }) {
           >
             <div
               className="w-full bg-[#7c3aed]/60 rounded-sm group-hover:bg-[#7c3aed] transition-colors"
-              style={{ height: `${Math.max(pct, 4)}%` }}
+              style={{ height: `${h}px` }}
             />
             <div className="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 bg-[#2e2e2e] text-[#f0f0f0] text-[10px] px-1.5 py-0.5 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
               {day} - {d.count}
