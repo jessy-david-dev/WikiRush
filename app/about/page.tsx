@@ -137,31 +137,91 @@ export default function AboutPage() {
           </div>
         </div>
 
-        {/* Paliers */}
+        {/* Badges */}
         <div className="flex flex-col gap-4">
           <h2 className="text-xs font-bold uppercase tracking-widest text-[#555]">
-            Paliers du compteur total
+            Badges
           </h2>
           <div className="bg-[#1a1a1a] border border-[#2e2e2e] rounded-xl divide-y divide-[#2e2e2e]">
             {[
-              { emoji: "🌱", label: "Moins de 10 parties", range: "< 10" },
-              { emoji: "👾", label: "10 parties et plus", range: "10+" },
-              { emoji: "🎮", label: "100 parties et plus", range: "100+" },
-              { emoji: "🎯", label: "500 parties et plus", range: "500+" },
-              { emoji: "⚡", label: "1 000 parties et plus", range: "1 000+" },
-              { emoji: "🔥", label: "5 000 parties et plus", range: "5 000+" },
               {
-                emoji: "🚀",
-                label: "10 000 parties et plus",
+                file: "novice",
+                name: "Novice",
+                label: "Moins de 5 victoires",
+                range: "< 5",
+              },
+              {
+                file: "apprenti",
+                name: "Apprenti",
+                label: "5 victoires et plus",
+                range: "5+",
+              },
+              {
+                file: "initié",
+                name: "Initié",
+                label: "20 victoires et plus",
+                range: "20+",
+              },
+              {
+                file: "adepte",
+                name: "Adepte",
+                label: "50 victoires et plus",
+                range: "50+",
+              },
+              {
+                file: "expert",
+                name: "Expert",
+                label: "150 victoires et plus",
+                range: "150+",
+              },
+              {
+                file: "maître",
+                name: "Maître",
+                label: "500 victoires et plus",
+                range: "500+",
+              },
+              {
+                file: "légende",
+                name: "Légende",
+                label: "1 000 victoires et plus",
+                range: "1 000+",
+              },
+              {
+                file: "mythique",
+                name: "Mythique",
+                label: "2 500 victoires et plus",
+                range: "2 500+",
+              },
+              {
+                file: "transcendant",
+                name: "Transcendant",
+                label: "5 000 victoires et plus",
+                range: "5 000+",
+              },
+              {
+                file: "omniscient",
+                name: "Omniscient",
+                label: "10 000 victoires et plus",
                 range: "10 000+",
               },
-            ].map(({ emoji, label, range }) => (
-              <div key={range} className="flex items-center gap-3 px-4 py-2.5">
-                <span className="text-xl w-7 text-center shrink-0">
-                  {emoji}
+            ].map(({ file, name, label, range }) => (
+              <div key={file} className="flex items-center gap-3 px-4 py-2.5">
+                <Image
+                  src={`/badges/${file}.Png`}
+                  alt={name}
+                  width={28}
+                  height={28}
+                  className="shrink-0"
+                />
+                <span className="text-sm font-semibold text-[#f0f0f0] w-28 shrink-0">
+                  {name}
                 </span>
-                <span className="text-sm text-[#aaa] flex-1">{label}</span>
-                <span className="text-xs font-mono text-[#555]">{range}</span>
+                <span className="text-sm text-[#888] flex-1 text-center">
+                  {label}
+                </span>
+                <span className="text-xs font-mono text-[#555] w-16 text-right shrink-0">
+                  {range}
+                </span>
               </div>
             ))}
           </div>

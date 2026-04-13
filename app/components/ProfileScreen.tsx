@@ -1,7 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { signOut } from "next-auth/react";
+import { getBadge, getNextBadge } from "../../lib/badges";
 
 type Game = {
   id: string;
@@ -77,6 +79,10 @@ export function ProfileScreen({
     filter === "all" ? games : games.filter((g) => g.mode === filter);
   const stats = computeStats(filtered);
 
+  const allStats = computeStats(games);
+  const badge = getBadge(allStats.won);
+  const next = getNextBadge(allStats.won);
+
   const statCard =
     "bg-[#1a1a1a] border border-[#2e2e2e] rounded-xl p-3 sm:p-3.5 text-center flex flex-col gap-1";
   const btnGhost =
@@ -104,6 +110,25 @@ export function ProfileScreen({
           Déconnexion
         </button>
       </div>
+
+      {/* Badge */}
+      {!loading && (
+        <div className="flex flex-col items-center gap-2 py-4 mb-1">
+          <Image
+            src={`/badges/${badge.file}.Png`}
+            alt={badge.name}
+            width={80}
+            height={80}
+            className="drop-shadow-lg"
+          />
+          <span className="text-base font-black text-[#a78bfa]">{badge.name}</span>
+          {next && (
+            <span className="text-xs text-[#555]">
+              {next.threshold - allStats.won} victoire{next.threshold - allStats.won > 1 ? "s" : ""} avant {next.name}
+            </span>
+          )}
+        </div>
+      )}
 
       {/* Stats grid */}
       <div className="grid grid-cols-3 gap-2 sm:gap-2.5 my-3 sm:my-4">

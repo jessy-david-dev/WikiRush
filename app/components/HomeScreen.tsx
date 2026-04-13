@@ -3,19 +3,10 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import type { Session } from "next-auth";
-
-function totalEmoji(n: number): string {
-  if (n >= 10000) return "🚀";
-  if (n >= 5000) return "🔥";
-  if (n >= 1000) return "⚡";
-  if (n >= 500) return "🎯";
-  if (n >= 100) return "🎮";
-  if (n >= 10) return "👾";
-  return "🌱";
-}
+import { getBadge } from "../../lib/badges";
 
 function useDailyStats() {
-  const [today, setToday] = useState<number | null>(null); // renommé plus bas en total
+  const [today, setToday] = useState<number | null>(null);
   useEffect(() => {
     fetch("/api/stats")
       .then((r) => r.json())
@@ -23,6 +14,24 @@ function useDailyStats() {
       .catch(() => {});
   }, []);
   return today;
+}
+
+function useUserWins(enabled: boolean) {
+  const [wins, setWins] = useState<number>(0);
+  useEffect(() => {
+    if (!enabled) return;
+    fetch("/api/games")
+      .then((r) => (r.ok ? r.json() : []))
+      .then((games: unknown) => {
+        if (Array.isArray(games)) {
+          setWins((games as { won: boolean }[]).filter((g) => g.won).length);
+        } else {
+          setWins(0);
+        }
+      })
+      .catch(() => setWins(0));
+  }, [enabled]);
+  return wins;
 }
 
 type HomeScreenProps = {
@@ -65,6 +74,8 @@ export function HomeScreen({
   const btnGhost =
     "min-h-9 px-3 rounded-lg text-xs sm:text-sm font-semibold bg-[#242424] border border-[#2e2e2e] text-[#f0f0f0] hover:bg-[#1a1a1a] cursor-pointer whitespace-nowrap";
   const today = useDailyStats();
+  const wins = useUserWins(!!session?.user);
+  const badge = session?.user ? getBadge(wins) : null;
 
   return (
     <div className="min-h-dvh w-full bg-[#0f0f0f] text-[#f0f0f0] animate-fade-in flex flex-col items-center justify-center px-4 py-16 gap-6 sm:gap-8">
@@ -78,9 +89,20 @@ export function HomeScreen({
             className="flex items-center gap-1.5 sm:gap-2 bg-[#242424] border border-[#2e2e2e] rounded-full pl-1 pr-2.5 sm:pr-3 py-1 cursor-pointer hover:bg-[#1a1a1a]"
             onClick={onShowProfile}
           >
-            <span className="w-7 h-7 rounded-full bg-[#7c3aed] text-white flex items-center justify-center text-xs font-bold shrink-0">
-              {session.user.name?.[0]?.toUpperCase() ?? "?"}
-            </span>
+            {badge ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={`/badges/${badge.file}.Png`}
+                alt={badge.name}
+                width={28}
+                height={28}
+                className="shrink-0 w-7 h-7 object-contain"
+              />
+            ) : (
+              <span className="w-7 h-7 rounded-full bg-[#7c3aed] text-white flex items-center justify-center text-xs font-bold shrink-0">
+                {session.user.name?.[0]?.toUpperCase() ?? "?"}
+              </span>
+            )}
             <span className="hidden sm:block max-w-28 truncate text-sm font-medium">
               {session.user.name}
             </span>
@@ -109,12 +131,18 @@ export function HomeScreen({
           </p>
           {today !== null && (
             <p className="mt-2 text-xs text-[#888]">
-              {totalEmoji(today)}{" "}
               <span className="font-semibold text-[#f0f0f0]">
                 {today.toLocaleString("fr-FR")}
               </span>{" "}
               partie{today > 1 ? "s" : ""} jouée{today > 1 ? "s" : ""} au total
             </p>
+          )}
+          {badge && (
+            <div className="mt-3 flex items-center justify-center gap-2">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={`/badges/${badge.file}.Png`} alt={badge.name} className="w-8 h-8 object-contain" />
+              <span className="text-sm font-black text-[#a78bfa]">{badge.name}</span>
+            </div>
           )}
         </div>
 
