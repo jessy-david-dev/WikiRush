@@ -51,6 +51,13 @@ export function GameScreen({
 }: GameScreenProps) {
   const breadcrumbEndRef = useRef<HTMLDivElement>(null);
   useCtrlFBlock(room.searchAllowed);
+
+  function fmtMs(ms: number): string {
+    const s = Math.floor(ms / 1000);
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return m > 0 ? `${m}:${String(sec).padStart(2, "0")}` : `${sec}s`;
+  }
   const myPlayer = room.players.find((p) => p.id === playerId);
   const isHost = myPlayer?.isHost ?? false;
   const myFinished = myPlayer?.hasWon || myPlayer?.hasSurrendered;
@@ -151,7 +158,11 @@ export function GameScreen({
                       ))}
                       <span className="text-[#555] ml-1">
                         ({p.path.length - 1} clic
-                        {p.path.length - 1 > 1 ? "s" : ""})
+                        {p.path.length - 1 > 1 ? "s" : ""}
+                        {p.hasWon && p.wonAt && room.roundStart
+                          ? ` · ${fmtMs(p.wonAt - room.roundStart)}`
+                          : ""}
+                        )
                       </span>
                     </div>
                   )}
