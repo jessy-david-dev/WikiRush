@@ -1,4 +1,4 @@
-// GET /api/rooms/[code]/stream — SSE : pousse l'état de la room en temps réel
+// GET /api/rooms/[code]/stream - SSE : pousse l'état de la room en temps réel
 // Le client s'abonne une seule fois ; chaque saveRoom publie sur Redis et notifie ici.
 
 import { NextRequest } from "next/server";
@@ -47,7 +47,11 @@ export async function GET(
 
       sub.on("error", () => {
         clearInterval(keepAlive);
-        try { controller.close(); } catch { /* déjà fermé */ }
+        try {
+          controller.close();
+        } catch {
+          /* déjà fermé */
+        }
         sub.disconnect();
       });
     },

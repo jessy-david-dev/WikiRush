@@ -97,25 +97,36 @@ export function useMultiGame() {
     es.onmessage = (e) => {
       try {
         setRoom(JSON.parse(e.data) as Room);
-      } catch { /* ignore */ }
+      } catch {
+        /* ignore */
+      }
     };
 
     es.onerror = () => {
-      // EventSource reconnecte automatiquement — pas besoin de gérer manuellement
+      // EventSource reconnecte automatiquement - pas besoin de gérer manuellement
     };
   }
 
   // Quand le tab redevient visible : heartbeat immédiat pour rafraîchir l'état
   useEffect(() => {
     function onVisible() {
-      if (document.visibilityState === "visible" && sseCodeRef.current && ssePidRef.current) {
+      if (
+        document.visibilityState === "visible" &&
+        sseCodeRef.current &&
+        ssePidRef.current
+      ) {
         fetch(`/api/rooms/${sseCodeRef.current}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ action: "heartbeat", playerId: ssePidRef.current }),
+          body: JSON.stringify({
+            action: "heartbeat",
+            playerId: ssePidRef.current,
+          }),
         })
           .then((r) => r.json())
-          .then((d) => { if ((d as { room: Room }).room) setRoom((d as { room: Room }).room); })
+          .then((d) => {
+            if ((d as { room: Room }).room) setRoom((d as { room: Room }).room);
+          })
           .catch(() => {});
       }
     }
