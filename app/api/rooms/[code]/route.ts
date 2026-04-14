@@ -4,6 +4,7 @@
 import { NextRequest } from "next/server";
 import type { Room, Player } from "../route";
 import { prisma } from "../../../../lib/prisma";
+import { redis, roomChannel } from "../../../../lib/redis";
 
 function dbToRoom(row: {
   code: string;
@@ -498,4 +499,6 @@ async function saveRoom(room: Room) {
       roundStart: room.roundStart !== null ? BigInt(room.roundStart) : null,
     },
   });
+  // Notifie tous les clients SSE abonnés à cette room
+  await redis.publish(roomChannel(room.code), JSON.stringify(room));
 }

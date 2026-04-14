@@ -5,7 +5,6 @@ import {
   fetchArticle,
   pickTwoArticles,
   prefetchArticle,
-  POLL_INTERVAL,
   COUNTDOWN_DURATION,
 } from "./wiki";
 import { useTimer } from "./useTimer";
@@ -33,7 +32,7 @@ export function useMultiGame() {
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const timeLimitTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const sseRef = useRef<EventSource | null>(null);
   const prevPhaseRef = useRef<string | null>(null);
   const prevRoundRef = useRef(0);
 
@@ -75,48 +74,49 @@ export function useMultiGame() {
     setCountdown(null);
   }
 
-  // Polling
+  // SSE
 
-  function stopPolling() {
-    if (pollRef.current) {
-      clearInterval(pollRef.current);
-      pollRef.current = null;
+  const sseCodeRef = useRef<string | null>(null);
+  const ssePidRef = useRef<string | null>(null);
+
+  function stopSSE() {
+    if (sseRef.current) {
+      sseRef.current.close();
+      sseRef.current = null;
     }
   }
 
-  async function poll(code: string, pid: string) {
-    try {
-      const res = await fetch(`/api/rooms/${code}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "heartbeat", playerId: pid }),
-      });
-      if (res.ok) setRoom(((await res.json()) as { room: Room }).room);
-    } catch {
-      /* ignore */
-    }
+  function startSSE(code: string, pid: string) {
+    stopSSE();
+    sseCodeRef.current = code;
+    ssePidRef.current = pid;
+
+    const es = new EventSource(`/api/rooms/${code}/stream`);
+    sseRef.current = es;
+
+    es.onmessage = (e) => {
+      try {
+        setRoom(JSON.parse(e.data) as Room);
+      } catch { /* ignore */ }
+    };
+
+    es.onerror = () => {
+      // EventSource reconnecte automatiquement — pas besoin de gérer manuellement
+    };
   }
 
-  const pollCodeRef = useRef<string | null>(null);
-  const pollPidRef = useRef<string | null>(null);
-
-  function startPolling(code: string, pid: string) {
-    stopPolling();
-    pollCodeRef.current = code;
-    pollPidRef.current = pid;
-    pollRef.current = setInterval(() => poll(code, pid), POLL_INTERVAL);
-  }
-
-  // Relance le polling quand le tab redevient visible (les setInterval sont throttlés en arrière-plan)
+  // Quand le tab redevient visible : heartbeat immédiat pour rafraîchir l'état
   useEffect(() => {
     function onVisible() {
-      if (
-        document.visibilityState === "visible" &&
-        pollCodeRef.current &&
-        pollPidRef.current
-      ) {
-        poll(pollCodeRef.current, pollPidRef.current);
-        startPolling(pollCodeRef.current, pollPidRef.current);
+      if (document.visibilityState === "visible" && sseCodeRef.current && ssePidRef.current) {
+        fetch(`/api/rooms/${sseCodeRef.current}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "heartbeat", playerId: ssePidRef.current }),
+        })
+          .then((r) => r.json())
+          .then((d) => { if ((d as { room: Room }).room) setRoom((d as { room: Room }).room); })
+          .catch(() => {});
       }
     }
     document.addEventListener("visibilitychange", onVisible);
@@ -287,7 +287,7 @@ export function useMultiGame() {
     if (!res.ok) return { error: data.error ?? "Erreur" };
     setRoom(data.room!);
     setPlayerId(data.playerId!);
-    startPolling(data.room!.code, data.playerId!);
+    startSSE(data.room!.code, data.playerId!);
     saveSession({
       screen: "lobby",
       multiRoomCode: data.room!.code,
@@ -314,7 +314,7 @@ export function useMultiGame() {
     if (!res.ok) return { error: data.error ?? "Impossible de rejoindre" };
     setRoom(data.room!);
     setPlayerId(data.playerId!);
-    startPolling(data.room!.code, data.playerId!);
+    startSSE(data.room!.code, data.playerId!);
     saveSession({
       screen: "lobby",
       multiRoomCode: data.room!.code,
@@ -460,7 +460,7 @@ export function useMultiGame() {
   }
 
   function leave() {
-    stopPolling();
+    stopSSE();
     stopCountdown();
     timer.stop();
     setRoom(null);
@@ -487,7 +487,7 @@ export function useMultiGame() {
       const data = (await res.json()) as { room: Room };
       setRoom(data.room);
       setPlayerId(pid);
-      startPolling(code, pid);
+      startSSE(code, pid);
       return true;
     } catch {
       return false;
