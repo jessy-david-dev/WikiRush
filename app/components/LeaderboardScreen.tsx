@@ -10,13 +10,20 @@ type LeaderboardRow = {
   wins: number;
   soloGames: number;
   soloWins: number;
+  soloAvgClicks: number | null;
   multiGames: number;
   multiWins: number;
+  dailyGames: number;
+  dailyWins: number;
+  dailyAvgClicks: number | null;
+  blitzGames: number;
+  blitzWins: number;
+  blitzBestTime: number | null;
   avgClicks: number | null;
   bestTime: number | null;
 };
 
-type Mode = "all" | "solo" | "multi";
+type Mode = "all" | "solo" | "multi" | "daily" | "blitz";
 
 function fmt(s: number): string {
   const m = Math.floor(s / 60);
@@ -56,13 +63,21 @@ export function LeaderboardScreen({ onBack }: { onBack: () => void }) {
         ? r.soloGames > 0
         : mode === "multi"
           ? r.multiGames > 0
-          : true,
+          : mode === "daily"
+            ? r.dailyGames > 0
+            : mode === "blitz"
+              ? r.blitzGames > 0
+              : true,
     )
     .sort((a, b) => {
       if (mode === "solo")
         return b.soloWins - a.soloWins || b.soloGames - a.soloGames;
       if (mode === "multi")
         return b.multiWins - a.multiWins || b.multiGames - a.multiGames;
+      if (mode === "daily")
+        return b.dailyWins - a.dailyWins || b.dailyGames - a.dailyGames;
+      if (mode === "blitz")
+        return b.blitzWins - a.blitzWins || b.blitzGames - a.blitzGames;
       return b.wins - a.wins || b.totalGames - a.totalGames;
     });
 
@@ -80,14 +95,14 @@ export function LeaderboardScreen({ onBack }: { onBack: () => void }) {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 mb-4 sm:mb-5">
-        {(["all", "solo", "multi"] as Mode[]).map((m) => (
+      <div className="flex gap-2 mb-4 sm:mb-5 flex-wrap">
+        {(["all", "solo", "daily", "blitz", "multi"] as Mode[]).map((m) => (
           <button
             key={m}
             className={`flex-1 py-2 rounded-xl text-xs sm:text-sm font-semibold border cursor-pointer transition-colors ${mode === m ? "bg-[#7c3aed] border-[#7c3aed] text-white" : "bg-[#1a1a1a] border-[#2e2e2e] text-[#888] hover:text-[#f0f0f0]"}`}
             onClick={() => setMode(m)}
           >
-            {m === "all" ? "Global" : m === "solo" ? "Solo" : "Multi"}
+            {m === "all" ? "Global" : m === "solo" ? "Solo" : m === "multi" ? "Multi" : m === "daily" ? "Daily" : "Blitz"}
           </button>
         ))}
       </div>
@@ -108,13 +123,35 @@ export function LeaderboardScreen({ onBack }: { onBack: () => void }) {
                 ? row.soloGames
                 : mode === "multi"
                   ? row.multiGames
-                  : row.totalGames;
+                  : mode === "daily"
+                    ? row.dailyGames
+                    : mode === "blitz"
+                      ? row.blitzGames
+                      : row.totalGames;
             const wins =
               mode === "solo"
                 ? row.soloWins
                 : mode === "multi"
                   ? row.multiWins
-                  : row.wins;
+                  : mode === "daily"
+                    ? row.dailyWins
+                    : mode === "blitz"
+                      ? row.blitzWins
+                      : row.wins;
+            const avgClicks =
+              mode === "solo"
+                ? row.soloAvgClicks
+                : mode === "daily"
+                  ? row.dailyAvgClicks
+                  : mode === "all"
+                    ? row.avgClicks
+                    : null;
+            const bestTime =
+              mode === "blitz"
+                ? row.blitzBestTime
+                : mode === "all"
+                  ? row.bestTime
+                  : null;
 
             return (
               <div
@@ -136,20 +173,20 @@ export function LeaderboardScreen({ onBack }: { onBack: () => void }) {
                       <span className="font-bold text-[#f0f0f0]">{games}</span>{" "}
                       parties
                     </span>
-                    {row.avgClicks != null && (
+                    {avgClicks != null && (
                       <span className="text-xs text-[#888]">
                         <span className="font-bold text-[#f0f0f0]">
-                          {row.avgClicks}
+                          {avgClicks}
                         </span>{" "}
                         clics moy.
                       </span>
                     )}
-                    {row.bestTime != null && (
+                    {bestTime != null && (
                       <span className="text-xs text-[#888]">
                         <span className="font-bold text-[#f0f0f0]">
-                          {fmt(row.bestTime)}
+                          {fmt(bestTime)}
                         </span>{" "}
-                        meilleur
+                        {mode === "blitz" ? "meilleur temps" : "meilleur"}
                       </span>
                     )}
                   </div>
