@@ -117,7 +117,7 @@ export async function POST(request: NextRequest) {
 
   const clampedMax = Math.min(
     Math.max(typeof maxPlayers === "number" ? Math.floor(maxPlayers) : 16, 2),
-    16,
+    100,
   );
   const clampedRounds = Math.min(
     Math.max(typeof totalRounds === "number" ? Math.floor(totalRounds) : 3, 1),

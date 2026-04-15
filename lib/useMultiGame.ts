@@ -430,6 +430,16 @@ export function useMultiGame() {
     if (res.ok) setRoom(((await res.json()) as { room: Room }).room);
   }
 
+  async function setMaxPlayers(value: number) {
+    if (!room || !playerId) return;
+    const res = await fetch(`/api/rooms/${room.code}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "setMaxPlayers", playerId, value }),
+    });
+    if (res.ok) setRoom(((await res.json()) as { room: Room }).room);
+  }
+
   async function setSearchAllowed(value: boolean) {
     if (!room || !playerId) return;
     const res = await fetch(`/api/rooms/${room.code}`, {
@@ -529,6 +539,7 @@ export function useMultiGame() {
     timeLeft,
     setGameMode,
     setTotalRounds,
+    setMaxPlayers,
     setTimeLimit,
     setSearchAllowed,
     restore,

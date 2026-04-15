@@ -12,7 +12,7 @@ export default function WikiRush() {
   const [screen, setScreen] = useState<Screen>("home");
   const [playerName, setPlayerName] = useState("");
   const [joinCode, setJoinCode] = useState("");
-  const [maxPlayers, setMaxPlayers] = useState(16);
+  const [maxPlayers, setMaxPlayers] = useState(100);
   const [totalRounds, setTotalRounds] = useState(3);
   const [gameMode, setGameMode] = useState<"race" | "all_finish">("race");
   const [error, setError] = useState<string | null>(null);

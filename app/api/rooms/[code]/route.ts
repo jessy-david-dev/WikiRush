@@ -371,6 +371,22 @@ export async function PATCH(
       return Response.json({ room });
     }
 
+    // Hôte change le nombre de joueurs max
+    case "setMaxPlayers": {
+      const host = room.players.find((p) => p.id === playerId);
+      if (!host?.isHost) {
+        return Response.json(
+          { error: "Seul l'hôte peut modifier ce paramètre" },
+          { status: 403 },
+        );
+      }
+      if (typeof value === "number") {
+        room.maxPlayers = Math.min(Math.max(Math.floor(value), 2), 100);
+        await saveRoom(room);
+      }
+      return Response.json({ room });
+    }
+
     // Hôte change le nombre de manches
     case "setTotalRounds": {
       const host = room.players.find((p) => p.id === playerId);

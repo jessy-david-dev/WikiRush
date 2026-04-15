@@ -20,6 +20,7 @@ type LobbyScreenProps = {
   setGameMode: (v: Room["gameMode"]) => void;
   onSetGameMode: (v: Room["gameMode"]) => void;
   onSetTotalRounds: (v: number) => void;
+  onSetMaxPlayers: (v: number) => void;
   onSetSearchAllowed: (v: boolean) => void;
   onSetTimeLimit: (v: number) => void;
 };
@@ -41,6 +42,7 @@ export function LobbyScreen({
   setGameMode,
   onSetGameMode,
   onSetTotalRounds,
+  onSetMaxPlayers,
   onSetSearchAllowed,
   onSetTimeLimit,
 }: LobbyScreenProps) {
@@ -171,10 +173,10 @@ export function LobbyScreen({
               <span className="text-xs text-[#888]">Joueurs max</span>
               <select
                 value={maxPlayers}
-                onChange={(e) => { setMaxPlayers(Number(e.target.value)); }}
+                onChange={(e) => { const v = Number(e.target.value); setMaxPlayers(v); onSetMaxPlayers(v); }}
                 className="w-full min-h-11 px-2 bg-[#0f0f0f] border border-[#2e2e2e] rounded-xl text-sm text-[#f0f0f0] outline-none focus:border-[#7c3aed] cursor-pointer transition-colors"
               >
-                {[2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16].map((n) => (
+                {[2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 20, 25, 30, 40, 50, 75, 100].map((n) => (
                   <option key={n} value={n}>
                     {n} joueurs
                   </option>
