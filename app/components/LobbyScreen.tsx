@@ -171,17 +171,14 @@ export function LobbyScreen({
           <div className="flex gap-3">
             <div className="flex-1 flex flex-col gap-1.5">
               <span className="text-xs text-[#888]">Joueurs max</span>
-              <select
+              <input
+                type="number"
+                min={2}
+                max={100}
                 value={maxPlayers}
-                onChange={(e) => { const v = Number(e.target.value); setMaxPlayers(v); onSetMaxPlayers(v); }}
-                className="w-full min-h-11 px-2 bg-[#0f0f0f] border border-[#2e2e2e] rounded-xl text-sm text-[#f0f0f0] outline-none focus:border-[#7c3aed] cursor-pointer transition-colors"
-              >
-                {[2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 20, 25, 30, 40, 50, 75, 100].map((n) => (
-                  <option key={n} value={n}>
-                    {n} joueurs
-                  </option>
-                ))}
-              </select>
+                onChange={(e) => { const v = Math.min(100, Math.max(2, Number(e.target.value) || 2)); setMaxPlayers(v); onSetMaxPlayers(v); }}
+                className="w-full min-h-11 px-2 bg-[#0f0f0f] border border-[#2e2e2e] rounded-xl text-sm text-[#f0f0f0] outline-none focus:border-[#7c3aed] transition-colors"
+              />
             </div>
             <div className="flex-1 flex flex-col gap-1.5">
               <span className="text-xs text-[#888]">Manches</span>
