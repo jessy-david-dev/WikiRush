@@ -169,7 +169,7 @@ export function LobbyScreen({
               <span className="text-xs text-[#888]">Joueurs max</span>
               <select
                 value={maxPlayers}
-                onChange={(e) => setMaxPlayers(Number(e.target.value))}
+                onChange={(e) => { setMaxPlayers(Number(e.target.value)); }}
                 className="w-full min-h-11 px-2 bg-[#0f0f0f] border border-[#2e2e2e] rounded-xl text-sm text-[#f0f0f0] outline-none focus:border-[#7c3aed] cursor-pointer transition-colors"
               >
                 {[2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16].map((n) => (
@@ -182,7 +182,7 @@ export function LobbyScreen({
             <div className="flex-1 flex flex-col gap-1.5">
               <span className="text-xs text-[#888]">Manches</span>
               <select
-                value={room.totalRounds}
+                value={totalRounds}
                 onChange={(e) => { const v = Number(e.target.value); setTotalRounds(v); onSetTotalRounds(v); }}
                 className="w-full min-h-11 px-2 bg-[#0f0f0f] border border-[#2e2e2e] rounded-xl text-sm text-[#f0f0f0] outline-none focus:border-[#7c3aed] cursor-pointer transition-colors"
               >
