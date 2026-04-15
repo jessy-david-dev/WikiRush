@@ -272,9 +272,8 @@ export function useMultiGame() {
       } catch {
         /* on continue localement */
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     },
-    [room, playerId],
+    [room, playerId, timer],
   );
 
   // Room actions
