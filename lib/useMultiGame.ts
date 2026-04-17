@@ -107,6 +107,19 @@ export function useMultiGame() {
     };
   }
 
+  // Heartbeat toutes les 20s pour rester dans la room (évite le pruning)
+  useEffect(() => {
+    const id = setInterval(() => {
+      if (!sseCodeRef.current || !ssePidRef.current) return;
+      fetch(`/api/rooms/${sseCodeRef.current}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "heartbeat", playerId: ssePidRef.current }),
+      }).catch(() => {});
+    }, 20_000);
+    return () => clearInterval(id);
+  }, []);
+
   // Quand le tab redevient visible : heartbeat immédiat pour rafraîchir l'état
   useEffect(() => {
     function onVisible() {
