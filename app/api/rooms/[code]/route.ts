@@ -47,12 +47,12 @@ function generatePlayerId(): string {
   return crypto.randomUUID();
 }
 
-// Timeout joueur inactif : 45s (heartbeat toutes les 2s, on laisse large pour les tabs en arrière-plan)
-const PLAYER_TIMEOUT_MS = 45_000;
+// Timeout joueur inactif : 90s (heartbeat toutes les 15s, x6 de marge pour les connexions lentes)
+const PLAYER_TIMEOUT_MS = 90_000;
 
 function prunePlayers(players: Player[]): Player[] {
   const now = Date.now();
-  return players.filter((p) => now - p.lastSeen < PLAYER_TIMEOUT_MS);
+  return players.filter((p) => p.isHost || now - p.lastSeen < PLAYER_TIMEOUT_MS);
 }
 
 // Calcule les points d'un joueur selon ses clics et son temps
@@ -455,11 +455,13 @@ export async function PATCH(
       room.roundWinner = null;
       room.countdownStart = null;
       room.roundStart = null;
+      const now = Date.now();
       for (const p of room.players) {
         p.hasWon = false;
         p.hasSurrendered = false;
         p.currentArticle = "";
         p.wonAt = null;
+        p.lastSeen = now; // rafraîchit tous les joueurs pour éviter le pruning immédiat
       }
       await saveRoom(room);
       return Response.json({ room });
@@ -479,12 +481,14 @@ export async function PATCH(
       room.roundWinner = null;
       room.countdownStart = null;
       room.roundStart = null;
+      const nowReset = Date.now();
       for (const p of room.players) {
         p.score = 0;
         p.hasWon = false;
         p.hasSurrendered = false;
         p.currentArticle = "";
         p.wonAt = null;
+        p.lastSeen = nowReset; // rafraîchit tous les joueurs pour éviter le pruning immédiat
       }
       await saveRoom(room);
       return Response.json({ room });

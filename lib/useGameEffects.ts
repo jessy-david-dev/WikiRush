@@ -61,7 +61,8 @@ export function useGameEffects({
       multi.restore(saved.multiRoomCode, saved.multiPlayerId).then((ok) => {
         // si une nouvelle room a été rejointe pendant le restore, on laisse
         const current = loadSession();
-        if (current?.multiRoomCode && current.multiRoomCode !== savedCode) return;
+        if (current?.multiRoomCode && current.multiRoomCode !== savedCode)
+          return;
         if (ok) setScreen("lobby");
         else {
           clearSession();

@@ -116,7 +116,7 @@ export function useMultiGame() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "heartbeat", playerId: ssePidRef.current }),
       }).catch(() => {});
-    }, 20_000);
+    }, 15_000);
     return () => clearInterval(id);
   }, []);
 
